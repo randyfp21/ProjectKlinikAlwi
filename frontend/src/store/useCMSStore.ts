@@ -23,6 +23,14 @@ export interface CMSFeaturedDoctor {
   photoUrl: string;
 }
 
+export interface CMSClinicGallery {
+  id: number;
+  title: string;
+  category: string;
+  photoUrl: string;
+  description: string;
+}
+
 export interface CMSState {
   // Clinic Branding & Contact Parameters
   clinicName: string;
@@ -43,6 +51,9 @@ export interface CMSState {
   // Featured Doctors
   featuredDoctors: CMSFeaturedDoctor[];
 
+  // Photo Slider / Gallery
+  galleryPhotos: CMSClinicGallery[];
+
   // Sync Actions
   fetchCMSFromDB: () => Promise<void>;
   saveCMSToDB: () => Promise<void>;
@@ -52,6 +63,9 @@ export interface CMSState {
   updateHero: (data: Partial<Pick<CMSState, 'heroTitle' | 'heroSubtitle' | 'heroBadge'>>) => void;
   updateFacility: (id: string, updated: Partial<CMSFacility>) => void;
   updateDoctor: (id: number, updated: Partial<CMSFeaturedDoctor>) => void;
+  updateGalleryPhoto: (id: number, updated: Partial<CMSClinicGallery>) => void;
+  addGalleryPhoto: (photo: Omit<CMSClinicGallery, 'id'>) => void;
+  deleteGalleryPhoto: (id: number) => void;
   resetToDefault: () => void;
 }
 
@@ -139,6 +153,44 @@ const DEFAULT_DOCTORS: CMSFeaturedDoctor[] = [
   },
 ];
 
+const DEFAULT_GALLERY: CMSClinicGallery[] = [
+  {
+    id: 1,
+    title: 'Gedung Klinik & Lobby Utama',
+    category: 'Fasilitas Gedung',
+    photoUrl: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1200&q=80',
+    description: 'Ruang tunggu ber-AC yang nyaman dengan konsep modern glassmorphism & pendaftaran bebas antre.',
+  },
+  {
+    id: 2,
+    title: 'Ruang Konsultasi Dokter Spesialis',
+    category: 'Tenaga Medis',
+    photoUrl: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=1200&q=80',
+    description: 'Ruang pemeriksaan dokter yang tenang dan higienis, dilengkapi rekam medis digital (EMR) terkini.',
+  },
+  {
+    id: 3,
+    title: 'Laboratorium & Pemeriksaan MCU',
+    category: 'Fasilitas Medis',
+    photoUrl: 'https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=1200&q=80',
+    description: 'Peralatan analisis darah & spesimen otomatis dengan standar akurasi tinggi dan hasil cepat.',
+  },
+  {
+    id: 4,
+    title: 'Farmasi & Apoteker Profesional',
+    category: 'Farmasi & Obat',
+    photoUrl: 'https://images.unsplash.com/photo-1586015555751-63bb77f4322a?auto=format&fit=crop&w=1200&q=80',
+    description: 'Pengelolaan stok obat terpantau sistemik dengan konseling apoteker yang ramah dan sigap.',
+  },
+  {
+    id: 5,
+    title: 'Tim Perawat & Caregiver Senior',
+    category: 'Tenaga Medis',
+    photoUrl: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&q=80',
+    description: 'Tim perawat bersertifikasi resmi yang siap melayani perawatan luka, infus vitamin, dan Home Service.',
+  },
+];
+
 export const useCMSStore = create<CMSState>()(
   persist(
     (set, get) => ({
@@ -155,6 +207,7 @@ export const useCMSStore = create<CMSState>()(
 
       facilities: DEFAULT_FACILITIES,
       featuredDoctors: DEFAULT_DOCTORS,
+      galleryPhotos: DEFAULT_GALLERY,
 
       fetchCMSFromDB: async () => {
         try {
@@ -173,6 +226,7 @@ export const useCMSStore = create<CMSState>()(
               heroBadge: data.hero_badge || get().heroBadge,
               facilities: data.facilities_json ? JSON.parse(data.facilities_json) : get().facilities,
               featuredDoctors: data.doctors_json ? JSON.parse(data.doctors_json) : get().featuredDoctors,
+              galleryPhotos: data.gallery_json ? JSON.parse(data.gallery_json) : get().galleryPhotos,
             });
           }
         } catch (err) {
@@ -194,6 +248,7 @@ export const useCMSStore = create<CMSState>()(
           hero_badge: state.heroBadge,
           facilities_json: JSON.stringify(state.facilities),
           doctors_json: JSON.stringify(state.featuredDoctors),
+          gallery_json: JSON.stringify(state.galleryPhotos),
         };
 
         try {
@@ -227,6 +282,31 @@ export const useCMSStore = create<CMSState>()(
         get().saveCMSToDB();
       },
 
+      updateGalleryPhoto: (id, updated) => {
+        set((state) => ({
+          galleryPhotos: state.galleryPhotos.map((g) => (g.id === id ? { ...g, ...updated } : g)),
+        }));
+        get().saveCMSToDB();
+      },
+
+      addGalleryPhoto: (photo) => {
+        const newPhoto: CMSClinicGallery = {
+          id: Date.now(),
+          ...photo,
+        };
+        set((state) => ({
+          galleryPhotos: [...state.galleryPhotos, newPhoto],
+        }));
+        get().saveCMSToDB();
+      },
+
+      deleteGalleryPhoto: (id) => {
+        set((state) => ({
+          galleryPhotos: state.galleryPhotos.filter((g) => g.id !== id),
+        }));
+        get().saveCMSToDB();
+      },
+
       resetToDefault: () => {
         set({
           clinicName: 'Klinik Utama Alwi',
@@ -240,6 +320,7 @@ export const useCMSStore = create<CMSState>()(
           heroBadge: '🏥 Klinik Medis Terakreditasi 2026',
           facilities: DEFAULT_FACILITIES,
           featuredDoctors: DEFAULT_DOCTORS,
+          galleryPhotos: DEFAULT_GALLERY,
         });
         get().saveCMSToDB();
       },

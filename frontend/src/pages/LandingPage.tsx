@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Hospital,
@@ -22,7 +22,10 @@ import {
   MapPin,
   CalendarCheck,
   CheckCircle2,
-  Star
+  Star,
+  ChevronLeft,
+  ChevronRight,
+  Image as ImageIcon
 } from 'lucide-react';
 import { useLanguageStore } from '../store/useLanguageStore';
 import { useThemeStore } from '../store/useThemeStore';
@@ -33,11 +36,21 @@ export const LandingPage: React.FC = () => {
   const { t } = useLanguageStore();
   const { isDarkMode, toggleTheme } = useThemeStore();
   const cms = useCMSStore();
-  const { clinicName, clinicTagline, clinicLogoIcon, heroTitle, heroSubtitle, heroBadge, facilities, featuredDoctors, contactPhone, contactEmail, clinicAddress } = cms;
+  const { clinicName, clinicTagline, clinicLogoIcon, heroTitle, heroSubtitle, heroBadge, facilities, featuredDoctors, galleryPhotos, contactPhone, contactEmail, clinicAddress } = cms;
+
+  const [activeSlideIndex, setActiveSlideIndex] = useState(0);
 
   useEffect(() => {
     cms.fetchCMSFromDB();
   }, []);
+
+  useEffect(() => {
+    if (!galleryPhotos || galleryPhotos.length === 0) return;
+    const interval = setInterval(() => {
+      setActiveSlideIndex((prev) => (prev + 1) % galleryPhotos.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [galleryPhotos]);
 
   const renderFacilityIcon = (iconName: string) => {
     switch (iconName) {
@@ -149,6 +162,86 @@ export const LandingPage: React.FC = () => {
             </Link>
           </div>
         </div>
+      </section>
+
+      {/* PHOTO SLIDER SECTION: KLINIK MODERN & TERPERCAYA UNTUK KELUARGA ANDA (CMS Synced) */}
+      <section className="py-16 px-6 max-w-7xl mx-auto w-full space-y-8">
+        <div className="text-center space-y-3">
+          <span className="px-3.5 py-1.5 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 text-xs font-bold font-mono uppercase tracking-wider inline-flex items-center gap-1.5">
+            <ImageIcon className="w-4 h-4 text-sky-500" /> GALERI FOTO FASKES & TENAGA MEDIS
+          </span>
+          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+            Klinik Modern & Terpercaya Untuk Keluarga Anda
+          </h2>
+          <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed">
+            Intip suasana kenyamanan gedung klinik, ruang periksa dokter yang steril, laboratorium canggih, serta dedikasi tim medis profesional kami.
+          </p>
+        </div>
+
+        {/* Photo Slider Container */}
+        {galleryPhotos && galleryPhotos.length > 0 && (
+          <div className="relative rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-2xl bg-slate-900 group aspect-[16/9] sm:aspect-[21/9] max-h-[500px]">
+            {/* Active Slide Image */}
+            <img
+              src={galleryPhotos[activeSlideIndex]?.photoUrl}
+              alt={galleryPhotos[activeSlideIndex]?.title}
+              className="w-full h-full object-cover transition-all duration-700 ease-in-out transform group-hover:scale-105"
+            />
+
+            {/* Dark Overlay Gradient */}
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
+
+            {/* Slide Information Badge & Description */}
+            <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10 space-y-2 text-white">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="px-3 py-1 rounded-full bg-sky-500/80 backdrop-blur-md text-white text-[11px] font-bold tracking-wider uppercase shadow-md">
+                  {galleryPhotos[activeSlideIndex]?.category || 'Fasilitas Klinik'}
+                </span>
+                <span className="px-2.5 py-0.5 rounded-full bg-black/40 backdrop-blur-md text-slate-300 text-[10px] font-mono border border-white/20">
+                  {activeSlideIndex + 1} / {galleryPhotos.length}
+                </span>
+              </div>
+              <h3 className="text-xl sm:text-3xl font-extrabold text-white tracking-tight">
+                {galleryPhotos[activeSlideIndex]?.title}
+              </h3>
+              <p className="text-slate-200 text-xs sm:text-sm max-w-3xl leading-relaxed font-normal drop-shadow-md">
+                {galleryPhotos[activeSlideIndex]?.description}
+              </p>
+            </div>
+
+            {/* Previous Slide Button */}
+            <button
+              onClick={() => setActiveSlideIndex((prev) => (prev === 0 ? galleryPhotos.length - 1 : prev - 1))}
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-slate-900/60 hover:bg-sky-600 text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition opacity-80 hover:opacity-100 shadow-lg"
+              title="Foto Sebelumnya"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+
+            {/* Next Slide Button */}
+            <button
+              onClick={() => setActiveSlideIndex((prev) => (prev + 1) % galleryPhotos.length)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-slate-900/60 hover:bg-sky-600 text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition opacity-80 hover:opacity-100 shadow-lg"
+              title="Foto Selanjutnya"
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
+
+            {/* Pagination Indicators / Dots */}
+            <div className="absolute bottom-4 right-6 flex items-center gap-1.5 z-20">
+              {galleryPhotos.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setActiveSlideIndex(idx)}
+                  className={`h-2.5 rounded-full transition-all duration-300 ${
+                    idx === activeSlideIndex ? 'w-8 bg-sky-500 shadow-md' : 'w-2.5 bg-white/40 hover:bg-white/70'
+                  }`}
+                  title={`Foto ${idx + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </section>
 
       {/* 6 CLINIC FACILITIES & SERVICES GRID */}

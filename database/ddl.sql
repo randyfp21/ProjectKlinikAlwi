@@ -336,5 +336,6 @@ CREATE TABLE clinic_cms_settings (
     hero_badge VARCHAR(100),
     facilities_json TEXT,
     doctors_json TEXT,
+    gallery_json TEXT,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );

@@ -323,5 +323,6 @@ type ClinicCMSSetting struct {
 	HeroBadge      string    `gorm:"size:100" json:"hero_badge"`
 	FacilitiesJSON string    `gorm:"type:text" json:"facilities_json"`
 	DoctorsJSON    string    `gorm:"type:text" json:"doctors_json"`
+	GalleryJSON    string    `gorm:"type:text" json:"gallery_json"`
 	UpdatedAt      time.Time `json:"updated_at"`
 }
