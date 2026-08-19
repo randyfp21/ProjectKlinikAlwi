@@ -335,10 +335,7 @@ export const LandingPage: React.FC = () => {
             <span className="px-3 py-1 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 text-xs font-bold font-mono uppercase tracking-wider">
               {doctorsHeaderTitle || 'TIM DOKTER SPESIALIS UNGGULAN'}
             </span>
-            <h2 className="text-3xl font-black text-slate-900 dark:text-white">{doctorsHeaderSubtitle || 'Ditangani Oleh Dokter Spesialis Berpengalaman'}</h2>
-            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm max-w-2xl mx-auto">
-              Setiap pasien mendapatkan perawatan medis terbaik dari dokter spesialis profesional berlisensi resmi dengan standar pelayanan ramah dan tepat.
-            </p>
+            <h2 className="text-3xl font-black text-slate-900 dark:text-white max-w-3xl mx-auto leading-tight">{doctorsHeaderSubtitle || 'Ditangani Oleh Dokter Spesialis Berpengalaman'}</h2>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
