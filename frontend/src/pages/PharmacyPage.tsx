@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Pill, Search, Plus, AlertTriangle, CheckCircle2, History, Package, Edit3, Trash2, Eye, SlidersHorizontal, Tag, FolderPlus, Layers } from 'lucide-react';
+import { Pill, Search, Plus, AlertTriangle, CheckCircle2, History, Package, Edit3, Trash2, Eye, SlidersHorizontal, Tag, FolderPlus, Layers, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import { useMedicineStore } from '../store/useMedicineStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { Medicine, MedicineCategory } from '../types';
@@ -15,6 +15,20 @@ export const PharmacyPage: React.FC = () => {
   const [search, setSearch] = useState('');
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('All');
   const [toastMessage, setToastMessage] = useState('');
+
+  // Column Sorting States
+  type SortField = 'name' | 'category' | 'unit' | 'stock' | 'purchase_price' | 'selling_price' | 'expiry_date' | 'status';
+  const [sortField, setSortField] = useState<SortField>('name');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortOrder('asc');
+    }
+  };
 
   // Modals States
   const [showAddMedModal, setShowAddMedModal] = useState(false);
@@ -77,6 +91,28 @@ export const PharmacyPage: React.FC = () => {
       (m.category_id && m.category_id === Number(selectedCategoryFilter));
 
     return matchesSearch && matchesCategory;
+  }).sort((a, b) => {
+    let aVal: any = a[sortField as keyof Medicine] || '';
+    let bVal: any = b[sortField as keyof Medicine] || '';
+
+    if (sortField === 'category') {
+      const catA = typeof a.category === 'string' ? a.category : (a.category_name || '');
+      const catB = typeof b.category === 'string' ? b.category : (b.category_name || '');
+      aVal = catA;
+      bVal = catB;
+    } else if (sortField === 'status') {
+      aVal = a.stock <= a.min_stock ? 0 : 1;
+      bVal = b.stock <= b.min_stock ? 0 : 1;
+    }
+
+    if (typeof aVal === 'string') {
+      const res = aVal.localeCompare(bVal);
+      return sortOrder === 'asc' ? res : -res;
+    }
+
+    if (aVal < bVal) return sortOrder === 'asc' ? -1 : 1;
+    if (aVal > bVal) return sortOrder === 'asc' ? 1 : -1;
+    return 0;
   });
 
   const lowStockCount = medicines.filter((m) => m.stock <= m.min_stock).length;
@@ -296,16 +332,120 @@ export const PharmacyPage: React.FC = () => {
           <div className="glass-card rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs text-slate-600 dark:text-slate-300">
-                <thead className="bg-slate-100 dark:bg-slate-800/80 uppercase text-[10px] text-slate-500 dark:text-slate-400 font-bold tracking-wider">
+                <thead className="bg-slate-100 dark:bg-slate-800/80 uppercase text-[10px] text-slate-500 dark:text-slate-400 font-bold tracking-wider select-none">
                   <tr>
-                    <th className="py-4 px-4 whitespace-nowrap">Kode & Nama Obat</th>
-                    <th className="py-4 px-4 whitespace-nowrap">Kategori Obat</th>
-                    <th className="py-4 px-4 whitespace-nowrap">Kemasan</th>
-                    <th className="py-4 px-4 whitespace-nowrap">Stok Saat Ini</th>
-                    <th className="py-4 px-4 whitespace-nowrap">Harga HPP / Dasar</th>
-                    <th className="py-4 px-4 whitespace-nowrap">Harga Jual</th>
-                    <th className="py-4 px-4 whitespace-nowrap">Expired Date</th>
-                    <th className="py-4 px-4 whitespace-nowrap">Status Stok</th>
+                    <th
+                      onClick={() => handleSort('name')}
+                      className="py-4 px-4 whitespace-nowrap cursor-pointer hover:bg-slate-200/60 dark:hover:bg-slate-700/60 transition"
+                    >
+                      <div className="flex items-center gap-1.5">
+                        <span>Kode & Nama Obat</span>
+                        {sortField === 'name' ? (
+                          sortOrder === 'asc' ? <ArrowUp className="w-3 h-3 text-sky-500" /> : <ArrowDown className="w-3 h-3 text-sky-500" />
+                        ) : (
+                          <ArrowUpDown className="w-3 h-3 text-slate-400 opacity-60" />
+                        )}
+                      </div>
+                    </th>
+
+                    <th
+                      onClick={() => handleSort('category')}
+                      className="py-4 px-4 whitespace-nowrap cursor-pointer hover:bg-slate-200/60 dark:hover:bg-slate-700/60 transition"
+                    >
+                      <div className="flex items-center gap-1.5">
+                        <span>Kategori Obat</span>
+                        {sortField === 'category' ? (
+                          sortOrder === 'asc' ? <ArrowUp className="w-3 h-3 text-teal-500" /> : <ArrowDown className="w-3 h-3 text-teal-500" />
+                        ) : (
+                          <ArrowUpDown className="w-3 h-3 text-slate-400 opacity-60" />
+                        )}
+                      </div>
+                    </th>
+
+                    <th
+                      onClick={() => handleSort('unit')}
+                      className="py-4 px-4 whitespace-nowrap cursor-pointer hover:bg-slate-200/60 dark:hover:bg-slate-700/60 transition"
+                    >
+                      <div className="flex items-center gap-1.5">
+                        <span>Kemasan</span>
+                        {sortField === 'unit' ? (
+                          sortOrder === 'asc' ? <ArrowUp className="w-3 h-3 text-sky-500" /> : <ArrowDown className="w-3 h-3 text-sky-500" />
+                        ) : (
+                          <ArrowUpDown className="w-3 h-3 text-slate-400 opacity-60" />
+                        )}
+                      </div>
+                    </th>
+
+                    <th
+                      onClick={() => handleSort('stock')}
+                      className="py-4 px-4 whitespace-nowrap cursor-pointer hover:bg-slate-200/60 dark:hover:bg-slate-700/60 transition"
+                    >
+                      <div className="flex items-center gap-1.5">
+                        <span>Stok Saat Ini</span>
+                        {sortField === 'stock' ? (
+                          sortOrder === 'asc' ? <ArrowUp className="w-3 h-3 text-amber-500" /> : <ArrowDown className="w-3 h-3 text-amber-500" />
+                        ) : (
+                          <ArrowUpDown className="w-3 h-3 text-slate-400 opacity-60" />
+                        )}
+                      </div>
+                    </th>
+
+                    <th
+                      onClick={() => handleSort('purchase_price')}
+                      className="py-4 px-4 whitespace-nowrap cursor-pointer hover:bg-slate-200/60 dark:hover:bg-slate-700/60 transition"
+                    >
+                      <div className="flex items-center gap-1.5">
+                        <span>Harga HPP / Dasar</span>
+                        {sortField === 'purchase_price' ? (
+                          sortOrder === 'asc' ? <ArrowUp className="w-3 h-3 text-sky-500" /> : <ArrowDown className="w-3 h-3 text-sky-500" />
+                        ) : (
+                          <ArrowUpDown className="w-3 h-3 text-slate-400 opacity-60" />
+                        )}
+                      </div>
+                    </th>
+
+                    <th
+                      onClick={() => handleSort('selling_price')}
+                      className="py-4 px-4 whitespace-nowrap cursor-pointer hover:bg-slate-200/60 dark:hover:bg-slate-700/60 transition"
+                    >
+                      <div className="flex items-center gap-1.5">
+                        <span>Harga Jual</span>
+                        {sortField === 'selling_price' ? (
+                          sortOrder === 'asc' ? <ArrowUp className="w-3 h-3 text-emerald-500" /> : <ArrowDown className="w-3 h-3 text-emerald-500" />
+                        ) : (
+                          <ArrowUpDown className="w-3 h-3 text-slate-400 opacity-60" />
+                        )}
+                      </div>
+                    </th>
+
+                    <th
+                      onClick={() => handleSort('expiry_date')}
+                      className="py-4 px-4 whitespace-nowrap cursor-pointer hover:bg-slate-200/60 dark:hover:bg-slate-700/60 transition"
+                    >
+                      <div className="flex items-center gap-1.5">
+                        <span>Expired Date</span>
+                        {sortField === 'expiry_date' ? (
+                          sortOrder === 'asc' ? <ArrowUp className="w-3 h-3 text-rose-500" /> : <ArrowDown className="w-3 h-3 text-rose-500" />
+                        ) : (
+                          <ArrowUpDown className="w-3 h-3 text-slate-400 opacity-60" />
+                        )}
+                      </div>
+                    </th>
+
+                    <th
+                      onClick={() => handleSort('status')}
+                      className="py-4 px-4 whitespace-nowrap cursor-pointer hover:bg-slate-200/60 dark:hover:bg-slate-700/60 transition"
+                    >
+                      <div className="flex items-center gap-1.5">
+                        <span>Status Stok</span>
+                        {sortField === 'status' ? (
+                          sortOrder === 'asc' ? <ArrowUp className="w-3 h-3 text-indigo-500" /> : <ArrowDown className="w-3 h-3 text-indigo-500" />
+                        ) : (
+                          <ArrowUpDown className="w-3 h-3 text-slate-400 opacity-60" />
+                        )}
+                      </div>
+                    </th>
+
                     <th className="py-4 px-4 text-right whitespace-nowrap">Aksi Kelola</th>
                   </tr>
                 </thead>
