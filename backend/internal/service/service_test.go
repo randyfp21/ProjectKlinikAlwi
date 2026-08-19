@@ -188,3 +188,52 @@ func TestMedicineStockAndDeduction(t *testing.T) {
 		t.Error("expected seed medicines to be present")
 	}
 }
+
+func TestQueueEndToEndFlow(t *testing.T) {
+	_, svc := setupTestDB(t)
+
+	// 1. List queues for date 2026-08-19
+	queues, err := svc.ListQueues(0, "2026-08-19")
+	if err != nil {
+		t.Fatalf("failed to list queues for 2026-08-19: %v", err)
+	}
+
+	if len(queues) == 0 {
+		t.Fatal("expected seeded queues for 2026-08-19")
+	}
+
+	targetQueue := queues[0]
+
+	// 2. Call Queue: Update status to 'In Consultation'
+	err = svc.UpdateQueueStatus(targetQueue.ID, "In Consultation")
+	if err != nil {
+		t.Fatalf("failed to update queue status to In Consultation: %v", err)
+	}
+
+	// Verify DB state
+	updatedQueues, _ := svc.ListQueues(0, "2026-08-19")
+	if updatedQueues[0].Status != "In Consultation" {
+		t.Errorf("expected status 'In Consultation', got '%s'", updatedQueues[0].Status)
+	}
+
+	// 3. Complete Queue: Update status to 'Completed'
+	err = svc.UpdateQueueStatus(targetQueue.ID, "Completed")
+	if err != nil {
+		t.Fatalf("failed to update queue status to Completed: %v", err)
+	}
+
+	// Verify DB state for completed queue
+	finalQueues, _ := svc.ListQueues(0, "2026-08-19")
+	var foundCompleted bool
+	for _, q := range finalQueues {
+		if q.ID == targetQueue.ID && q.Status == "Completed" {
+			foundCompleted = true
+			break
+		}
+	}
+
+	if !foundCompleted {
+		t.Errorf("expected queue #%d to be 'Completed' in database", targetQueue.ID)
+	}
+}
+

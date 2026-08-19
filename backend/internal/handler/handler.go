@@ -92,6 +92,7 @@ func (h *Handler) RegisterRoutes(router *gin.Engine) {
 		{
 			queues.GET("", h.ListQueues)
 			queues.PUT("/:id/status", middleware.RequireRoles(domain.RoleSuperAdmin, domain.RoleAdmin, domain.RoleDoctor), h.UpdateQueueStatus)
+			queues.PATCH("/:id/status", middleware.RequireRoles(domain.RoleSuperAdmin, domain.RoleAdmin, domain.RoleDoctor), h.UpdateQueueStatus)
 		}
 
 		// Consultation & SOAP
