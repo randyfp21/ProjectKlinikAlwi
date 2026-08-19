@@ -1,19 +1,26 @@
 import React, { useState } from 'react';
-import { CreditCard, CheckCircle2, Printer, QrCode, FileText, Receipt, User, Lock, Wallet, ArrowLeft, Building2, DollarSign, Eye, X, History, CalendarX, MapPin, Phone, Mail, Clock, Sparkles, ChevronRight, ShieldCheck, Hospital, Stethoscope, Activity, Search } from 'lucide-react';
+import { CreditCard, CheckCircle2, Printer, QrCode, FileText, Receipt, User, Lock, Wallet, ArrowLeft, Building2, DollarSign, Eye, X, History, CalendarX, MapPin, Phone, Mail, Clock, Sparkles, ChevronRight, ShieldCheck, Hospital, Stethoscope, Activity, Search, Copy, Check } from 'lucide-react';
 import { useInvoiceStore } from '../store/useInvoiceStore';
 import { useAuthStore } from '../store/useAuthStore';
-import { useCMSStore } from '../store/useCMSStore';
+import { useCMSStore, CMSPaymentMethod } from '../store/useCMSStore';
 import { Invoice } from '../types';
 import { formatDateIndonesian, formatDateTimeIndonesian } from '../utils/formatDate';
 
 export const BillingPage: React.FC = () => {
   const { user } = useAuthStore();
   const { invoices, payInvoice } = useInvoiceStore();
-  const { clinicName, clinicAddress, contactPhone, contactEmail, clinicLogoIcon } = useCMSStore();
+  const { clinicName, clinicAddress, contactPhone, contactEmail, clinicLogoIcon, paymentMethods } = useCMSStore();
 
   const isPatient = user?.role === 'Patient';
   const [paymentSuccess, setPaymentSuccess] = useState('');
   const [search, setSearch] = useState('');
+  const [copiedAccount, setCopiedAccount] = useState('');
+
+  const handleCopyAccount = (accNo: string) => {
+    navigator.clipboard.writeText(accNo);
+    setCopiedAccount(accNo);
+    setTimeout(() => setCopiedAccount(''), 2500);
+  };
 
   // Selected Patient Invoice for Cashier Payment Processing
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
@@ -587,24 +594,82 @@ export const BillingPage: React.FC = () => {
               </div>
             </div>
 
-            {/* QRIS / Method Selector */}
+            {/* Dynamic CMS Payment Method Selector */}
             {selectedInvoice.payment_status !== 'Paid' && (
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 space-y-3 text-xs">
-                <label className="text-slate-800 dark:text-slate-200 block font-bold">Pilih Metode Transaksi Pembayaran:</label>
-                <select
-                  value={selectedPaymentMethod}
-                  onChange={(e) => setSelectedPaymentMethod(e.target.value)}
-                  className="w-full p-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl font-bold text-xs focus:outline-none text-slate-900 dark:text-slate-100"
-                >
-                  <option value="QRIS">📱 QRIS (Scan Barcode Instant Semua e-Wallet & m-Banking)</option>
-                  <option value="Bank Transfer (BCA)">🏦 Bank Transfer BCA (No Rek: 888-019-2026 a.n Klinik Alwi)</option>
-                  <option value="Cash (Tunai)">💵 Cash / Tunai Langsung di Meja Kasir</option>
-                </select>
-
-                <div className="p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center space-y-2">
-                  <QrCode className="w-20 h-20 mx-auto text-slate-900 dark:text-slate-100" />
-                  <p className="font-extrabold text-slate-900 dark:text-slate-100 text-xs">Scan Kode QRIS di Atas</p>
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 space-y-4 text-xs">
+                <div>
+                  <label className="text-slate-800 dark:text-slate-200 block font-extrabold mb-1.5">
+                    Pilih Metode Transaksi Pembayaran Resmi:
+                  </label>
+                  <select
+                    value={selectedPaymentMethod}
+                    onChange={(e) => setSelectedPaymentMethod(e.target.value)}
+                    className="w-full p-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl font-bold text-xs focus:outline-none text-slate-900 dark:text-slate-100 shadow-xs"
+                  >
+                    {paymentMethods.filter((pm) => pm.isActive).map((pm) => (
+                      <option key={pm.id} value={pm.name}>
+                        {pm.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
+
+                {/* Selected Payment Method Active Dynamic Preview */}
+                {(() => {
+                  const activeMethod = paymentMethods.find((pm) => pm.name === selectedPaymentMethod) || paymentMethods[0];
+                  if (!activeMethod) return null;
+
+                  return (
+                    <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-3">
+                      {activeMethod.type === 'qris' && (
+                        <div className="text-center space-y-2">
+                          {activeMethod.qrisImageUrl ? (
+                            <img src={activeMethod.qrisImageUrl} alt={activeMethod.name} className="w-36 h-36 mx-auto rounded-2xl object-cover border shadow-md" />
+                          ) : (
+                            <QrCode className="w-20 h-20 mx-auto text-slate-900 dark:text-slate-100" />
+                          )}
+                          <p className="font-extrabold text-slate-900 dark:text-slate-100 text-xs">Scan Barcode QRIS Resmi di Atas</p>
+                        </div>
+                      )}
+
+                      {activeMethod.type === 'bank_transfer' && (
+                        <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex flex-col sm:flex-row items-center justify-between gap-3">
+                          <div className="space-y-0.5">
+                            <span className="text-[10px] font-extrabold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider block">
+                              NOMOR REKENING BANK TRANSFER
+                            </span>
+                            <div className="flex items-center gap-2">
+                              <span className="font-mono text-lg font-black text-slate-900 dark:text-white tracking-widest">
+                                {activeMethod.accountNumber || '888-019-2026'}
+                              </span>
+                              <span className="text-xs text-slate-500 font-bold">a.n {activeMethod.accountHolder || 'Klinik Alwi'}</span>
+                            </div>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => handleCopyAccount(activeMethod.accountNumber || '888-019-2026')}
+                            className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-md transition flex items-center gap-1.5 shrink-0 cursor-pointer active:scale-95"
+                          >
+                            {copiedAccount === (activeMethod.accountNumber || '888-019-2026') ? (
+                              <>
+                                <Check className="w-4 h-4 text-yellow-300" /> Tersalin!
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-4 h-4" /> Salin No. Rekening
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      )}
+
+                      <p className="text-slate-600 dark:text-slate-400 text-xs leading-relaxed font-medium">
+                        💡 <strong>Petunjuk:</strong> {activeMethod.instructions || 'Harap konfirmasi ke petugas kasir setelah melakukan pembayaran.'}
+                      </p>
+                    </div>
+                  );
+                })()}
               </div>
             )}
 

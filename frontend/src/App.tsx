@@ -23,6 +23,7 @@ import { MasterDataManagementPage } from './pages/MasterDataManagementPage';
 import { PublicQueueMonitorPage } from './pages/PublicQueueMonitorPage';
 import { PublicPromosArticlesPage } from './pages/PublicPromosArticlesPage';
 import { PromosArticlesPage } from './pages/PromosArticlesPage';
+import { PaymentMethodCMSPage } from './pages/PaymentMethodCMSPage';
 import { useAuthStore } from './store/useAuthStore';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -65,6 +66,7 @@ export function App() {
           <Route path="billing" element={<BillingPage />} />
           <Route path="payment-history" element={<PaymentHistoryPage />} />
           <Route path="tariffs" element={<TariffSettingsPage />} />
+          <Route path="payment-methods" element={<PaymentMethodCMSPage />} />
           <Route path="promos-articles" element={<PromosArticlesPage />} />
           <Route path="cms" element={<CMSManagementPage />} />
           <Route path="medical-records" element={<MedicalRecordPage />} />

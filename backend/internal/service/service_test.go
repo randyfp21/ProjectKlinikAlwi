@@ -1,7 +1,9 @@
 package service_test
 
 import (
+	"fmt"
 	"testing"
+	"time"
 
 	"backend/internal/config"
 	"backend/internal/domain"
@@ -27,6 +29,26 @@ func setupTestDB(t *testing.T) (*gorm.DB, *service.Service) {
 	)
 
 	_ = seed.SeedAll(db)
+
+	// Create test invoice for Unit Test with dynamic invoice number
+	var invCount int64
+	db.Model(&domain.Invoice{}).Where("invoice_number LIKE ?", "INV-TEST-%").Count(&invCount)
+	testInv := domain.Invoice{
+		InvoiceNumber: fmt.Sprintf("INV-TEST-%d-%d", time.Now().UnixNano(), invCount+1),
+		PatientID:     1,
+		DoctorFee:     150000,
+		ProcedureFee:  50000,
+		MedicineFee:   75000,
+		Tax:           27500,
+		GrandTotal:    302500,
+		PaymentStatus: "Pending",
+		PaymentMethod: "",
+		Items: []domain.InvoiceItem{
+			{ItemType: "Doctor Fee", ItemName: "Konsultasi Dokter Spesialis", Quantity: 1, UnitPrice: 150000, Subtotal: 150000},
+			{ItemType: "Medicine", ItemName: "Amlodipine 10mg", Quantity: 1, UnitPrice: 75000, Subtotal: 75000},
+		},
+	}
+	db.Create(&testInv)
 
 	cfg := &config.Config{
 		JWTSecret:   "test-secret",
@@ -234,6 +256,57 @@ func TestQueueEndToEndFlow(t *testing.T) {
 
 	if !foundCompleted {
 		t.Errorf("expected queue #%d to be 'Completed' in database", targetQueue.ID)
+	}
+}
+
+func TestInvoiceEndToEndPaymentFlow(t *testing.T) {
+	_, svc := setupTestDB(t)
+
+	// 1. List Invoices
+	invoices, err := svc.ListInvoices("")
+	if err != nil {
+		t.Fatalf("failed to list invoices: %v", err)
+	}
+
+	if len(invoices) == 0 {
+		t.Fatal("expected seeded invoices to be present")
+	}
+
+	targetInvoice := invoices[0]
+	if targetInvoice.PaymentStatus != "Pending" {
+		t.Errorf("expected initial status to be Pending, got %s", targetInvoice.PaymentStatus)
+	}
+
+	// 2. Process & Confirm Payment for Invoice
+	err = svc.PayInvoice(targetInvoice.ID, "QRIS")
+	if err != nil {
+		t.Fatalf("failed to process invoice payment: %v", err)
+	}
+
+	// 3. Verify Persistence by Re-fetching Invoices
+	updatedInvoices, err := svc.ListInvoices("")
+	if err != nil {
+		t.Fatalf("failed to list invoices: %v", err)
+	}
+
+	var fetchedInvoice domain.Invoice
+	for _, inv := range updatedInvoices {
+		if inv.ID == targetInvoice.ID {
+			fetchedInvoice = inv
+			break
+		}
+	}
+
+	if fetchedInvoice.PaymentStatus != "Paid" {
+		t.Errorf("expected fetched invoice status to be Paid, got %s", fetchedInvoice.PaymentStatus)
+	}
+
+	if fetchedInvoice.PaymentMethod != "QRIS" {
+		t.Errorf("expected payment method QRIS, got %s", fetchedInvoice.PaymentMethod)
+	}
+
+	if len(fetchedInvoice.Items) == 0 {
+		t.Error("expected invoice items breakdown to be populated")
 	}
 }
 

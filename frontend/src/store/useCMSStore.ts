@@ -44,6 +44,17 @@ export interface CMSPromo {
   actionUrl: string;
 }
 
+export interface CMSPaymentMethod {
+  id: string;
+  name: string;
+  type: 'qris' | 'bank_transfer' | 'cash';
+  accountNumber?: string;
+  accountHolder?: string;
+  qrisImageUrl?: string;
+  instructions?: string;
+  isActive: boolean;
+}
+
 export interface CMSState {
   // Clinic Branding & Contact Parameters
   clinicName: string;
@@ -77,6 +88,9 @@ export interface CMSState {
   // Ongoing Promos & Articles
   promos: CMSPromo[];
 
+  // Customizable Payment Methods
+  paymentMethods: CMSPaymentMethod[];
+
   // Sync Actions
   fetchCMSFromDB: () => Promise<void>;
   saveCMSToDB: () => Promise<void>;
@@ -92,6 +106,9 @@ export interface CMSState {
   updatePromo: (id: number, updated: Partial<CMSPromo>) => void;
   addPromo: (promo: Omit<CMSPromo, 'id'>) => void;
   deletePromo: (id: number) => void;
+  addPaymentMethod: (method: Omit<CMSPaymentMethod, 'id'>) => void;
+  updatePaymentMethod: (id: string, updated: Partial<CMSPaymentMethod>) => void;
+  deletePaymentMethod: (id: string) => void;
   resetToDefault: () => void;
 }
 
@@ -316,6 +333,33 @@ const DEFAULT_PROMOS: CMSPromo[] = [
   },
 ];
 
+const DEFAULT_PAYMENT_METHODS: CMSPaymentMethod[] = [
+  {
+    id: 'qris-main',
+    name: '📱 QRIS (Scan Barcode Instant Semua e-Wallet & m-Banking)',
+    type: 'qris',
+    qrisImageUrl: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=600&q=80',
+    instructions: 'Terima GoPay, OVO, ShopeePay, Dana, LinkAja, BCA Mobile, Mandiri Livin & seluruh aplikasi m-Banking berlogo QRIS.',
+    isActive: true,
+  },
+  {
+    id: 'bank-bca',
+    name: '🏦 Bank Transfer BCA (No Rek: 888-019-2026 a.n Klinik Alwi)',
+    type: 'bank_transfer',
+    accountNumber: '888-019-2026',
+    accountHolder: 'Klinik Utama Alwi',
+    instructions: 'Transfer ke Bank BCA KCP Meruya Utara. Harap simpan bukti transfer untuk dikonfirmasi kasir.',
+    isActive: true,
+  },
+  {
+    id: 'cash-on-site',
+    name: '💵 Cash / Tunai Langsung di Meja Kasir',
+    type: 'cash',
+    instructions: 'Pembayaran tunai dilakukan secara langsung di meja kasir poliklinik setelah pemeriksaan dokter selesai.',
+    isActive: true,
+  },
+];
+
 export const useCMSStore = create<CMSState>()(
   persist(
     (set, get) => ({
@@ -341,6 +385,7 @@ export const useCMSStore = create<CMSState>()(
       featuredDoctors: DEFAULT_DOCTORS,
       galleryPhotos: DEFAULT_GALLERY,
       promos: DEFAULT_PROMOS,
+      paymentMethods: DEFAULT_PAYMENT_METHODS,
 
       fetchCMSFromDB: async () => {
         try {
@@ -368,6 +413,7 @@ export const useCMSStore = create<CMSState>()(
               featuredDoctors: data.doctors_json ? JSON.parse(data.doctors_json) : get().featuredDoctors,
               galleryPhotos: data.gallery_json ? JSON.parse(data.gallery_json) : get().galleryPhotos,
               promos: data.promos_json ? JSON.parse(data.promos_json) : get().promos,
+              paymentMethods: data.payment_methods_json ? JSON.parse(data.payment_methods_json) : get().paymentMethods,
             });
           }
         } catch (err) {
@@ -398,6 +444,7 @@ export const useCMSStore = create<CMSState>()(
           doctors_json: JSON.stringify(state.featuredDoctors),
           gallery_json: JSON.stringify(state.galleryPhotos),
           promos_json: JSON.stringify(state.promos),
+          payment_methods_json: JSON.stringify(state.paymentMethods),
         };
 
         try {
@@ -484,6 +531,31 @@ export const useCMSStore = create<CMSState>()(
         get().saveCMSToDB();
       },
 
+      addPaymentMethod: (method) => {
+        const newMethod: CMSPaymentMethod = {
+          id: `pay-${Date.now()}`,
+          ...method,
+        };
+        set((state) => ({
+          paymentMethods: [...state.paymentMethods, newMethod],
+        }));
+        get().saveCMSToDB();
+      },
+
+      updatePaymentMethod: (id, updated) => {
+        set((state) => ({
+          paymentMethods: state.paymentMethods.map((pm) => (pm.id === id ? { ...pm, ...updated } : pm)),
+        }));
+        get().saveCMSToDB();
+      },
+
+      deletePaymentMethod: (id) => {
+        set((state) => ({
+          paymentMethods: state.paymentMethods.filter((pm) => pm.id !== id),
+        }));
+        get().saveCMSToDB();
+      },
+
       resetToDefault: () => {
         set({
           clinicName: 'Klinik Utama Alwi',
@@ -505,12 +577,13 @@ export const useCMSStore = create<CMSState>()(
           featuredDoctors: DEFAULT_DOCTORS,
           galleryPhotos: DEFAULT_GALLERY,
           promos: DEFAULT_PROMOS,
+          paymentMethods: DEFAULT_PAYMENT_METHODS,
         });
         get().saveCMSToDB();
       },
     }),
     {
-      name: 'klinik-alwi-cms-storage-v3',
+      name: 'klinik-alwi-cms-storage-v4',
     }
   )
 );
