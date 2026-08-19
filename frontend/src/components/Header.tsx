@@ -183,8 +183,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSidebar }) => {
                 <button
                   onClick={() => {
                     setIsProfileOpen(false);
-                    logout();
-                    navigate('/login');
+                    useAuthStore.getState().triggerLogoutWithAnimation(() => {
+                      navigate('/login');
+                    });
                   }}
                   className="w-full text-left flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition"
                 >

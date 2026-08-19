@@ -7,8 +7,10 @@ interface AuthState {
   doctor: Doctor | null;
   patient: Patient | null;
   isAuthenticated: boolean;
+  isLoggingOut: boolean;
   setAuth: (user: User, token: string, doctor?: Doctor, patient?: Patient) => void;
   logout: () => void;
+  triggerLogoutWithAnimation: (onComplete: () => void) => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => {
@@ -34,6 +36,7 @@ export const useAuthStore = create<AuthState>((set) => {
     doctor: null,
     patient: null,
     isAuthenticated: isAuth,
+    isLoggingOut: false,
 
     setAuth: (user, token, doctor, patient) => {
       localStorage.setItem('access_token', token);
@@ -44,13 +47,24 @@ export const useAuthStore = create<AuthState>((set) => {
         doctor: doctor || null,
         patient: patient || null,
         isAuthenticated: true,
+        isLoggingOut: false,
       });
     },
 
     logout: () => {
       localStorage.removeItem('access_token');
       localStorage.removeItem('user_data');
-      set({ user: null, accessToken: null, doctor: null, patient: null, isAuthenticated: false });
+      set({ user: null, accessToken: null, doctor: null, patient: null, isAuthenticated: false, isLoggingOut: false });
+    },
+
+    triggerLogoutWithAnimation: (onComplete) => {
+      set({ isLoggingOut: true });
+      setTimeout(() => {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('user_data');
+        set({ user: null, accessToken: null, doctor: null, patient: null, isAuthenticated: false, isLoggingOut: false });
+        onComplete();
+      }, 2300);
     },
   };
 });

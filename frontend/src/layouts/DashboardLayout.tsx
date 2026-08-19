@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { Sidebar } from '../components/Sidebar';
 import { Header } from '../components/Header';
+import { useAuthStore } from '../store/useAuthStore';
+import { Activity, HeartOff, Frown, LogOut, ShieldAlert } from 'lucide-react';
 
 export const DashboardLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const location = useLocation();
+  const { isLoggingOut, user } = useAuthStore();
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex transition-colors">
@@ -25,6 +28,54 @@ export const DashboardLayout: React.FC = () => {
           </div>
         </main>
       </div>
+
+      {/* SAD GEN-Z MEDICAL THEMED LOGOUT LOADING OVERLAY */}
+      {isLoggingOut && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-950/85 backdrop-blur-xl animate-fadeIn">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-8 text-center space-y-6 shadow-2xl relative overflow-hidden">
+            {/* Ambient Sad Blue Glow */}
+            <div className="absolute -top-20 -left-20 w-48 h-48 bg-rose-500/15 rounded-full blur-3xl" />
+            <div className="absolute -bottom-20 -right-20 w-48 h-48 bg-indigo-500/15 rounded-full blur-3xl" />
+
+            {/* Sad Broken Heart Icon */}
+            <div className="relative w-24 h-24 mx-auto flex items-center justify-center">
+              <div className="absolute inset-0 rounded-full bg-rose-500/10 animate-ping" />
+              <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-rose-600 via-pink-600 to-indigo-500 text-white flex items-center justify-center shadow-xl shadow-rose-500/30 animate-sad-heart">
+                <HeartOff className="w-10 h-10 stroke-[2.2]" />
+              </div>
+            </div>
+
+            {/* Sad EKG Flatline Monitor */}
+            <div className="py-3 px-5 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
+              <div className="flex items-center justify-between text-[10px] font-mono font-extrabold text-rose-400">
+                <span className="flex items-center gap-1.5"><Activity className="w-4 h-4 text-rose-500 animate-pulse" /> EKG MONITOR — PATIENT/STAFF OFFLINE</span>
+                <span className="px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-400 font-bold border border-rose-500/20">0 BPM • FLATLINE 💔</span>
+              </div>
+              <svg className="w-full h-12 text-rose-500" viewBox="0 0 500 100" fill="none">
+                <path
+                  d="M0,50 L100,50 L110,48 L120,52 L130,50 L500,50"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="animate-ecg-flatline"
+                />
+              </svg>
+            </div>
+
+            {/* Sad Gen Z Copy & Status */}
+            <div className="space-y-2 pt-1">
+              <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-rose-500/10 text-rose-300 border border-rose-500/30 text-xs font-black uppercase tracking-wider">
+                <Frown className="w-4 h-4 text-rose-400" /> Beneran Mau Tinggalin Klinik? 🥺
+              </div>
+              <h2 className="text-xl font-black text-white">Yakin Mau Out, {user?.full_name?.split(' ')[0] || 'Bro'}? 💔</h2>
+              <p className="text-xs text-slate-400 font-medium leading-relaxed">
+                Detak jantung EKG-nya langsung flatline nih... Jangan lupa balik lagi ya, kesehatanmu nomor 1! ✨🩺
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

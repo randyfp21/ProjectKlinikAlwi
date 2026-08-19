@@ -129,4 +129,29 @@ input, select, textarea {
   animation: heartBeatScale 1.4s ease-in-out infinite;
 }
 
+/* Sad Medical Flatline & Broken Heart Gen Z Animations */
+@keyframes ecgFlatline {
+  0% { stroke-dashoffset: 600; }
+  100% { stroke-dashoffset: 0; }
+}
+
+@keyframes sadHeartShake {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  20% { transform: translateY(-3px) rotate(-6deg); }
+  40% { transform: translateY(2px) rotate(6deg); }
+  60% { transform: translateY(-2px) rotate(-4deg); }
+  80% { transform: translateY(1px) rotate(4deg); }
+}
+
+.animate-ecg-flatline {
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+  animation: ecgFlatline 2.5s ease-out infinite;
+}
+
+.animate-sad-heart {
+  animation: sadHeartShake 2s ease-in-out infinite;
+}
+
+
 

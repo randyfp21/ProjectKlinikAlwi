@@ -181,7 +181,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </button>
 
           <button
-            onClick={logout}
+            onClick={() => {
+              useAuthStore.getState().triggerLogoutWithAnimation(() => {
+                // Navigate handled by state auth reset
+              });
+            }}
             title={isCollapsed ? t('signOut') : undefined}
             className={`w-full flex items-center ${isCollapsed ? 'justify-center px-0' : 'gap-3 px-3.5'} py-2 rounded-xl text-sm font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 hover:text-rose-700 dark:hover:text-rose-300 transition`}
           >
