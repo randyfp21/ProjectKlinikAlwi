@@ -10,8 +10,12 @@ import { formatDateIndonesian, formatDateTimeIndonesian } from '../utils/formatD
 export const PaymentHistoryPage: React.FC = () => {
   const { user } = useAuthStore();
   const { t } = useLanguageStore();
-  const { invoices } = useInvoiceStore();
+  const { invoices, fetchInvoices } = useInvoiceStore();
   const { clinicName, clinicAddress, contactPhone, contactEmail, clinicLogoIcon } = useCMSStore();
+
+  React.useEffect(() => {
+    fetchInvoices();
+  }, [fetchInvoices]);
 
   const isAdmin = user?.role === 'Admin' || user?.role === 'Super Admin';
   const [search, setSearch] = useState('');
