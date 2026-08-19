@@ -131,6 +131,10 @@ export const QueuePage: React.FC = () => {
 
   const [announcement, setAnnouncement] = useState('');
 
+  // Confirmation Modal States
+  const [callConfirmQueue, setCallConfirmQueue] = useState<Queue | null>(null);
+  const [completeConfirmQueue, setCompleteConfirmQueue] = useState<Queue | null>(null);
+
   // Fetch queues from backend PostgreSQL on date change or initial load!
   useEffect(() => {
     fetchQueues(selectedDate);
@@ -139,9 +143,22 @@ export const QueuePage: React.FC = () => {
   // Combine PostgreSQL API queues with local fallback if API returns empty
   const activeQueues = apiQueues.length > 0 ? apiQueues : (localQueuesByDate[selectedDate] || []);
 
-  // Call Queue with Audio Ding-Dong Chime & Indonesian SpeechSynthesis Voice Caller + Persistent DB Sync
-  const callQueue = (queue: Queue) => {
+  // Open Call Confirmation Modal
+  const requestCallQueue = (queue: Queue) => {
     if (!isAdmin) return;
+    setCallConfirmQueue(queue);
+  };
+
+  // Open Complete Confirmation Modal
+  const requestCompleteQueue = (queue: Queue) => {
+    if (!isAdmin) return;
+    setCompleteConfirmQueue(queue);
+  };
+
+  // Execute Call Queue after confirmation
+  const confirmCallQueue = () => {
+    if (!callConfirmQueue) return;
+    const queue = callConfirmQueue;
 
     // 1. Update queue status in PostgreSQL 5432 Database!
     updateApiQueueStatus(queue.id, 'In Consultation');
@@ -165,19 +182,26 @@ export const QueuePage: React.FC = () => {
       `PANGGILAN AKTIF PASIEN: Nomor Antrean #00${queue.queue_number} atas nama ${patientName} dipanggil menuju ${roomName}`
     );
     setTimeout(() => setAnnouncement(''), 7000);
+
+    setCallConfirmQueue(null);
   };
 
-  const completeQueue = (id: number) => {
-    if (!isAdmin) return;
+  // Execute Complete Queue after confirmation
+  const confirmCompleteQueue = () => {
+    if (!completeConfirmQueue) return;
+    const queue = completeConfirmQueue;
+
     // Update queue status in PostgreSQL 5432 Database!
-    updateApiQueueStatus(id, 'Completed');
+    updateApiQueueStatus(queue.id, 'Completed');
 
     setLocalQueuesByDate((prev) => ({
       ...prev,
       [selectedDate]: (prev[selectedDate] || []).map((q) =>
-        q.id === id ? { ...q, status: 'Completed' } : q
+        q.id === queue.id ? { ...q, status: 'Completed' } : q
       ),
     }));
+
+    setCompleteConfirmQueue(null);
   };
 
   // Simulate Midnight Auto-Reset to Next Day
@@ -335,9 +359,9 @@ export const QueuePage: React.FC = () => {
                 onClick={() => {
                   const nextWaiting = pendingQueues.find((q) => q.status === 'Waiting');
                   if (nextWaiting) {
-                    callQueue(nextWaiting);
+                    requestCallQueue(nextWaiting);
                   } else if (currentCallingQueue) {
-                    callQueue(currentCallingQueue);
+                    requestCallQueue(currentCallingQueue);
                   }
                 }}
                 disabled={pendingQueues.length === 0}
@@ -426,14 +450,14 @@ export const QueuePage: React.FC = () => {
                         {isAdmin ? (
                           <div className="flex items-center justify-end gap-1.5">
                             <button
-                              onClick={() => callQueue(q)}
+                              onClick={() => requestCallQueue(q)}
                               className="px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-[11px] transition shadow-xs flex items-center gap-1 cursor-pointer"
                               title="Panggil Antrean Pasien dengan Suara Audio"
                             >
                               <Volume2 className="w-3.5 h-3.5" /> Panggil
                             </button>
                             <button
-                              onClick={() => completeQueue(q.id)}
+                              onClick={() => requestCompleteQueue(q)}
                               className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] transition shadow-xs flex items-center gap-1 cursor-pointer"
                               title="Tandai Antrean Selesai Berobat & Pindahkan ke Tabel Selesai"
                             >
@@ -525,6 +549,101 @@ export const QueuePage: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* CALL QUEUE CONFIRMATION MODAL */}
+      {callConfirmQueue && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
+          <div className="glass-card max-w-md w-full p-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl space-y-5 animate-scaleUp">
+            <div className="flex items-center gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
+              <div className="p-3 rounded-2xl bg-sky-500/10 text-sky-500 border border-sky-500/20">
+                <Volume2 className="w-6 h-6 animate-pulse" />
+              </div>
+              <div>
+                <h3 className="font-black text-base text-slate-900 dark:text-slate-100">Konfirmasi Pemanggilan Pasien</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Panggilan antrean suara audio ke poliklinik</p>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-center space-y-2">
+              <span className="text-[11px] uppercase tracking-widest text-slate-500 font-bold block">NOMOR ANTREAN PASIEN</span>
+              <span className="text-4xl font-black text-sky-600 dark:text-sky-400 font-mono block">#00{callConfirmQueue.queue_number}</span>
+              <div className="pt-1">
+                <span className="text-base font-extrabold text-slate-900 dark:text-slate-100 block">
+                  Atas Nama: {callConfirmQueue.patient?.full_name || 'Pasien'}
+                </span>
+                <span className="text-xs text-slate-500 dark:text-slate-400 block mt-0.5">
+                  Dokter: {callConfirmQueue.doctor?.name} ({callConfirmQueue.doctor?.practice_room})
+                </span>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-600 dark:text-slate-300 text-center leading-relaxed">
+              Apakah Anda yakin ingin memanggil pasien ini? Sistem akan memutar melodi bel bel <strong>(Ding-Dong)</strong> dan menyuarakan panggilan suara Bahasa Indonesia.
+            </p>
+
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                onClick={() => setCallConfirmQueue(null)}
+                className="px-5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-200 dark:hover:bg-slate-700 transition cursor-pointer"
+              >
+                Batal
+              </button>
+              <button
+                onClick={confirmCallQueue}
+                className="px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-extrabold text-xs shadow-lg shadow-sky-600/30 transition flex items-center gap-1.5 cursor-pointer"
+              >
+                <Volume2 className="w-4 h-4" /> Ya, Panggil Pasien
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* COMPLETE QUEUE CONFIRMATION MODAL */}
+      {completeConfirmQueue && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
+          <div className="glass-card max-w-md w-full p-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl space-y-5 animate-scaleUp">
+            <div className="flex items-center gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
+              <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                <CheckCircle2 className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-black text-base text-slate-900 dark:text-slate-100">Konfirmasi Antrean Selesai</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Selesaikan pemeriksaan & pindahkan antrean</p>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-center space-y-2">
+              <span className="text-[11px] uppercase tracking-widest text-slate-500 font-bold block">ANTREAN SELESAI BEROBAT</span>
+              <span className="text-3xl font-black text-emerald-600 dark:text-emerald-400 font-mono block">#00{completeConfirmQueue.queue_number}</span>
+              <div className="pt-1">
+                <span className="text-base font-extrabold text-slate-900 dark:text-slate-100 block">
+                  Atas Nama: {completeConfirmQueue.patient?.full_name || 'Pasien'}
+                </span>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-600 dark:text-slate-300 text-center leading-relaxed">
+              Apakah Anda yakin pasien ini telah selesai diperiksa? Status antrean di database PostgreSQL akan diubah menjadi <strong>Completed (Selesai)</strong> dan dipindahkan ke tabel <strong>Daftar Pasien Selesai Berobat</strong>.
+            </p>
+
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                onClick={() => setCompleteConfirmQueue(null)}
+                className="px-5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-200 dark:hover:bg-slate-700 transition cursor-pointer"
+              >
+                Batal
+              </button>
+              <button
+                onClick={confirmCompleteQueue}
+                className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-lg shadow-emerald-600/30 transition flex items-center gap-1.5 cursor-pointer"
+              >
+                <CheckCircle2 className="w-4 h-4" /> Ya, Selesaikan Antrean
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
