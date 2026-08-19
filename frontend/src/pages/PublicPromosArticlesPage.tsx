@@ -23,6 +23,13 @@ export const PublicPromosArticlesPage: React.FC = () => {
     setTimeout(() => setCopiedCode(false), 2500);
   };
 
+  const ITEMS_PER_PAGE = 9;
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.ceil(promos.length / ITEMS_PER_PAGE) || 1;
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const currentPromos = promos.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans flex flex-col justify-between transition-colors">
       {/* PUBLIC NAVBAR HEADER */}
@@ -70,15 +77,15 @@ export const PublicPromosArticlesPage: React.FC = () => {
       <main className="py-16 px-6 max-w-7xl mx-auto w-full space-y-8 flex-1">
         <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
           <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-            Menampilkan Total {promos.length} Promo & Artikel Aktif
+            Menampilkan Artikel {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, promos.length)} Dari {promos.length} Promo Aktif
           </span>
           <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-xs font-mono font-bold flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5" /> Klik Kartu Untuk Membaca Artikel
+            <Sparkles className="w-3.5 h-3.5" /> Halaman {currentPage} dari {totalPages}
           </span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {promos.map((promo: CMSPromo) => (
+          {currentPromos.map((promo: CMSPromo) => (
             <div
               key={promo.id}
               onClick={() => setSelectedPromo(promo)}
@@ -128,6 +135,54 @@ export const PublicPromosArticlesPage: React.FC = () => {
             </div>
           ))}
         </div>
+
+        {/* PAGINATION CONTROLS (MAX 9 ITEMS PER PAGE) */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 pt-8 border-t border-slate-200 dark:border-slate-800">
+            <button
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className={`px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition ${
+                currentPage === 1
+                  ? 'bg-slate-200 dark:bg-slate-800 text-slate-400 opacity-50 cursor-not-allowed'
+                  : 'bg-sky-600 hover:bg-sky-500 text-white shadow-md cursor-pointer'
+              }`}
+            >
+              <ArrowLeft className="w-4 h-4" /> Sebelumnya
+            </button>
+
+            <div className="flex items-center gap-1.5">
+              {Array.from({ length: totalPages }).map((_, idx) => {
+                const pageNum = idx + 1;
+                return (
+                  <button
+                    key={pageNum}
+                    onClick={() => setCurrentPage(pageNum)}
+                    className={`w-9 h-9 rounded-xl font-mono text-xs font-bold transition flex items-center justify-center ${
+                      currentPage === pageNum
+                        ? 'bg-amber-500 text-slate-950 font-black shadow-lg scale-105'
+                        : 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700'
+                    }`}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
+            </div>
+
+            <button
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className={`px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition ${
+                currentPage === totalPages
+                  ? 'bg-slate-200 dark:bg-slate-800 text-slate-400 opacity-50 cursor-not-allowed'
+                  : 'bg-sky-600 hover:bg-sky-500 text-white shadow-md cursor-pointer'
+              }`}
+            >
+              Selanjutnya <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+        )}
       </main>
 
       {/* INTERACTIVE ARTIKEL & PROMO DETAIL MODAL BOX */}
