@@ -148,6 +148,10 @@ export interface Invoice {
   paid_at?: string;
   items: InvoiceItem[];
   created_at: string;
+  subjective?: string;
+  diagnosis?: string;
+  icd10_code?: string;
+  plan?: string;
 }
 
 export interface Consultation {

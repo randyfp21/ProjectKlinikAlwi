@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CreditCard, CheckCircle2, Printer, QrCode, FileText, Receipt, User, Lock, Wallet, ArrowLeft, Building2, DollarSign, Eye, X, History, CalendarX, MapPin, Phone, Mail, Clock, Sparkles, ChevronRight, ShieldCheck, Hospital } from 'lucide-react';
+import { CreditCard, CheckCircle2, Printer, QrCode, FileText, Receipt, User, Lock, Wallet, ArrowLeft, Building2, DollarSign, Eye, X, History, CalendarX, MapPin, Phone, Mail, Clock, Sparkles, ChevronRight, ShieldCheck, Hospital, Stethoscope, Activity } from 'lucide-react';
 import { useInvoiceStore } from '../store/useInvoiceStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { useCMSStore } from '../store/useCMSStore';
@@ -159,6 +159,42 @@ export const BillingPage: React.FC = () => {
                       <div className="p-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-right sm:min-w-[180px]">
                         <span className="text-[10px] uppercase font-bold text-slate-400 block">TOTAL TAGIHAN</span>
                         <span className="text-xl font-black text-sky-600 dark:text-sky-400">Rp {inv.grand_total.toLocaleString()}</span>
+                      </div>
+                    </div>
+
+                    {/* Medical SOAP Notes Breakdown (Subjective, Diagnosis & ICD10, Plan) */}
+                    <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/80 space-y-3">
+                      <h4 className="text-xs font-extrabold text-sky-600 dark:text-sky-400 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 dark:border-slate-800 pb-2">
+                        <Stethoscope className="w-4 h-4 text-sky-500" /> Ringkasan Medis Hasil Konsultasi Dokter
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                        <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 space-y-1">
+                          <span className="font-extrabold text-slate-700 dark:text-slate-300 block text-[11px]">Subjective (S) - Keluhan Pasien:</span>
+                          <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
+                            {inv.subjective || inv.patient?.current_complaint || 'Keluhan utama dicatat pada rekam medis'}
+                          </p>
+                        </div>
+
+                        <div className="p-3 rounded-xl bg-teal-500/10 border border-teal-500/20 space-y-1">
+                          <div className="flex items-center justify-between">
+                            <span className="font-extrabold text-teal-700 dark:text-teal-300 block text-[11px]">Diagnosis & ICD-10:</span>
+                            {inv.icd10_code && (
+                              <span className="px-2 py-0.5 rounded bg-teal-500/20 text-teal-700 dark:text-teal-300 font-mono font-bold text-[10px]">
+                                {inv.icd10_code}
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-teal-900 dark:text-teal-200 font-bold">
+                            {inv.diagnosis || 'Diagnosis belum diisi'}
+                          </p>
+                        </div>
+
+                        <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 space-y-1">
+                          <span className="font-extrabold text-slate-700 dark:text-slate-300 block text-[11px]">Plan (P) - Terapi & Penanganan:</span>
+                          <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
+                            {inv.plan || 'Rencana pengobatan dan terapi resep obat'}
+                          </p>
+                        </div>
                       </div>
                     </div>
 
@@ -432,6 +468,35 @@ export const BillingPage: React.FC = () => {
                 }`}>
                   {selectedInvoice.payment_status === 'Paid' ? 'LUNAS (PAID)' : 'MENUNGGU KASIR'}
                 </span>
+              </div>
+            </div>
+
+            {/* Modal Medical SOAP Notes Breakdown */}
+            <div className="p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-3">
+              <h4 className="text-xs font-extrabold text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-200 dark:border-slate-700 pb-2">
+                <Activity className="w-4 h-4 text-teal-500" /> Informasi Rekam Medis (S & P)
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                <div className="space-y-1">
+                  <span className="font-extrabold text-slate-500 dark:text-slate-400 block text-[10px] uppercase">Subjective (S) - Keluhan:</span>
+                  <p className="text-slate-900 dark:text-slate-100 font-semibold leading-snug">
+                    {selectedInvoice.subjective || selectedInvoice.patient?.current_complaint || 'Keluhan pasien tercatat'}
+                  </p>
+                </div>
+
+                <div className="space-y-1">
+                  <span className="font-extrabold text-teal-600 dark:text-teal-400 block text-[10px] uppercase">Diagnosis & ICD-10:</span>
+                  <p className="text-teal-700 dark:text-teal-300 font-bold leading-snug">
+                    {selectedInvoice.diagnosis || 'Diagnosis Medis'} {selectedInvoice.icd10_code ? `(${selectedInvoice.icd10_code})` : ''}
+                  </p>
+                </div>
+
+                <div className="space-y-1">
+                  <span className="font-extrabold text-slate-500 dark:text-slate-400 block text-[10px] uppercase">Plan (P) - Pengobatan & Terapi:</span>
+                  <p className="text-slate-900 dark:text-slate-100 font-semibold leading-snug">
+                    {selectedInvoice.plan || 'Rencana pengobatan resep obat'}
+                  </p>
+                </div>
               </div>
             </div>
 

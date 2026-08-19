@@ -198,6 +198,10 @@ export const ConsultationPage: React.FC = () => {
       payment_status: 'Pending',
       payment_method: 'Pending Cashier',
       created_at: new Date().toISOString(),
+      subjective: soap.subjective,
+      diagnosis: soap.diagnosis,
+      icd10_code: soap.icd10,
+      plan: soap.plan,
       items: [
         { id: 101, invoice_id: 99, item_type: 'Doctor Fee', item_name: `Consultation - ${selectedAppointment.doctor?.name}`, quantity: 1, unit_price: docFee, subtotal: docFee },
         { id: 102, invoice_id: 99, item_type: 'Procedure', item_name: 'Physical Exam & Vital Signs (TTV)', quantity: 1, unit_price: procFee, subtotal: procFee },

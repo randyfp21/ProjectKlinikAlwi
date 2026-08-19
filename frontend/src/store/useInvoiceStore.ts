@@ -26,6 +26,10 @@ const INITIAL_INVOICES: Invoice[] = [
     payment_status: 'Pending',
     payment_method: 'Pending Cashier',
     created_at: '2026-08-07T09:30:00Z',
+    subjective: 'Keluhan utama pasien: Sakit kepala hebat sejak 2 hari dan pusing berputar.',
+    diagnosis: 'Essential (primary) hypertension stage 1',
+    icd10_code: 'I10',
+    plan: 'Amlodipine 10mg 1x1 sesudah makan pagi, Paracetamol 500mg 3x1 jika pusing/nyeri.',
     items: [
       { id: 1, invoice_id: 1, item_type: 'Doctor Fee', item_name: 'Consultation - dr. Alwi Shahab, Sp.PD', quantity: 1, unit_price: 150000, subtotal: 150000 },
       { id: 2, invoice_id: 1, item_type: 'Procedure', item_name: 'Physical Exam & Vital Signs (TTV)', quantity: 1, unit_price: 50000, subtotal: 50000 },
@@ -49,6 +53,10 @@ const INITIAL_INVOICES: Invoice[] = [
     payment_status: 'Pending',
     payment_method: 'Pending Cashier',
     created_at: '2026-08-07T10:15:00Z',
+    subjective: 'Keluhan utama pasien: Sesak napas kambuh saat cuaca dingin disertai batuk berdahak.',
+    diagnosis: 'Acute Asthma Exacerbation',
+    icd10_code: 'J45.901',
+    plan: 'Terapi Nebulizer Ventolin di klinik, resep Amoxicillin 500mg 3x1 diminum hingga habis.',
     items: [
       { id: 10, invoice_id: 2, item_type: 'Doctor Fee', item_name: 'Consultation - dr. Sarah Lestari, Sp.A', quantity: 1, unit_price: 150000, subtotal: 150000 },
       { id: 11, invoice_id: 2, item_type: 'Procedure', item_name: 'Nebulizer Therapy Session', quantity: 1, unit_price: 50000, subtotal: 50000 },
