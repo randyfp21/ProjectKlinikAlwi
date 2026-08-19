@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CreditCard, CheckCircle2, Printer, QrCode, FileText, Receipt, User, Lock, Wallet, ArrowLeft, Building2, DollarSign, Eye, X, History, CalendarX, MapPin, Phone, Mail, Clock, Sparkles, ChevronRight, ShieldCheck, Hospital, Stethoscope, Activity } from 'lucide-react';
+import { CreditCard, CheckCircle2, Printer, QrCode, FileText, Receipt, User, Lock, Wallet, ArrowLeft, Building2, DollarSign, Eye, X, History, CalendarX, MapPin, Phone, Mail, Clock, Sparkles, ChevronRight, ShieldCheck, Hospital, Stethoscope, Activity, Search } from 'lucide-react';
 import { useInvoiceStore } from '../store/useInvoiceStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { useCMSStore } from '../store/useCMSStore';
@@ -13,6 +13,7 @@ export const BillingPage: React.FC = () => {
 
   const isPatient = user?.role === 'Patient';
   const [paymentSuccess, setPaymentSuccess] = useState('');
+  const [search, setSearch] = useState('');
 
   // Selected Patient Invoice for Cashier Payment Processing
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
@@ -24,11 +25,20 @@ export const BillingPage: React.FC = () => {
     ? invoices.filter((i) => i.patient?.full_name?.toLowerCase().includes(patientName.toLowerCase()) || i.patient_id === 1)
     : invoices;
 
+  // Search Filtered Invoices (by patient name, invoice number, NIK, or payment method)
+  const searchFilteredInvoices = displayInvoices.filter(
+    (i) =>
+      i.invoice_number.toLowerCase().includes(search.toLowerCase()) ||
+      i.patient?.full_name.toLowerCase().includes(search.toLowerCase()) ||
+      i.patient?.national_id?.includes(search) ||
+      i.payment_method?.toLowerCase().includes(search.toLowerCase())
+  );
+
   // Unpaid invoices (Generated from doctor consultation)
-  const pendingInvoices = displayInvoices.filter((i) => i.payment_status === 'Pending');
+  const pendingInvoices = searchFilteredInvoices.filter((i) => i.payment_status === 'Pending');
 
   // Paid invoices (Personal Transaction History)
-  const paidInvoicesHistory = displayInvoices.filter((i) => i.payment_status === 'Paid');
+  const paidInvoicesHistory = searchFilteredInvoices.filter((i) => i.payment_status === 'Paid');
 
   const totalPendingAmount = pendingInvoices.reduce((sum, inv) => sum + inv.grand_total, 0);
   const totalPaidAmount = paidInvoicesHistory.reduce((sum, inv) => sum + inv.grand_total, 0);
@@ -104,6 +114,18 @@ export const BillingPage: React.FC = () => {
             </span>
           </div>
         </div>
+      </div>
+
+      {/* Search Bar */}
+      <div className="glass-card p-4 rounded-3xl border border-slate-200 dark:border-slate-800 flex items-center gap-3 bg-white dark:bg-slate-900/90 shadow-sm">
+        <Search className="w-4 h-4 text-slate-400" />
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Cari tagihan berdasarkan Nama Pasien, Nomor Invoice (INV-xxx), atau NIK..."
+          className="w-full bg-transparent text-xs text-slate-800 dark:text-slate-200 font-semibold focus:outline-none"
+        />
       </div>
 
       {/* =========================================================================
