@@ -48,9 +48,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const menuItems = [
     { name: t('menuDashboard'), path: '/dashboard', icon: LayoutDashboard, roles: ['Super Admin', 'Admin', 'Doctor', 'Pharmacist', 'Patient'] },
     { name: 'Pusat Master Data', path: '/dashboard/master-data', icon: Database, roles: ['Super Admin'] },
-    { name: 'Manajemen Akun User', path: '/dashboard/users', icon: Shield, roles: ['Super Admin'] },
-    { name: t('menuDoctors'), path: '/dashboard/doctors', icon: Stethoscope, roles: ['Super Admin', 'Admin', 'Doctor'] },
-    { name: t('menuPatients'), path: '/dashboard/patients', icon: Users, roles: ['Super Admin', 'Admin', 'Doctor', 'Pharmacist'] },
     { name: t('menuAppointments'), path: '/dashboard/appointments', icon: CalendarCheck, roles: ['Super Admin', 'Admin', 'Doctor', 'Patient'] },
     { name: t('menuQueues'), path: '/dashboard/queues', icon: ListOrdered, roles: ['Super Admin', 'Admin', 'Doctor', 'Patient'] },
     { name: t('menuConsultation'), path: '/dashboard/consultation', icon: FileText, roles: ['Super Admin', 'Doctor'] },
