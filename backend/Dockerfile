@@ -20,6 +20,6 @@ ENV TZ=Asia/Jakarta
 
 COPY --from=builder /app/server /app/server
 
-EXPOSE 8080
+EXPOSE 8086
 
 CMD ["/app/server"]
