@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CreditCard, CheckCircle2, Printer, QrCode, FileText, Receipt, User, Lock, Wallet, ArrowLeft, Building2, DollarSign, Eye, X, History, CalendarX, MapPin, Phone, Mail, Clock, Sparkles, ChevronRight, ShieldCheck } from 'lucide-react';
+import { CreditCard, CheckCircle2, Printer, QrCode, FileText, Receipt, User, Lock, Wallet, ArrowLeft, Building2, DollarSign, Eye, X, History, CalendarX, MapPin, Phone, Mail, Clock, Sparkles, ChevronRight, ShieldCheck, Hospital } from 'lucide-react';
 import { useInvoiceStore } from '../store/useInvoiceStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { useCMSStore } from '../store/useCMSStore';
@@ -8,7 +8,7 @@ import { Invoice } from '../types';
 export const BillingPage: React.FC = () => {
   const { user } = useAuthStore();
   const { invoices, payInvoice } = useInvoiceStore();
-  const { clinicName, clinicAddress, contactPhone, contactEmail } = useCMSStore();
+  const { clinicName, clinicAddress, contactPhone, contactEmail, clinicLogoIcon } = useCMSStore();
 
   const isPatient = user?.role === 'Patient';
   const [paymentSuccess, setPaymentSuccess] = useState('');
@@ -62,21 +62,33 @@ export const BillingPage: React.FC = () => {
 
       {/* Header Bar & Quick Metrics */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-br from-slate-900 via-sky-950 to-slate-900 text-white shadow-xl">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <span className="px-3 py-1 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30 text-[10px] font-bold tracking-wider uppercase flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5" /> Billing & Payment System
-            </span>
+        <div className="flex items-start gap-4">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-sky-500 to-teal-400 p-0.5 shadow-lg shadow-sky-500/30 shrink-0 hidden sm:block">
+            <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center overflow-hidden">
+              {clinicLogoIcon && (clinicLogoIcon.startsWith('/') || clinicLogoIcon.startsWith('http') || clinicLogoIcon.startsWith('data:')) ? (
+                <img src={clinicLogoIcon} alt="Logo" className="w-full h-full object-cover rounded-[14px]" />
+              ) : (
+                <Hospital className="w-7 h-7 text-sky-400" />
+              )}
+            </div>
           </div>
-          <h1 className="text-2xl font-extrabold tracking-tight flex items-center gap-3 text-white pt-1">
-            {isPatient ? <Wallet className="w-8 h-8 text-sky-400" /> : <CreditCard className="w-8 h-8 text-sky-400" />}
-            {isPatient ? 'Portal Pembayaran & Tagihan Saya' : 'Kasir & Manajemen Billing Klinik'}
-          </h1>
-          <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
-            {isPatient
-              ? 'Pantau rincian tagihan medis, rincian obat & expired date, metode pembayaran QRIS/Transfer, dan riwayat kuitansi resmi Anda.'
-              : 'Kelola antrean tagihan pasien dari ruang konsultasi, proses pembayaran kasir instan, cetak kuitansi resmi, dan riwayat transaksi.'}
-          </p>
+
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="px-3 py-1 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30 text-[10px] font-bold tracking-wider uppercase flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5" /> Billing & Payment System
+              </span>
+            </div>
+            <h1 className="text-2xl font-extrabold tracking-tight flex items-center gap-3 text-white pt-1">
+              {isPatient ? <Wallet className="w-8 h-8 text-sky-400" /> : <CreditCard className="w-8 h-8 text-sky-400" />}
+              {isPatient ? 'Portal Pembayaran & Tagihan Saya' : 'Kasir & Manajemen Billing Klinik'}
+            </h1>
+            <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
+              {isPatient
+                ? 'Pantau rincian tagihan medis, rincian obat & expired date, metode pembayaran QRIS/Transfer, dan riwayat kuitansi resmi Anda.'
+                : 'Kelola antrean tagihan pasien dari ruang konsultasi, proses pembayaran kasir instan, cetak kuitansi resmi, dan riwayat transaksi.'}
+            </p>
+          </div>
         </div>
 
         <div className="flex flex-wrap sm:flex-nowrap gap-3 shrink-0">
@@ -381,8 +393,19 @@ export const BillingPage: React.FC = () => {
 
             {/* Official Clinic Letterhead / Kop Surat Resmi Receipt Header */}
             <div className="border-b-2 border-slate-900 dark:border-slate-100 pb-4 text-center space-y-1">
-              <h1 className="text-xl font-black tracking-tight text-slate-900 dark:text-slate-100 uppercase">{clinicName}</h1>
-              <p className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center justify-center gap-1">
+              <div className="flex items-center justify-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-teal-400 p-0.5 shadow-md shrink-0">
+                  <div className="w-full h-full bg-white dark:bg-slate-950 rounded-[10px] flex items-center justify-center overflow-hidden">
+                    {clinicLogoIcon && (clinicLogoIcon.startsWith('/') || clinicLogoIcon.startsWith('http') || clinicLogoIcon.startsWith('data:')) ? (
+                      <img src={clinicLogoIcon} alt="Logo" className="w-full h-full object-cover rounded-[10px]" />
+                    ) : (
+                      <Hospital className="w-5 h-5 text-sky-500" />
+                    )}
+                  </div>
+                </div>
+                <h1 className="text-xl font-black tracking-tight text-slate-900 dark:text-slate-100 uppercase">{clinicName}</h1>
+              </div>
+              <p className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center justify-center gap-1 pt-1">
                 <MapPin className="w-3.5 h-3.5 text-amber-500" /> {clinicAddress}
               </p>
               <p className="text-xs text-slate-600 dark:text-slate-400 flex items-center justify-center gap-4 pt-0.5">
