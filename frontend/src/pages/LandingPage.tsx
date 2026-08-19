@@ -132,39 +132,7 @@ export const LandingPage: React.FC = () => {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden py-20 px-6 bg-gradient-to-b from-white via-slate-50 to-slate-100 dark:from-slate-900 dark:via-slate-950 dark:to-slate-950 border-b border-slate-200 dark:border-slate-800 transition-colors">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-sky-500/10 blur-3xl pointer-events-none rounded-full" />
 
-        <div className="max-w-4xl mx-auto text-center space-y-6 relative z-10">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-600 dark:text-sky-300 text-xs font-semibold shadow-xs">
-            <Sparkles className="w-4 h-4 text-sky-500" /> {heroBadge}
-          </div>
-
-          <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
-            {heroTitle}
-          </h1>
-
-          <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
-            {heroSubtitle}
-          </p>
-
-          <div className="pt-4 flex flex-wrap items-center justify-center gap-4">
-            <Link
-              to="/register"
-              className="px-7 py-3.5 rounded-2xl bg-gradient-to-r from-sky-500 to-teal-500 hover:from-sky-400 hover:to-teal-400 text-white font-bold text-sm shadow-xl shadow-sky-500/25 flex items-center gap-3 transition transform hover:-translate-y-0.5"
-            >
-              <UserPlus className="w-5 h-5" /> Daftar Akun Pasien Baru
-            </Link>
-            <Link
-              to="/login"
-              className="px-7 py-3.5 rounded-2xl bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-900 dark:text-slate-200 font-bold text-sm border border-slate-300 dark:border-slate-700 shadow-md flex items-center gap-3 transition"
-            >
-              <LogIn className="w-5 h-5 text-sky-500" /> Portal Login Petugas & Pasien <ArrowRight className="w-4 h-4 text-slate-400" />
-            </Link>
-          </div>
-        </div>
-      </section>
 
       {/* PHOTO SLIDER CONTAINER AS FULL BACKGROUND HEADER FOR "Klinik Modern & Terpercaya Untuk Keluarga Anda" */}
       <section className="relative py-24 sm:py-32 px-6 overflow-hidden border-b border-slate-200 dark:border-slate-800 transition-colors">
@@ -436,6 +404,36 @@ export const LandingPage: React.FC = () => {
               <p className="text-[11px] text-slate-500 dark:text-slate-400">{acc.desc}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* BOTTOM CTA SECTION: DAFTAR AKUN & PORTAL LOGIN */}
+      <section className="py-16 px-6 bg-gradient-to-r from-sky-900 via-slate-900 to-teal-900 text-white text-center border-t border-slate-800 transition-colors">
+        <div className="max-w-4xl mx-auto space-y-6">
+          <span className="px-4 py-1.5 rounded-full bg-sky-500/20 border border-sky-400/30 text-sky-300 text-xs font-bold font-mono uppercase tracking-wider inline-flex items-center gap-1.5 shadow-md">
+            <Sparkles className="w-4 h-4 text-sky-400" /> REGISTRASI & AKSES MASUK KLINIK
+          </span>
+          <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white">
+            Mulai Konsultasi & Rawat Jalan Hari Ini
+          </h2>
+          <p className="text-slate-300 text-xs sm:text-base max-w-2xl mx-auto leading-relaxed">
+            Daftarkan diri Anda untuk mendapatkan nomor rekam medis digital (RM), kemudahan reservasi jadwal dokter, serta riwayat obat secara transparan.
+          </p>
+
+          <div className="pt-4 flex flex-wrap items-center justify-center gap-4">
+            <Link
+              to="/register"
+              className="px-8 py-4 rounded-2xl bg-gradient-to-r from-sky-500 to-teal-500 hover:from-sky-400 hover:to-teal-400 text-white font-extrabold text-sm shadow-xl shadow-sky-500/30 flex items-center gap-3 transition transform hover:-translate-y-0.5"
+            >
+              <UserPlus className="w-5 h-5" /> Daftar Akun Pasien Baru
+            </Link>
+            <Link
+              to="/login"
+              className="px-8 py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-extrabold text-sm border border-white/20 shadow-lg backdrop-blur-md flex items-center gap-3 transition"
+            >
+              <LogIn className="w-5 h-5 text-sky-400" /> Portal Login Petugas & Pasien <ArrowRight className="w-4 h-4 text-slate-300" />
+            </Link>
+          </div>
         </div>
       </section>
 
