@@ -292,20 +292,20 @@ export const PharmacyPage: React.FC = () => {
           </div>
 
           {/* Medicines Table */}
-          <div className="glass-card rounded-2xl border overflow-hidden shadow-sm">
+          <div className="glass-card rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs text-slate-600 dark:text-slate-300">
-                <thead className="bg-slate-100 dark:bg-slate-800/80 uppercase text-[10px] text-slate-500 dark:text-slate-400 font-bold">
+                <thead className="bg-slate-100 dark:bg-slate-800/80 uppercase text-[10px] text-slate-500 dark:text-slate-400 font-bold tracking-wider">
                   <tr>
-                    <th className="p-3.5">Kode & Nama Obat</th>
-                    <th className="p-3.5">Kategori Obat</th>
-                    <th className="p-3.5">Kemasan</th>
-                    <th className="p-3.5">Stok Saat Ini</th>
-                    <th className="p-3.5">Harga HPP / Dasar</th>
-                    <th className="p-3.5">Harga Jual</th>
-                    <th className="p-3.5">Expired Date</th>
-                    <th className="p-3.5">Status Stok</th>
-                    <th className="p-3.5 text-right">Aksi Kelola</th>
+                    <th className="py-4 px-4 whitespace-nowrap">Kode & Nama Obat</th>
+                    <th className="py-4 px-4 whitespace-nowrap">Kategori Obat</th>
+                    <th className="py-4 px-4 whitespace-nowrap">Kemasan</th>
+                    <th className="py-4 px-4 whitespace-nowrap">Stok Saat Ini</th>
+                    <th className="py-4 px-4 whitespace-nowrap">Harga HPP / Dasar</th>
+                    <th className="py-4 px-4 whitespace-nowrap">Harga Jual</th>
+                    <th className="py-4 px-4 whitespace-nowrap">Expired Date</th>
+                    <th className="py-4 px-4 whitespace-nowrap">Status Stok</th>
+                    <th className="py-4 px-4 text-right whitespace-nowrap">Aksi Kelola</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
@@ -316,47 +316,47 @@ export const PharmacyPage: React.FC = () => {
 
                     return (
                       <tr key={med.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
-                        <td className="p-3.5">
+                        <td className="py-4 px-4 whitespace-nowrap">
                           <span className="px-2 py-0.5 rounded bg-sky-500/10 text-sky-600 font-mono font-bold text-[10px] border border-sky-500/20">
                             {med.medicine_code}
                           </span>
-                          <div className="font-bold text-slate-900 dark:text-slate-100 text-sm mt-0.5">{med.name}</div>
-                          <div className="text-[10px] text-slate-400">Produsen: {med.manufacturer || 'Generik'}</div>
+                          <div className="font-bold text-slate-900 dark:text-slate-100 text-sm mt-1">{med.name}</div>
+                          <div className="text-[10px] text-slate-400 mt-0.5">Produsen: {med.manufacturer || 'Generik'}</div>
                         </td>
 
-                        <td className="p-3.5">
+                        <td className="py-4 px-4 whitespace-nowrap">
                           <span className="px-2.5 py-1 rounded-full bg-teal-500/10 text-teal-600 border border-teal-500/20 font-bold text-[11px] flex items-center gap-1 w-fit">
                             <Tag className="w-3 h-3 text-teal-500" /> {catObj?.name || med.category_name || categoryString || 'Generik'}
                           </span>
                           {catObj?.category_code && (
-                            <span className="text-[10px] font-mono text-slate-400 block mt-0.5">{catObj.category_code}</span>
+                            <span className="text-[10px] font-mono text-slate-400 block mt-1">{catObj.category_code}</span>
                           )}
                         </td>
 
-                        <td className="p-3.5 font-semibold text-slate-800 dark:text-slate-200">{med.unit}</td>
+                        <td className="py-4 px-4 whitespace-nowrap font-semibold text-slate-800 dark:text-slate-200">{med.unit}</td>
 
-                        <td className="p-3.5">
+                        <td className="py-4 px-4 whitespace-nowrap">
                           <div className="font-bold text-sm text-slate-900 dark:text-slate-100">{med.stock} {med.unit}</div>
-                          <div className="text-[10px] text-slate-400">Min Safety: {med.min_stock}</div>
+                          <div className="text-[10px] text-slate-400 mt-0.5">Min Safety: {med.min_stock}</div>
                         </td>
 
-                        <td className="p-3.5">
+                        <td className="py-4 px-4 whitespace-nowrap">
                           <div className="font-semibold text-slate-600 dark:text-slate-300 text-xs">Rp {med.purchase_price.toLocaleString()}</div>
-                          <div className="text-[10px] text-slate-400">Harga HPP / Modal</div>
+                          <div className="text-[10px] text-slate-400 mt-0.5">Harga HPP / Modal</div>
                         </td>
 
-                        <td className="p-3.5">
+                        <td className="py-4 px-4 whitespace-nowrap">
                           <div className="font-bold text-emerald-600 dark:text-emerald-400 text-sm">Rp {med.selling_price.toLocaleString()}</div>
-                          <div className="text-[10px] text-emerald-500 font-semibold">Harga Jual Pasien</div>
+                          <div className="text-[10px] text-emerald-500 font-semibold mt-0.5">Harga Jual Pasien</div>
                         </td>
 
-                        <td className="p-3.5">
+                        <td className="py-4 px-4 whitespace-nowrap">
                           <div className="font-mono font-bold text-xs text-rose-600 dark:text-rose-400">{med.expiry_date || '-'}</div>
-                          <div className="text-[10px] text-slate-400">Batch: {med.batch_number || 'N/A'}</div>
+                          <div className="text-[10px] text-slate-400 mt-0.5">Batch: {med.batch_number || 'N/A'}</div>
                         </td>
 
-                        <td className="p-3.5">
-                          <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold border ${
+                        <td className="py-4 px-4 whitespace-nowrap">
+                          <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold border inline-block ${
                             isLow
                               ? 'bg-rose-500/10 text-rose-600 border-rose-500/20 animate-pulse'
                               : 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'
@@ -365,8 +365,8 @@ export const PharmacyPage: React.FC = () => {
                           </span>
                         </td>
 
-                        <td className="p-3.5 text-right">
-                          <div className="flex items-center justify-end gap-1.5">
+                        <td className="py-4 px-4 text-right whitespace-nowrap">
+                          <div className="flex items-center justify-end gap-2">
                             <button
                               onClick={() => setSelectedMedDetail(med)}
                               title="Lihat Detail Obat"
