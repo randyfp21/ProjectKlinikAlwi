@@ -23,11 +23,11 @@ import {
   CalendarCheck,
   CheckCircle2,
   Star,
+  Gift,
+  Tag,
   ChevronLeft,
   ChevronRight,
   Image as ImageIcon,
-  Tag,
-  Gift,
   Camera
 } from 'lucide-react';
 import { useLanguageStore } from '../store/useLanguageStore';
@@ -290,7 +290,7 @@ export const LandingPage: React.FC = () => {
             {/* Ambient Shine Effect */}
             <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
             
-            <Sparkles className="w-5 h-5 text-yellow-300 animate-bounce" />
+            <Gift className="w-5 h-5 text-amber-300 animate-pulse" />
             <span className="relative z-10 text-white">Lihat Seluruh Artikel & Promo Kesehatan</span>
 
             <span className="relative z-10 px-2.5 py-0.5 rounded-full bg-white/20 text-white font-mono text-xs font-black border border-white/30 backdrop-blur-md">
