@@ -43,8 +43,19 @@ export const PaymentHistoryPage: React.FC = () => {
     setEndDate('');
   };
 
-  // Filter ONLY paid transactions for history
-  const paidInvoices = invoices.filter((inv) => inv.payment_status === 'Paid');
+  const isPatient = user?.role === 'Patient';
+  const patientName = user?.full_name || 'Budi Santoso';
+
+  // Filter ONLY paid transactions for history (For Patient: Filter strictly by their own patient name or ID)
+  const paidInvoices = invoices.filter((inv) => {
+    const isPaid = inv.payment_status === 'Paid';
+    if (!isPaid) return false;
+
+    if (isPatient) {
+      return inv.patient?.full_name?.toLowerCase().includes(patientName.toLowerCase()) || inv.patient_id === 1;
+    }
+    return true;
+  });
 
   const filteredInvoices = paidInvoices
     .filter((inv) => {
@@ -97,19 +108,7 @@ export const PaymentHistoryPage: React.FC = () => {
   const filteredRevenue = filteredInvoices.reduce((sum, i) => sum + i.grand_total, 0);
   const totalRevenue = paidInvoices.reduce((sum, i) => sum + i.grand_total, 0);
 
-  if (!isAdmin) {
-    return (
-      <div className="p-12 text-center space-y-4 font-sans">
-        <div className="w-16 h-16 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto border border-rose-500/20">
-          <ShieldAlert className="w-8 h-8" />
-        </div>
-        <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">Akses Terbatas (Khusus Administrator)</h2>
-        <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
-          Arsip Audit History Transaksi Pembayaran Kasir secara khusus hanya dapat diakses oleh Administrator dan Super Administrator Klinik.
-        </p>
-      </div>
-    );
-  }
+
 
   return (
     <div className="space-y-6 font-sans">
@@ -127,27 +126,29 @@ export const PaymentHistoryPage: React.FC = () => {
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold tracking-wider uppercase flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5" /> Cashier Audit Ledger
+                <Sparkles className="w-3.5 h-3.5 text-emerald-400" /> {isPatient ? 'Histori Pembayaran Saya' : 'Cashier Audit Ledger'}
               </span>
             </div>
             <h1 className="text-2xl font-extrabold tracking-tight flex items-center gap-3 text-white pt-1">
               <ReceiptText className="w-8 h-8 text-emerald-400" />
-              History Transaksi Lunas Kasir (Audit Resmi)
+              {isPatient ? 'Riwayat Transaksi Berobat Lunas Saya' : 'History Transaksi Lunas Kasir (Audit Resmi)'}
             </h1>
             <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
-              Arsip log audit resmi pembayaran kuitansi kasir terverifikasi instan, cetak ulang kuitansi, dan rincian itemized biaya obat & tindakan.
+              {isPatient
+                ? `Arsip resmi transaksi pembayaran berobat Anda di ${clinicName}. Anda dapat melihat rincian biaya obat, jasa dokter, dan mencetak kuitansi resmi.`
+                : 'Arsip log audit resmi pembayaran kuitansi kasir terverifikasi instan, cetak ulang kuitansi, dan rincian itemized biaya obat & tindakan.'}
             </p>
           </div>
         </div>
 
         <div className="flex flex-wrap sm:flex-nowrap gap-3 shrink-0">
           <div className="px-4 py-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 text-right min-w-[140px]">
-            <span className="text-[10px] uppercase font-bold text-slate-300 block">Omzet Hasil Rekap</span>
+            <span className="text-[10px] uppercase font-bold text-slate-300 block">{isPatient ? 'Total Transaksi Saya' : 'Omzet Hasil Rekap'}</span>
             <span className="text-lg font-extrabold text-emerald-400 font-mono">Rp {filteredRevenue.toLocaleString()}</span>
           </div>
 
           <div className="px-4 py-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 text-right min-w-[130px]">
-            <span className="text-[10px] uppercase font-bold text-slate-300 block">Hasil Filter</span>
+            <span className="text-[10px] uppercase font-bold text-slate-300 block">Total Kuitansi</span>
             <span className="text-lg font-extrabold text-sky-400 font-mono">{filteredInvoices.length} Kuitansi</span>
           </div>
         </div>
