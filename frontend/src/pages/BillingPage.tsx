@@ -9,11 +9,12 @@ import { formatDateIndonesian, formatDateTimeIndonesian } from '../utils/formatD
 export const BillingPage: React.FC = () => {
   const { user } = useAuthStore();
   const { invoices, fetchInvoices, payInvoice } = useInvoiceStore();
-  const { clinicName, clinicAddress, contactPhone, contactEmail, clinicLogoIcon, paymentMethods } = useCMSStore();
+  const { clinicName, clinicAddress, contactPhone, contactEmail, clinicLogoIcon, paymentMethods, fetchCMSFromDB } = useCMSStore();
 
   React.useEffect(() => {
     fetchInvoices();
-  }, [fetchInvoices]);
+    fetchCMSFromDB();
+  }, [fetchInvoices, fetchCMSFromDB]);
 
   const isPatient = user?.role === 'Patient';
   const [paymentSuccess, setPaymentSuccess] = useState('');

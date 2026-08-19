@@ -11,11 +11,12 @@ export const PaymentHistoryPage: React.FC = () => {
   const { user } = useAuthStore();
   const { t } = useLanguageStore();
   const { invoices, fetchInvoices } = useInvoiceStore();
-  const { clinicName, clinicAddress, contactPhone, contactEmail, clinicLogoIcon } = useCMSStore();
+  const { clinicName, clinicAddress, contactPhone, contactEmail, clinicLogoIcon, fetchCMSFromDB } = useCMSStore();
 
   React.useEffect(() => {
     fetchInvoices();
-  }, [fetchInvoices]);
+    fetchCMSFromDB();
+  }, [fetchInvoices, fetchCMSFromDB]);
 
   const isAdmin = user?.role === 'Admin' || user?.role === 'Super Admin';
   const [search, setSearch] = useState('');
