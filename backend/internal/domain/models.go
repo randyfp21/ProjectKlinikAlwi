@@ -325,7 +325,8 @@ type ClinicCMSSetting struct {
 	GalleryHeaderTitle string `gorm:"size:255;default:'Klinik Modern & Terpercaya Untuk Keluarga Anda'" json:"gallery_header_title"`
 	GalleryHeaderSubtitle string `gorm:"type:text;default:'Memberikan pelayanan medis terbaik dengan tim dokter spesialis berpengalaman dan fasilitas kesehatan modern lengkap.'" json:"gallery_header_subtitle"`
 	DoctorsHeaderTitle string `gorm:"size:255;default:'TIM DOKTER SPESIALIS UNGGULAN'" json:"doctors_header_title"`
-	DoctorsHeaderSubtitle string `gorm:"type:text;default:'Ditangani Oleh Dokter Spesialis Berpengalaman. Setiap pasien mendapatkan perawatan medis terbaik dari dokter spesialis profesional berlisensi resmi dengan standar pelayanan ramah dan tepat.'" json:"doctors_header_subtitle"`
+	DoctorsHeaderMainTitle string `gorm:"size:255;default:'Ditangani Oleh Dokter Spesialis Berpengalaman'" json:"doctors_header_main_title"`
+	DoctorsHeaderSubtitle string `gorm:"type:text;default:'Setiap pasien mendapatkan perawatan medis terbaik dari dokter spesialis profesional berlisensi resmi dengan standar pelayanan ramah dan tepat.'" json:"doctors_header_subtitle"`
 	PromosHeaderTitle string `gorm:"size:255;default:'PROMO & ARTIKEL KESEHATAN BERLANGSUNG'" json:"promos_header_title"`
 	FacilitiesJSON string    `gorm:"type:text" json:"facilities_json"`
 	DoctorsJSON    string    `gorm:"type:text" json:"doctors_json"`

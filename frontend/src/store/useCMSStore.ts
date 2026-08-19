@@ -60,6 +60,7 @@ export interface CMSState {
   galleryHeaderTitle: string;
   galleryHeaderSubtitle: string;
   doctorsHeaderTitle: string;
+  doctorsHeaderMainTitle: string;
   doctorsHeaderSubtitle: string;
   promosHeaderTitle: string;
 
@@ -81,7 +82,7 @@ export interface CMSState {
 
   // Local Actions
   updateBranding: (data: Partial<Pick<CMSState, 'clinicName' | 'clinicTagline' | 'clinicLogoIcon' | 'contactPhone' | 'contactEmail' | 'contactInstagram' | 'clinicAddress'>>) => void;
-  updateHero: (data: Partial<Pick<CMSState, 'heroTitle' | 'heroSubtitle' | 'heroBadge' | 'galleryHeaderTitle' | 'galleryHeaderSubtitle' | 'doctorsHeaderTitle' | 'doctorsHeaderSubtitle' | 'promosHeaderTitle'>>) => void;
+  updateHero: (data: Partial<Pick<CMSState, 'heroTitle' | 'heroSubtitle' | 'heroBadge' | 'galleryHeaderTitle' | 'galleryHeaderSubtitle' | 'doctorsHeaderTitle' | 'doctorsHeaderMainTitle' | 'doctorsHeaderSubtitle' | 'promosHeaderTitle'>>) => void;
   updateFacility: (id: string, updated: Partial<CMSFacility>) => void;
   updateDoctor: (id: number, updated: Partial<CMSFeaturedDoctor>) => void;
   updateGalleryPhoto: (id: number, updated: Partial<CMSClinicGallery>) => void;
@@ -268,7 +269,8 @@ export const useCMSStore = create<CMSState>()(
       galleryHeaderTitle: 'Klinik Modern & Terpercaya Untuk Keluarga Anda',
       galleryHeaderSubtitle: 'Memberikan pelayanan medis terbaik dengan tim dokter spesialis berpengalaman dan fasilitas kesehatan modern lengkap.',
       doctorsHeaderTitle: 'TIM DOKTER SPESIALIS UNGGULAN',
-      doctorsHeaderSubtitle: 'Ditangani Oleh Dokter Spesialis Berpengalaman. Setiap pasien mendapatkan perawatan medis terbaik dari dokter spesialis profesional berlisensi resmi dengan standar pelayanan ramah dan tepat.',
+      doctorsHeaderMainTitle: 'Ditangani Oleh Dokter Spesialis Berpengalaman',
+      doctorsHeaderSubtitle: 'Setiap pasien mendapatkan perawatan medis terbaik dari dokter spesialis profesional berlisensi resmi dengan standar pelayanan ramah dan tepat.',
       promosHeaderTitle: 'PROMO & ARTIKEL KESEHATAN BERLANGSUNG',
 
       facilities: DEFAULT_FACILITIES,
@@ -295,6 +297,7 @@ export const useCMSStore = create<CMSState>()(
               galleryHeaderTitle: data.gallery_header_title || get().galleryHeaderTitle,
               galleryHeaderSubtitle: data.gallery_header_subtitle || get().galleryHeaderSubtitle,
               doctorsHeaderTitle: data.doctors_header_title || get().doctorsHeaderTitle,
+              doctorsHeaderMainTitle: data.doctors_header_main_title || get().doctorsHeaderMainTitle,
               doctorsHeaderSubtitle: data.doctors_header_subtitle || get().doctorsHeaderSubtitle,
               promosHeaderTitle: data.promos_header_title || get().promosHeaderTitle,
               facilities: data.facilities_json ? JSON.parse(data.facilities_json) : get().facilities,
@@ -324,6 +327,7 @@ export const useCMSStore = create<CMSState>()(
           gallery_header_title: state.galleryHeaderTitle,
           gallery_header_subtitle: state.galleryHeaderSubtitle,
           doctors_header_title: state.doctorsHeaderTitle,
+          doctors_header_main_title: state.doctorsHeaderMainTitle,
           doctors_header_subtitle: state.doctorsHeaderSubtitle,
           promos_header_title: state.promosHeaderTitle,
           facilities_json: JSON.stringify(state.facilities),
@@ -427,7 +431,8 @@ export const useCMSStore = create<CMSState>()(
           galleryHeaderTitle: 'Klinik Modern & Terpercaya Untuk Keluarga Anda',
           galleryHeaderSubtitle: 'Memberikan pelayanan medis terbaik dengan tim dokter spesialis berpengalaman dan fasilitas kesehatan modern lengkap.',
           doctorsHeaderTitle: 'TIM DOKTER SPESIALIS UNGGULAN',
-          doctorsHeaderSubtitle: 'Ditangani Oleh Dokter Spesialis Berpengalaman. Setiap pasien mendapatkan perawatan medis terbaik dari dokter spesialis profesional berlisensi resmi dengan standar pelayanan ramah dan tepat.',
+          doctorsHeaderMainTitle: 'Ditangani Oleh Dokter Spesialis Berpengalaman',
+          doctorsHeaderSubtitle: 'Setiap pasien mendapatkan perawatan medis terbaik dari dokter spesialis profesional berlisensi resmi dengan standar pelayanan ramah dan tepat.',
           promosHeaderTitle: 'PROMO & ARTIKEL KESEHATAN BERLANGSUNG',
           facilities: DEFAULT_FACILITIES,
           featuredDoctors: DEFAULT_DOCTORS,
