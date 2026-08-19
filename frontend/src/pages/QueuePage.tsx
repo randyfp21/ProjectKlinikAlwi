@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ListOrdered, Volume2, CheckCircle2, UserCheck, ArrowRight, Clock, Lock, RefreshCw, Calendar, Sparkles, AlertCircle, Stethoscope, User, Play, ChevronRight, ShieldCheck, X } from 'lucide-react';
 import { Queue } from '../types';
 import { useAuthStore } from '../store/useAuthStore';
 import { useLanguageStore } from '../store/useLanguageStore';
 import { useCMSStore } from '../store/useCMSStore';
+import { useQueueStore } from '../store/useQueueStore';
 import { formatDateIndonesian, formatDateTimeIndonesian } from '../utils/formatDate';
 import { playQueueChimeAndVoice } from '../utils/playAudioCall';
 
@@ -11,14 +12,15 @@ export const QueuePage: React.FC = () => {
   const { user } = useAuthStore();
   const { t } = useLanguageStore();
   const { clinicName, clinicAddress, contactPhone, contactEmail, clinicLogoIcon } = useCMSStore();
+  const { queues: apiQueues, fetchQueues, updateQueueStatus: updateApiQueueStatus, isLoading } = useQueueStore();
 
   const isAdmin = user?.role === 'Admin' || user?.role === 'Super Admin' || user?.role === 'Doctor';
 
   // Selected Date for Queue Audit / History Viewing (Default Today 2026-08-19)
   const [selectedDate, setSelectedDate] = useState<string>('2026-08-19');
 
-  // Rich Multi-Date Queue Historical Store
-  const [queuesByDate, setQueuesByDate] = useState<Record<string, Queue[]>>({
+  // Multi-Date Queue Local Fallback Store
+  const [localQueuesByDate, setLocalQueuesByDate] = useState<Record<string, Queue[]>>({
     '2026-08-19': [
       {
         id: 1,
@@ -128,14 +130,24 @@ export const QueuePage: React.FC = () => {
   });
 
   const [announcement, setAnnouncement] = useState('');
-  const activeQueues = queuesByDate[selectedDate] || [];
 
-  // Call Queue with Audio Ding-Dong Chime & Indonesian SpeechSynthesis Voice Caller
+  // Fetch queues from backend PostgreSQL on date change or initial load!
+  useEffect(() => {
+    fetchQueues(selectedDate);
+  }, [selectedDate, fetchQueues]);
+
+  // Combine PostgreSQL API queues with local fallback if API returns empty
+  const activeQueues = apiQueues.length > 0 ? apiQueues : (localQueuesByDate[selectedDate] || []);
+
+  // Call Queue with Audio Ding-Dong Chime & Indonesian SpeechSynthesis Voice Caller + Persistent DB Sync
   const callQueue = (queue: Queue) => {
     if (!isAdmin) return;
 
-    // 1. Update queue status in state
-    setQueuesByDate((prev) => ({
+    // 1. Update queue status in PostgreSQL 5432 Database!
+    updateApiQueueStatus(queue.id, 'In Consultation');
+
+    // 2. Update local state fallback
+    setLocalQueuesByDate((prev) => ({
       ...prev,
       [selectedDate]: (prev[selectedDate] || []).map((q) =>
         q.id === queue.id ? { ...q, status: 'In Consultation' } : q
@@ -144,12 +156,11 @@ export const QueuePage: React.FC = () => {
 
     const patientName = queue.patient?.full_name || 'Pasien';
     const roomName = queue.doctor?.practice_room || 'Ruang Periksa Dokter';
-    const queueNumStr = `00${queue.queue_number}`;
 
-    // 2. Play Web Audio Chime Sound & Speech Voice Call Announcement!
+    // 3. Play Web Audio Chime Sound & Speech Voice Call Announcement!
     playQueueChimeAndVoice(queue.queue_number, patientName, roomName);
 
-    // 3. Set UI Banner Announcement
+    // 4. Set UI Banner Announcement
     setAnnouncement(
       `PANGGILAN AKTIF PASIEN: Nomor Antrean #00${queue.queue_number} atas nama ${patientName} dipanggil menuju ${roomName}`
     );
@@ -158,7 +169,10 @@ export const QueuePage: React.FC = () => {
 
   const completeQueue = (id: number) => {
     if (!isAdmin) return;
-    setQueuesByDate((prev) => ({
+    // Update queue status in PostgreSQL 5432 Database!
+    updateApiQueueStatus(id, 'Completed');
+
+    setLocalQueuesByDate((prev) => ({
       ...prev,
       [selectedDate]: (prev[selectedDate] || []).map((q) =>
         q.id === id ? { ...q, status: 'Completed' } : q
