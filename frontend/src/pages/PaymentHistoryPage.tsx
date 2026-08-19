@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ReceiptText, Search, CheckCircle2, Eye, Printer, X, User, Lock, ShieldAlert, MapPin, Phone, Mail, Sparkles, Building2, Hospital, ArrowUpDown, ArrowUp, ArrowDown, Stethoscope, Activity, Pill } from 'lucide-react';
+import { ReceiptText, Search, CheckCircle2, Eye, Printer, X, User, Lock, ShieldAlert, MapPin, Phone, Mail, Sparkles, Building2, Hospital, ArrowUpDown, ArrowUp, ArrowDown, Stethoscope, Activity, Pill, Calendar, Filter, RefreshCw } from 'lucide-react';
 import { useInvoiceStore } from '../store/useInvoiceStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { useLanguageStore } from '../store/useLanguageStore';
@@ -17,6 +17,11 @@ export const PaymentHistoryPage: React.FC = () => {
   const [search, setSearch] = useState('');
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
 
+  // Date Filter & Recap States
+  const [dateFilterMode, setDateFilterMode] = useState<'all' | 'today' | 'this_month' | 'custom'>('all');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+
   // Column Sorting States
   type SortField = 'paid_at' | 'invoice_number' | 'patient_name' | 'payment_method' | 'grand_total';
   const [sortField, setSortField] = useState<SortField>('paid_at');
@@ -31,17 +36,41 @@ export const PaymentHistoryPage: React.FC = () => {
     }
   };
 
+  const resetAllFilters = () => {
+    setSearch('');
+    setDateFilterMode('all');
+    setStartDate('');
+    setEndDate('');
+  };
+
   // Filter ONLY paid transactions for history
   const paidInvoices = invoices.filter((inv) => inv.payment_status === 'Paid');
 
   const filteredInvoices = paidInvoices
-    .filter(
-      (inv) =>
+    .filter((inv) => {
+      // 1. Text Search Filter
+      const matchesSearch =
         inv.invoice_number.toLowerCase().includes(search.toLowerCase()) ||
         inv.patient?.full_name.toLowerCase().includes(search.toLowerCase()) ||
         inv.patient?.national_id?.includes(search) ||
-        inv.payment_method?.toLowerCase().includes(search.toLowerCase())
-    )
+        inv.payment_method?.toLowerCase().includes(search.toLowerCase());
+
+      // 2. Date Range / Month Recap Filter
+      let matchesDate = true;
+      const transactionDate = (inv.paid_at || inv.created_at).slice(0, 10);
+      const today = new Date().toISOString().slice(0, 10);
+
+      if (dateFilterMode === 'today') {
+        matchesDate = transactionDate === today;
+      } else if (dateFilterMode === 'this_month') {
+        matchesDate = transactionDate.slice(0, 7) === today.slice(0, 7);
+      } else if (dateFilterMode === 'custom') {
+        if (startDate && transactionDate < startDate) matchesDate = false;
+        if (endDate && transactionDate > endDate) matchesDate = false;
+      }
+
+      return matchesSearch && matchesDate;
+    })
     .sort((a, b) => {
       let aVal: any = a[sortField as keyof Invoice] || '';
       let bVal: any = b[sortField as keyof Invoice] || '';
@@ -64,6 +93,8 @@ export const PaymentHistoryPage: React.FC = () => {
       return 0;
     });
 
+  // Calculate filtered revenue dynamically based on active date range / month filter!
+  const filteredRevenue = filteredInvoices.reduce((sum, i) => sum + i.grand_total, 0);
   const totalRevenue = paidInvoices.reduce((sum, i) => sum + i.grand_total, 0);
 
   if (!isAdmin) {
@@ -111,27 +142,113 @@ export const PaymentHistoryPage: React.FC = () => {
 
         <div className="flex flex-wrap sm:flex-nowrap gap-3 shrink-0">
           <div className="px-4 py-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 text-right min-w-[140px]">
-            <span className="text-[10px] uppercase font-bold text-slate-300 block">Total Omzet Lunas</span>
-            <span className="text-lg font-extrabold text-emerald-400 font-mono">Rp {totalRevenue.toLocaleString()}</span>
+            <span className="text-[10px] uppercase font-bold text-slate-300 block">Omzet Hasil Rekap</span>
+            <span className="text-lg font-extrabold text-emerald-400 font-mono">Rp {filteredRevenue.toLocaleString()}</span>
           </div>
 
           <div className="px-4 py-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 text-right min-w-[130px]">
-            <span className="text-[10px] uppercase font-bold text-slate-300 block">Total Kuitansi</span>
-            <span className="text-lg font-extrabold text-sky-400 font-mono">{paidInvoices.length} Transaksi</span>
+            <span className="text-[10px] uppercase font-bold text-slate-300 block">Hasil Filter</span>
+            <span className="text-lg font-extrabold text-sky-400 font-mono">{filteredInvoices.length} Kuitansi</span>
           </div>
         </div>
       </div>
 
-      {/* Search Bar */}
-      <div className="glass-card p-4 rounded-3xl border border-slate-200 dark:border-slate-800 flex items-center gap-3 bg-white dark:bg-slate-900/90 shadow-sm">
-        <Search className="w-4 h-4 text-slate-400" />
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Cari transaksi lunas berdasarkan No. Invoice (INV-xxx), Nama Pasien, NIK KTP, atau Metode Pembayaran (QRIS/Transfer/Tunai)..."
-          className="w-full bg-transparent text-xs text-slate-800 dark:text-slate-200 font-semibold focus:outline-none"
-        />
+      {/* FILTER & REKAP KEUANGAN BY BULAN / RANGE TANGGAL */}
+      <div className="glass-card p-5 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4 shadow-sm bg-white dark:bg-slate-900/90">
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+          <h3 className="font-extrabold text-xs text-slate-900 dark:text-slate-100 uppercase tracking-wider flex items-center gap-2">
+            <Filter className="w-4 h-4 text-emerald-500" /> Filter & Rekapitulasi Pendapatan Kasir
+          </h3>
+          <button
+            onClick={resetAllFilters}
+            className="px-3 py-1 rounded-xl bg-slate-100 dark:bg-slate-800 text-[11px] text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold flex items-center gap-1.5 transition cursor-pointer"
+          >
+            <RefreshCw className="w-3.5 h-3.5 text-emerald-500" /> Reset Filter
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
+          {/* Row 1: Search Input */}
+          <div className="md:col-span-2 relative">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Cari No. Invoice (INV-xxx), Nama Pasien, NIK, atau Metode Bayar..."
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 rounded-xl text-xs text-slate-900 dark:text-slate-100 font-semibold focus:outline-none focus:border-emerald-500 transition shadow-xs"
+            />
+          </div>
+
+          {/* Quick Date Filter Buttons */}
+          <div className="flex flex-wrap items-center gap-1.5 justify-start md:justify-end">
+            <button
+              onClick={() => setDateFilterMode('all')}
+              className={`px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+                dateFilterMode === 'all'
+                  ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+              }`}
+            >
+              Semua
+            </button>
+            <button
+              onClick={() => setDateFilterMode('today')}
+              className={`px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+                dateFilterMode === 'today'
+                  ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+              }`}
+            >
+              Hari Ini
+            </button>
+            <button
+              onClick={() => setDateFilterMode('this_month')}
+              className={`px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+                dateFilterMode === 'this_month'
+                  ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+              }`}
+            >
+              Bulan Ini
+            </button>
+            <button
+              onClick={() => setDateFilterMode('custom')}
+              className={`px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+                dateFilterMode === 'custom'
+                  ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+              }`}
+            >
+              Rentang Tanggal
+            </button>
+          </div>
+        </div>
+
+        {/* Custom Date Range Picker */}
+        {dateFilterMode === 'custom' && (
+          <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs">
+            <div className="flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-emerald-500" />
+              <span className="text-slate-600 dark:text-slate-400 font-bold">Dari Tanggal:</span>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="p-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-mono text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:border-emerald-500"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-slate-600 dark:text-slate-400 font-bold">Sampai Tanggal:</span>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="p-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-mono text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:border-emerald-500"
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Completed Transactions List Table */}
