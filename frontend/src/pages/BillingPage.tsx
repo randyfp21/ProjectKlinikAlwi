@@ -259,7 +259,7 @@ export const BillingPage: React.FC = () => {
                       </table>
                     </div>
 
-                    {/* QRIS & Payment Options Box for Patient */}
+                    {/* QRIS & Payment Options Box */}
                     <div className="p-4 rounded-2xl bg-gradient-to-r from-sky-500/10 via-teal-500/10 to-transparent border border-sky-500/20 flex flex-col sm:flex-row items-center justify-between gap-4">
                       <div className="flex items-center gap-4">
                         <div className="p-2 bg-white rounded-xl shadow-xs border border-slate-200">
@@ -274,12 +274,26 @@ export const BillingPage: React.FC = () => {
                         </div>
                       </div>
 
-                      <button
-                        onClick={() => setSelectedInvoice(inv)}
-                        className="px-6 py-3 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs shadow-lg shadow-sky-600/30 transition flex items-center gap-2 shrink-0 cursor-pointer"
-                      >
-                        <CreditCard className="w-4 h-4" /> Bayar Sekarang
-                      </button>
+                      {isPatient ? (
+                        <div className="flex flex-col items-end gap-1 shrink-0">
+                          <button
+                            onClick={() => setSelectedInvoice(inv)}
+                            className="px-5 py-2.5 rounded-xl bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 text-slate-800 dark:text-slate-200 font-extrabold text-xs transition flex items-center gap-1.5 cursor-pointer"
+                          >
+                            <Eye className="w-4 h-4 text-sky-500" /> Lihat Detail Tagihan
+                          </button>
+                          <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1">
+                            <Lock className="w-3 h-3" /> Konfirmasi Pelunasan Oleh Kasir / Admin Klinik
+                          </span>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => setSelectedInvoice(inv)}
+                          className="px-6 py-3 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs shadow-lg shadow-sky-600/30 transition flex items-center gap-2 shrink-0 cursor-pointer"
+                        >
+                          <CreditCard className="w-4 h-4" /> Proses & Selesaikan Pembayaran
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -603,12 +617,18 @@ export const BillingPage: React.FC = () => {
               </button>
 
               {selectedInvoice.payment_status !== 'Paid' ? (
-                <button
-                  onClick={handleConfirmPay}
-                  className="px-6 py-3 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-extrabold text-xs shadow-lg shadow-sky-600/30 flex items-center gap-2 cursor-pointer transition"
-                >
-                  <CheckCircle2 className="w-4 h-4" /> Konfirmasi Pembayaran Lunas
-                </button>
+                isPatient ? (
+                  <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 font-extrabold text-xs">
+                    <Lock className="w-4 h-4" /> Pelunasan Wajib Dikonfirmasi Petugas Kasir / Admin Klinik
+                  </div>
+                ) : (
+                  <button
+                    onClick={handleConfirmPay}
+                    className="px-6 py-3 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-extrabold text-xs shadow-lg shadow-sky-600/30 flex items-center gap-2 cursor-pointer transition"
+                  >
+                    <CheckCircle2 className="w-4 h-4" /> Selesaikan & Konfirmasi Pembayaran Lunas
+                  </button>
+                )
               ) : (
                 <button
                   onClick={() => window.print()}
