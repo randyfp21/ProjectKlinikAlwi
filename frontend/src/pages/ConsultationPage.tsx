@@ -287,20 +287,20 @@ export const ConsultationPage: React.FC = () => {
             {displayWaitingQueue.length === 0 ? (
               <div className="p-12 text-center text-slate-400 text-xs font-semibold space-y-2">
                 <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto" />
-                <p>No waiting patients assigned to your doctor ID currently in queue.</p>
+                <p>Tidak ada antrean pasien menunggu untuk ID Dokter Anda saat ini.</p>
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs text-slate-600 dark:text-slate-300">
                   <thead className="bg-slate-100 dark:bg-slate-800/80 uppercase text-[10px] text-slate-500 dark:text-slate-400 font-semibold">
                     <tr>
-                      <th className="p-3.5">Appt No</th>
-                      <th className="p-3.5">Queue No</th>
-                      <th className="p-3.5">Patient Name</th>
-                      <th className="p-3.5">Doctor & Room</th>
-                      <th className="p-3.5">Date & Slot</th>
+                      <th className="p-3.5">No. Janji Temu</th>
+                      <th className="p-3.5">No. Antrean</th>
+                      <th className="p-3.5">Nama Pasien</th>
+                      <th className="p-3.5">Dokter & Ruangan</th>
+                      <th className="p-3.5">Tanggal & Jam Slot</th>
                       <th className="p-3.5">Status</th>
-                      <th className="p-3.5 text-right">Action</th>
+                      <th className="p-3.5 text-right">Aksi</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
@@ -318,12 +318,12 @@ export const ConsultationPage: React.FC = () => {
                           <div className="text-[10px] text-slate-500 dark:text-slate-400">{app.doctor?.practice_room}</div>
                         </td>
                         <td className="p-3.5">
-                          <div className="font-semibold text-slate-800 dark:text-slate-200">{app.appointment_date}</div>
+                          <div className="font-semibold text-slate-800 dark:text-slate-200">{formatDateIndonesian(app.appointment_date)}</div>
                           <div className="text-[10px] font-mono text-sky-500">{app.time_slot}</div>
                         </td>
                         <td className="p-3.5">
                           <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold border bg-amber-500/10 text-amber-600 border-amber-500/20">
-                            {app.status}
+                            {app.status === 'Confirmed' ? 'Dikonfirmasi' : app.status === 'Completed' ? 'Selesai' : app.status === 'Cancelled' ? 'Dibatalkan' : 'Menunggu'}
                           </span>
                         </td>
                         <td className="p-3.5 text-right">
@@ -331,7 +331,7 @@ export const ConsultationPage: React.FC = () => {
                             onClick={() => handleSelectPatient(app)}
                             className="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs shadow-md shadow-sky-600/30 transition flex items-center gap-1.5 ml-auto"
                           >
-                            <Stethoscope className="w-4 h-4" /> Examine Patient
+                            <Stethoscope className="w-4 h-4" /> Periksa Pasien
                           </button>
                         </td>
                       </tr>
@@ -351,7 +351,7 @@ export const ConsultationPage: React.FC = () => {
               onClick={() => setSelectedAppointment(null)}
               className="text-xs text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-semibold flex items-center gap-1.5 transition"
             >
-              <ArrowLeft className="w-4 h-4" /> Back to Patient Queue
+              <ArrowLeft className="w-4 h-4" /> Kembali ke Antrean Pasien
             </button>
           </div>
 
@@ -365,22 +365,22 @@ export const ConsultationPage: React.FC = () => {
                   <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-400/30 font-mono">
                     {selectedAppointment.appointment_number}
                   </span>
-                  <span className="text-xs font-bold text-amber-400">Queue #{selectedAppointment.queue_number}</span>
+                  <span className="text-xs font-bold text-amber-400">Antrean #{selectedAppointment.queue_number}</span>
                 </div>
                 <h2 className="text-xl font-bold text-white mt-0.5">{selectedAppointment.patient?.full_name}</h2>
                 <p className="text-xs text-slate-300">
-                  {selectedAppointment.patient?.gender}, {selectedAppointment.patient?.age} yrs | NIK: {selectedAppointment.patient?.national_id} | Blood: {selectedAppointment.patient?.blood_type}
+                  {selectedAppointment.patient?.gender === 'Male' ? 'Laki-laki' : 'Perempuan'}, {selectedAppointment.patient?.age} thn | NIK: {selectedAppointment.patient?.national_id} | Gol. Darah: {selectedAppointment.patient?.blood_type}
                 </p>
               </div>
             </div>
 
             <div className="flex gap-3 text-xs">
               <div className="p-2.5 rounded-xl bg-rose-500/20 border border-rose-500/30 text-rose-300">
-                <span className="text-[10px] font-bold block uppercase">Allergies</span>
+                <span className="text-[10px] font-bold block uppercase">Riwayat Alergi</span>
                 <span className="font-semibold">{selectedAppointment.patient?.allergy}</span>
               </div>
               <div className="p-2.5 rounded-xl bg-amber-500/20 border border-amber-500/30 text-amber-300">
-                <span className="text-[10px] font-bold block uppercase">History</span>
+                <span className="text-[10px] font-bold block uppercase">Riwayat Penyakit</span>
                 <span className="font-semibold">{selectedAppointment.patient?.disease_history}</span>
               </div>
             </div>
@@ -389,11 +389,11 @@ export const ConsultationPage: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="glass-card p-6 rounded-2xl border space-y-4">
               <h3 className="text-sm font-bold text-sky-500 uppercase tracking-wider flex items-center gap-2">
-                <Stethoscope className="w-4 h-4" /> Subjective (S) & Objective (O - Vitals)
+                <Stethoscope className="w-4 h-4" /> Subyektif (S - Keluhan) & Obyektif (O - Pemeriksaan & Vital)
               </h3>
 
               <div>
-                <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">Subjective (S) - Patient Complaints</label>
+                <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">Subjective (S) - Keluhan Utama Pasien</label>
                 <textarea
                   rows={4}
                   required
@@ -404,7 +404,7 @@ export const ConsultationPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">Objective (O) - Physical Exam & Vital Signs (TTV)</label>
+                <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">Objective (O) - Pemeriksaan Fisik & Tanda Vital (TTV)</label>
                 <textarea
                   rows={4}
                   required
@@ -417,12 +417,12 @@ export const ConsultationPage: React.FC = () => {
 
             <div className="glass-card p-6 rounded-2xl border space-y-4">
               <h3 className="text-sm font-bold text-teal-500 uppercase tracking-wider flex items-center gap-2">
-                <FileText className="w-4 h-4" /> Assessment (A) & Plan (P - Treatment)
+                <FileText className="w-4 h-4" /> Assessment (A - Diagnosa) & Plan (P - Rencana Terapi)
               </h3>
 
               <div className="grid grid-cols-3 gap-3">
                 <div className="col-span-2">
-                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">Diagnosis</label>
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">Diagnosa Medis</label>
                   <input
                     type="text"
                     required
@@ -432,7 +432,7 @@ export const ConsultationPage: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">ICD-10 Code</label>
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">Kode ICD-10</label>
                   <input
                     type="text"
                     required
@@ -444,7 +444,7 @@ export const ConsultationPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">Plan (P) - Treatment Plan & Therapy</label>
+                <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">Plan (P) - Rencana Pengobatan & Terapi</label>
                 <textarea
                   rows={4}
                   required
@@ -617,13 +617,13 @@ export const ConsultationPage: React.FC = () => {
 
             <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
               <div className="flex items-center gap-2 text-xs text-emerald-600 dark:text-emerald-400 font-semibold">
-                <Award className="w-4 h-4 text-emerald-500" /> Digital Stamp Verified: {doctorName}
+                <Award className="w-4 h-4 text-emerald-500" /> Verifikasi Stempel Digital: {doctorName}
               </div>
               <button
                 type="submit"
-                className="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-lg shadow-emerald-600/30 flex items-center gap-2 transition"
+                className="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-lg shadow-emerald-600/30 flex items-center gap-2 transition cursor-pointer"
               >
-                <Save className="w-4 h-4" /> Save Medical Record & Generate Invoice for Cashier
+                <Save className="w-4 h-4" /> Simpan Rekam Medis & Terbitan Invoice Kasir
               </button>
             </div>
           </div>
