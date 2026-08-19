@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { FileText, Save, CheckCircle2, Stethoscope, Pill, Award, ArrowLeft, UserCheck, Plus, Trash2, Receipt, Lock, Filter } from 'lucide-react';
+import { FileText, Save, CheckCircle2, Stethoscope, Pill, Award, ArrowLeft, UserCheck, Plus, Trash2, Receipt, Lock, Filter, Upload, File, Image as ImageIcon, Paperclip, Calendar, DollarSign, Tag, AlertTriangle } from 'lucide-react';
 import { Appointment } from '../types';
 import { useAuthStore } from '../store/useAuthStore';
 import { useLanguageStore } from '../store/useLanguageStore';
 import { useMedicineStore } from '../store/useMedicineStore';
 import { useInvoiceStore } from '../store/useInvoiceStore';
 import { useConsultationStore } from '../store/useConsultationStore';
+import { apiClient } from '../api/client';
 
 interface SelectedRxItem {
   medicine_id: number;
@@ -15,6 +16,15 @@ interface SelectedRxItem {
   unit_price: number;
   subtotal: number;
   instructions: string;
+  expiry_date?: string;
+}
+
+interface AttachmentFile {
+  id: string;
+  name: string;
+  url: string;
+  type: 'image' | 'pdf' | 'other';
+  size?: string;
 }
 
 export const ConsultationPage: React.FC = () => {
@@ -58,6 +68,57 @@ export const ConsultationPage: React.FC = () => {
   const [dosageInput, setDosageInput] = useState('');
   const [qtyInput, setQtyInput] = useState<number>(1);
 
+  // Doctor Attachments State (X-Ray, Rontgen, Lab Results, External EMR)
+  const [attachments, setAttachments] = useState<AttachmentFile[]>([]);
+  const [isUploadingAttachment, setIsUploadingAttachment] = useState(false);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    setIsUploadingAttachment(true);
+    const fileList = Array.from(files);
+
+    for (const file of fileList) {
+      const isPdf = file.type === 'application/pdf' || file.name.endsWith('.pdf');
+      const isImg = file.type.startsWith('image/');
+      
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const res = await apiClient.post('/upload', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+
+        const uploadedUrl = res.data.data?.url || URL.createObjectURL(file);
+        const newAtt: AttachmentFile = {
+          id: `att_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+          name: file.name,
+          url: uploadedUrl,
+          type: isPdf ? 'pdf' : isImg ? 'image' : 'other',
+          size: `${(file.size / (1024 * 1024)).toFixed(2)} MB`,
+        };
+        setAttachments((prev) => [...prev, newAtt]);
+      } catch (err) {
+        // Fallback local preview URL if server upload fails
+        const newAtt: AttachmentFile = {
+          id: `att_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+          name: file.name,
+          url: URL.createObjectURL(file),
+          type: isPdf ? 'pdf' : isImg ? 'image' : 'other',
+          size: `${(file.size / (1024 * 1024)).toFixed(2)} MB`,
+        };
+        setAttachments((prev) => [...prev, newAtt]);
+      }
+    }
+    setIsUploadingAttachment(false);
+  };
+
+  const handleRemoveAttachment = (id: string) => {
+    setAttachments(attachments.filter((a) => a.id !== id));
+  };
+
   const handleSelectPatient = (app: Appointment) => {
     setSelectedAppointment(app);
     setSoap({
@@ -71,6 +132,7 @@ export const ConsultationPage: React.FC = () => {
       nextVisit: '',
     });
     setRxItems([]);
+    setAttachments([]);
   };
 
   const handleAddRxItem = () => {
@@ -78,18 +140,19 @@ export const ConsultationPage: React.FC = () => {
     if (!med) return;
 
     if (qtyInput > med.stock) {
-      alert(`Insufficient stock! Current available stock for ${med.name} is ${med.stock} ${med.unit}.`);
+      alert(`Stok obat tidak mencukupi! Stok ${med.name} saat ini tersisa ${med.stock} ${med.unit}.`);
       return;
     }
 
     const newItem: SelectedRxItem = {
       medicine_id: med.id,
       medicine_name: med.name,
-      dosage: dosageInput,
+      dosage: dosageInput || '3 x 1 Sesudah Makan',
       quantity: qtyInput,
       unit_price: med.selling_price,
       subtotal: med.selling_price * qtyInput,
-      instructions: `Take ${qtyInput} ${med.unit}`,
+      instructions: `Aturan Minum: ${qtyInput} ${med.unit}`,
+      expiry_date: med.expiry_date || '2027-12-31',
     };
 
     setRxItems([...rxItems, newItem]);
@@ -387,33 +450,94 @@ export const ConsultationPage: React.FC = () => {
             </div>
           </div>
 
+          {/* DOCTOR ATTACHMENTS SECTION (X-RAY, RONTGEN, LAB RESULTS, EXTERNAL EMR) */}
+          <div className="glass-card p-6 rounded-2xl border space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                <Paperclip className="w-5 h-5 text-indigo-500" /> Lampiran Berkas Medis (Hasil Rontgen / Laboratorium / Riwayat Rumah Sakit)
+              </h3>
+              <span className="text-[11px] font-semibold text-slate-400">Opsional • Format PDF atau Gambar (PNG/JPG)</span>
+            </div>
+
+            <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-dashed border-slate-300 dark:border-slate-700 space-y-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="text-xs text-slate-600 dark:text-slate-300">
+                  <span className="font-bold text-slate-900 dark:text-slate-100 block">Unggah Lampiran Berkas Medis Pasien</span>
+                  <span>Dokter dapat mengunggah file foto rontgen, scan hasil lab, atau riwayat rujukan rumah sakit lain.</span>
+                </div>
+                <label className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md flex items-center gap-2 cursor-pointer transition shrink-0">
+                  <Upload className="w-4 h-4" /> {isUploadingAttachment ? 'Mengunggah...' : 'Pilih Berkas PDF / Foto'}
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*,application/pdf"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                    disabled={isUploadingAttachment}
+                  />
+                </label>
+              </div>
+
+              {/* Uploaded File List */}
+              {attachments.length > 0 && (
+                <div className="pt-2 border-t border-slate-200 dark:border-slate-700 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                  {attachments.map((att) => (
+                    <div key={att.id} className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-2 shadow-xs">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        {att.type === 'pdf' ? (
+                          <File className="w-5 h-5 text-rose-500 shrink-0" />
+                        ) : (
+                          <ImageIcon className="w-5 h-5 text-sky-500 shrink-0" />
+                        )}
+                        <div className="min-w-0">
+                          <a href={att.url} target="_blank" rel="noreferrer" className="font-bold text-xs text-slate-800 dark:text-slate-200 hover:text-sky-600 truncate block">
+                            {att.name}
+                          </a>
+                          <span className="text-[10px] text-slate-400 font-mono">{att.size}</span>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveAttachment(att.id)}
+                        className="p-1 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
           <div className="glass-card p-6 rounded-2xl border space-y-4">
             <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-              <Pill className="w-5 h-5 text-teal-500" /> E-Prescription Items (Selected from Live Pharmacy Stock)
+              <Pill className="w-5 h-5 text-teal-500" /> Resep Obat Elektronik (Integrasi Stok Farmasi, Harga Jual & Expired Date)
             </h3>
 
             <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 space-y-3 text-xs">
-              <span className="font-bold text-slate-700 dark:text-slate-300 block">Select Medicine from Pharmacy Stock:</span>
+              <span className="font-bold text-slate-700 dark:text-slate-300 block">Pilih Obat dari Stok Farmasi Aktif:</span>
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                 <div className="sm:col-span-2">
-                  <label className="text-slate-500 dark:text-slate-400 block mb-1">Medicine Name & Live Stock</label>
+                  <label className="text-slate-500 dark:text-slate-400 block mb-1">Nama Obat, Stok, Harga Jual Pasien & Expired Date</label>
                   <select
                     value={selectedMedId}
                     onChange={(e) => setSelectedMedId(Number(e.target.value))}
-                    className="w-full p-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none font-semibold text-xs text-slate-800 dark:text-slate-100"
+                    className="w-full p-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none font-semibold text-xs text-slate-800 dark:text-slate-100"
                   >
                     {stockMedicines.map((m) => (
                       <option key={m.id} value={m.id}>
-                        {m.name} — Live Stock: {m.stock} {m.unit} (Rp {m.selling_price.toLocaleString()})
+                        {m.name} — Stok: {m.stock} {m.unit} | Harga Jual: Rp {m.selling_price.toLocaleString()} | Exp: {m.expiry_date || '2027-12-31'}
                       </option>
                     ))}
                   </select>
                 </div>
 
                 <div>
-                  <label className="text-slate-500 dark:text-slate-400 block mb-1">Dosage Rule</label>
+                  <label className="text-slate-500 dark:text-slate-400 block mb-1">Aturan Dosis</label>
                   <input
                     type="text"
+                    placeholder="3 x 1 Sesudah Makan"
                     value={dosageInput}
                     onChange={(e) => setDosageInput(e.target.value)}
                     className="w-full p-2 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none text-xs"
@@ -421,7 +545,7 @@ export const ConsultationPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="text-slate-500 dark:text-slate-400 block mb-1">Quantity</label>
+                  <label className="text-slate-500 dark:text-slate-400 block mb-1">Jumlah (Qty)</label>
                   <div className="flex gap-2">
                     <input
                       type="number"
@@ -435,7 +559,7 @@ export const ConsultationPage: React.FC = () => {
                       onClick={handleAddRxItem}
                       className="px-3 py-2 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs flex items-center gap-1 transition shrink-0"
                     >
-                      <Plus className="w-4 h-4" /> Add
+                      <Plus className="w-4 h-4" /> Tambah
                     </button>
                   </div>
                 </div>
@@ -444,14 +568,15 @@ export const ConsultationPage: React.FC = () => {
 
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs text-slate-600 dark:text-slate-300">
-                <thead className="bg-slate-100 dark:bg-slate-800/80 uppercase text-[10px] text-slate-500 dark:text-slate-400 font-semibold">
+                <thead className="bg-slate-100 dark:bg-slate-800/80 uppercase text-[10px] text-slate-500 dark:text-slate-400 font-bold tracking-wider">
                   <tr>
-                    <th className="p-3">Medicine Name</th>
-                    <th className="p-3">Dosage Rule</th>
+                    <th className="p-3">Nama Obat</th>
+                    <th className="p-3">Aturan Dosis</th>
                     <th className="p-3">Qty</th>
-                    <th className="p-3">Price</th>
+                    <th className="p-3">Harga Jual (Pasien)</th>
+                    <th className="p-3">Expired Date</th>
                     <th className="p-3">Subtotal</th>
-                    <th className="p-3 text-right">Remove</th>
+                    <th className="p-3 text-right">Hapus</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
@@ -460,7 +585,14 @@ export const ConsultationPage: React.FC = () => {
                       <td className="p-3 font-bold text-slate-900 dark:text-slate-100">{item.medicine_name}</td>
                       <td className="p-3">{item.dosage}</td>
                       <td className="p-3 font-bold text-teal-600 dark:text-teal-400">{item.quantity}</td>
-                      <td className="p-3">Rp {item.unit_price.toLocaleString()}</td>
+                      <td className="p-3 font-semibold text-slate-800 dark:text-slate-200">
+                        Rp {item.unit_price.toLocaleString()}
+                      </td>
+                      <td className="p-3">
+                        <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 border border-amber-500/20 font-mono text-[10px] font-bold">
+                          {item.expiry_date || '2027-12-31'}
+                        </span>
+                      </td>
                       <td className="p-3 font-bold text-teal-500">Rp {item.subtotal.toLocaleString()}</td>
                       <td className="p-3 text-right">
                         <button
