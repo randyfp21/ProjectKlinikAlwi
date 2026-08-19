@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Menu, Bell, Search, ShieldCheck, Sun, Moon, ChevronDown, Settings, Globe, LogOut } from 'lucide-react';
+import { Menu, Bell, Search, ShieldCheck, Sun, Moon, ChevronDown, Settings, Globe, LogOut, BarChart3, ShieldAlert } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
 import { useLanguageStore } from '../store/useLanguageStore';
@@ -108,7 +108,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSidebar }) => {
               {isAdminOrSuper && (
                 <div className="py-1 border-b border-slate-100 dark:border-slate-800">
                   <div className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                    SISTEM & CMS MANAGEMENT
+                    SISTEM & MANAGEMENT
                   </div>
                   <Link
                     to="/dashboard/cms"
@@ -124,6 +124,22 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSidebar }) => {
                   >
                     <Settings className="w-4 h-4 text-teal-500" /> Pengaturan Tarif Klinik
                   </Link>
+                  <Link
+                    to="/dashboard/reports"
+                    onClick={() => setIsProfileOpen(false)}
+                    className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-sky-50 dark:hover:bg-slate-800/80 hover:text-sky-600 dark:hover:text-sky-400 transition"
+                  >
+                    <BarChart3 className="w-4 h-4 text-indigo-500" /> Laporan & Analytics
+                  </Link>
+                  {user?.role === 'Super Admin' && (
+                    <Link
+                      to="/dashboard/audit-logs"
+                      onClick={() => setIsProfileOpen(false)}
+                      className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-sky-50 dark:hover:bg-slate-800/80 hover:text-sky-600 dark:hover:text-sky-400 transition"
+                    >
+                      <ShieldAlert className="w-4 h-4 text-amber-500" /> System Audit Logs
+                    </Link>
+                  )}
                 </div>
               )}
 

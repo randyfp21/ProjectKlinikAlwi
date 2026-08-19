@@ -51,8 +51,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     { name: t('menuBilling'), path: '/dashboard/billing', icon: CreditCard, roles: ['Super Admin', 'Admin', 'Patient'] },
     { name: 'History Transaksi', path: '/dashboard/payment-history', icon: ReceiptText, roles: ['Super Admin', 'Admin'] },
     { name: t('menuMedicalRecords'), path: '/dashboard/medical-records', icon: History, roles: ['Super Admin', 'Admin', 'Doctor', 'Patient'] },
-    { name: t('menuReports'), path: '/dashboard/reports', icon: BarChart3, roles: ['Super Admin', 'Admin'] },
-    { name: t('menuAuditLogs'), path: '/dashboard/audit-logs', icon: ShieldAlert, roles: ['Super Admin'] },
   ];
 
   const filteredMenu = menuItems.filter((item) => item.roles.includes(role));
