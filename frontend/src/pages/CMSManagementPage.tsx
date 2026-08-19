@@ -55,11 +55,16 @@ export const CMSManagementPage: React.FC = () => {
     clinicAddress: cms.clinicAddress,
   });
 
-  // Hero Form State
+  // Hero Form State (Header & Judul Section CMS)
   const [heroForm, setHeroForm] = useState({
     heroTitle: cms.heroTitle,
     heroSubtitle: cms.heroSubtitle,
     heroBadge: cms.heroBadge,
+    galleryHeaderTitle: cms.galleryHeaderTitle,
+    galleryHeaderSubtitle: cms.galleryHeaderSubtitle,
+    doctorsHeaderTitle: cms.doctorsHeaderTitle,
+    doctorsHeaderSubtitle: cms.doctorsHeaderSubtitle,
+    promosHeaderTitle: cms.promosHeaderTitle,
   });
 
   const showToast = (msg: string) => {
@@ -394,6 +399,11 @@ export const CMSManagementPage: React.FC = () => {
                 heroTitle: 'Solusi Kesehatan Terbaik & Terpercaya Untuk Keluarga Anda',
                 heroSubtitle: 'Layanan medis profesional berstandar internasional dengan dokter spesialis berpengalaman, fasilitas Home Service, IV Drips, dan MCU modern.',
                 heroBadge: '🏥 Klinik Medis Terakreditasi 2026',
+                galleryHeaderTitle: 'Klinik Modern & Terpercaya Untuk Keluarga Anda',
+                galleryHeaderSubtitle: 'Memberikan pelayanan medis terbaik dengan tim dokter spesialis berpengalaman dan fasilitas kesehatan modern lengkap.',
+                doctorsHeaderTitle: 'TIM DOKTER SPESIALIS UNGGULAN',
+                doctorsHeaderSubtitle: 'Ditangani Oleh Dokter Spesialis Berpengalaman. Setiap pasien mendapatkan perawatan medis terbaik dari dokter spesialis profesional berlisensi resmi dengan standar pelayanan ramah dan tepat.',
+                promosHeaderTitle: 'PROMO & ARTIKEL KESEHATAN BERLANGSUNG',
               });
               showToast('Pengaturan CMS berhasil di-reset ke nilai default bawaan!');
             }}
@@ -517,45 +527,115 @@ export const CMSManagementPage: React.FC = () => {
         </form>
       </div>
 
-      {/* SECTION 2: HERO BANNER CMS */}
+      {/* SECTION 2: HERO BANNER & JUDUL HEADLINE SECTION LANDING PAGE */}
       <div className="glass-card p-6 rounded-3xl border shadow-sm space-y-4">
         <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
-          <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-amber-500" /> 2. Pengaturan Header Hero Banner Landing Page
-          </h2>
+          <div>
+            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-amber-500" /> 2. Pengaturan Judul Header & Section Landing Page
+            </h2>
+            <p className="text-xs text-slate-500">Atur judul banner utama, judul photo slider background, judul tim dokter, dan judul promo kesehatan</p>
+          </div>
         </div>
 
         <form onSubmit={handleSaveHero} className="space-y-4 text-xs">
-          <div>
-            <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Teks Badge Header Banner</label>
-            <input
-              type="text"
-              value={heroForm.heroBadge}
-              onChange={(e) => setHeroForm({ ...heroForm, heroBadge: e.target.value })}
-              className="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border rounded-xl font-bold text-amber-600 dark:text-amber-400 focus:outline-none"
-            />
+          <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 space-y-3">
+            <h3 className="font-bold text-amber-600 dark:text-amber-400 text-xs uppercase tracking-wider">A. BANNER HERO UTAMA (Halaman Atas)</h3>
+            <div>
+              <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Teks Badge Header Banner</label>
+              <input
+                type="text"
+                value={heroForm.heroBadge}
+                onChange={(e) => setHeroForm({ ...heroForm, heroBadge: e.target.value })}
+                className="w-full p-2.5 bg-white dark:bg-slate-800 border rounded-xl font-bold text-amber-600 dark:text-amber-400 focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Judul Utama Hero Banner</label>
+              <input
+                type="text"
+                required
+                value={heroForm.heroTitle}
+                onChange={(e) => setHeroForm({ ...heroForm, heroTitle: e.target.value })}
+                className="w-full p-2.5 bg-white dark:bg-slate-800 border rounded-xl font-extrabold text-slate-900 dark:text-slate-100 text-sm focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Deskripsi Subtitle Hero Banner</label>
+              <textarea
+                rows={2}
+                required
+                value={heroForm.heroSubtitle}
+                onChange={(e) => setHeroForm({ ...heroForm, heroSubtitle: e.target.value })}
+                className="w-full p-2.5 bg-white dark:bg-slate-800 border rounded-xl text-slate-900 dark:text-slate-100 focus:outline-none"
+              />
+            </div>
           </div>
 
-          <div>
-            <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Judul Utama Hero (Heading 1)</label>
-            <input
-              type="text"
-              required
-              value={heroForm.heroTitle}
-              onChange={(e) => setHeroForm({ ...heroForm, heroTitle: e.target.value })}
-              className="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border rounded-xl font-extrabold text-slate-900 dark:text-slate-100 text-sm focus:outline-none"
-            />
+          <div className="p-4 rounded-2xl bg-sky-500/10 border border-sky-500/20 space-y-3">
+            <h3 className="font-bold text-sky-600 dark:text-sky-400 text-xs uppercase tracking-wider">B. JUDUL PHOTO SLIDER HEADER BACKGROUND (No. 5)</h3>
+            <div>
+              <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Judul Photo Slider Header</label>
+              <input
+                type="text"
+                required
+                value={heroForm.galleryHeaderTitle}
+                onChange={(e) => setHeroForm({ ...heroForm, galleryHeaderTitle: e.target.value })}
+                className="w-full p-2.5 bg-white dark:bg-slate-800 border rounded-xl font-extrabold text-sky-600 dark:text-sky-400 text-sm focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Deskripsi Subtitle Photo Slider Header</label>
+              <textarea
+                rows={2}
+                required
+                value={heroForm.galleryHeaderSubtitle}
+                onChange={(e) => setHeroForm({ ...heroForm, galleryHeaderSubtitle: e.target.value })}
+                className="w-full p-2.5 bg-white dark:bg-slate-800 border rounded-xl text-slate-900 dark:text-slate-100 focus:outline-none"
+              />
+            </div>
           </div>
 
-          <div>
-            <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Deskripsi Subtitle Hero Banner</label>
-            <textarea
-              rows={2}
-              required
-              value={heroForm.heroSubtitle}
-              onChange={(e) => setHeroForm({ ...heroForm, heroSubtitle: e.target.value })}
-              className="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border rounded-xl text-slate-900 dark:text-slate-100 focus:outline-none"
-            />
+          <div className="p-4 rounded-2xl bg-teal-500/10 border border-teal-500/20 space-y-3">
+            <h3 className="font-bold text-teal-600 dark:text-teal-400 text-xs uppercase tracking-wider">C. JUDUL TIM DOKTER SPESIALIS UNGGULAN (No. 4)</h3>
+            <div>
+              <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Judul Section Tim Dokter</label>
+              <input
+                type="text"
+                required
+                value={heroForm.doctorsHeaderTitle}
+                onChange={(e) => setHeroForm({ ...heroForm, doctorsHeaderTitle: e.target.value })}
+                className="w-full p-2.5 bg-white dark:bg-slate-800 border rounded-xl font-extrabold text-teal-600 dark:text-teal-400 text-sm focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Deskripsi Subtitle Tim Dokter</label>
+              <textarea
+                rows={2}
+                required
+                value={heroForm.doctorsHeaderSubtitle}
+                onChange={(e) => setHeroForm({ ...heroForm, doctorsHeaderSubtitle: e.target.value })}
+                className="w-full p-2.5 bg-white dark:bg-slate-800 border rounded-xl text-slate-900 dark:text-slate-100 focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 space-y-3">
+            <h3 className="font-bold text-indigo-600 dark:text-indigo-400 text-xs uppercase tracking-wider">D. JUDUL SECTION PROMO & ARTIKEL BERLANGSUNG</h3>
+            <div>
+              <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Judul Badge Section Promo</label>
+              <input
+                type="text"
+                required
+                value={heroForm.promosHeaderTitle}
+                onChange={(e) => setHeroForm({ ...heroForm, promosHeaderTitle: e.target.value })}
+                className="w-full p-2.5 bg-white dark:bg-slate-800 border rounded-xl font-extrabold text-indigo-600 dark:text-indigo-400 text-sm focus:outline-none"
+              />
+            </div>
           </div>
 
           <div className="flex justify-end pt-2">
@@ -563,7 +643,7 @@ export const CMSManagementPage: React.FC = () => {
               type="submit"
               className="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-md shadow-amber-600/30 flex items-center gap-1.5"
             >
-              <Save className="w-4 h-4" /> Simpan Banner Hero
+              <Save className="w-4 h-4" /> Simpan Seluruh Judul Section CMS
             </button>
           </div>
         </form>

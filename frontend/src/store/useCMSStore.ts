@@ -53,10 +53,15 @@ export interface CMSState {
   contactInstagram: string;
   clinicAddress: string;
 
-  // Hero Section
+  // Hero & Section Titles
   heroTitle: string;
   heroSubtitle: string;
   heroBadge: string;
+  galleryHeaderTitle: string;
+  galleryHeaderSubtitle: string;
+  doctorsHeaderTitle: string;
+  doctorsHeaderSubtitle: string;
+  promosHeaderTitle: string;
 
   // Facilities
   facilities: CMSFacility[];
@@ -76,7 +81,7 @@ export interface CMSState {
 
   // Local Actions
   updateBranding: (data: Partial<Pick<CMSState, 'clinicName' | 'clinicTagline' | 'clinicLogoIcon' | 'contactPhone' | 'contactEmail' | 'contactInstagram' | 'clinicAddress'>>) => void;
-  updateHero: (data: Partial<Pick<CMSState, 'heroTitle' | 'heroSubtitle' | 'heroBadge'>>) => void;
+  updateHero: (data: Partial<Pick<CMSState, 'heroTitle' | 'heroSubtitle' | 'heroBadge' | 'galleryHeaderTitle' | 'galleryHeaderSubtitle' | 'doctorsHeaderTitle' | 'doctorsHeaderSubtitle' | 'promosHeaderTitle'>>) => void;
   updateFacility: (id: string, updated: Partial<CMSFacility>) => void;
   updateDoctor: (id: number, updated: Partial<CMSFeaturedDoctor>) => void;
   updateGalleryPhoto: (id: number, updated: Partial<CMSClinicGallery>) => void;
@@ -260,6 +265,11 @@ export const useCMSStore = create<CMSState>()(
       heroTitle: 'Solusi Kesehatan Terbaik & Terpercaya Untuk Keluarga Anda',
       heroSubtitle: 'Layanan medis profesional berstandar internasional dengan dokter spesialis berpengalaman, fasilitas Home Service, IV Drips, dan MCU modern.',
       heroBadge: '🏥 Klinik Medis Terakreditasi 2026',
+      galleryHeaderTitle: 'Klinik Modern & Terpercaya Untuk Keluarga Anda',
+      galleryHeaderSubtitle: 'Memberikan pelayanan medis terbaik dengan tim dokter spesialis berpengalaman dan fasilitas kesehatan modern lengkap.',
+      doctorsHeaderTitle: 'TIM DOKTER SPESIALIS UNGGULAN',
+      doctorsHeaderSubtitle: 'Ditangani Oleh Dokter Spesialis Berpengalaman. Setiap pasien mendapatkan perawatan medis terbaik dari dokter spesialis profesional berlisensi resmi dengan standar pelayanan ramah dan tepat.',
+      promosHeaderTitle: 'PROMO & ARTIKEL KESEHATAN BERLANGSUNG',
 
       facilities: DEFAULT_FACILITIES,
       featuredDoctors: DEFAULT_DOCTORS,
@@ -282,6 +292,11 @@ export const useCMSStore = create<CMSState>()(
               heroTitle: data.hero_title || get().heroTitle,
               heroSubtitle: data.hero_subtitle || get().heroSubtitle,
               heroBadge: data.hero_badge || get().heroBadge,
+              galleryHeaderTitle: data.gallery_header_title || get().galleryHeaderTitle,
+              galleryHeaderSubtitle: data.gallery_header_subtitle || get().galleryHeaderSubtitle,
+              doctorsHeaderTitle: data.doctors_header_title || get().doctorsHeaderTitle,
+              doctorsHeaderSubtitle: data.doctors_header_subtitle || get().doctorsHeaderSubtitle,
+              promosHeaderTitle: data.promos_header_title || get().promosHeaderTitle,
               facilities: data.facilities_json ? JSON.parse(data.facilities_json) : get().facilities,
               featuredDoctors: data.doctors_json ? JSON.parse(data.doctors_json) : get().featuredDoctors,
               galleryPhotos: data.gallery_json ? JSON.parse(data.gallery_json) : get().galleryPhotos,
@@ -306,6 +321,11 @@ export const useCMSStore = create<CMSState>()(
           hero_title: state.heroTitle,
           hero_subtitle: state.heroSubtitle,
           hero_badge: state.heroBadge,
+          gallery_header_title: state.galleryHeaderTitle,
+          gallery_header_subtitle: state.galleryHeaderSubtitle,
+          doctors_header_title: state.doctorsHeaderTitle,
+          doctors_header_subtitle: state.doctorsHeaderSubtitle,
+          promos_header_title: state.promosHeaderTitle,
           facilities_json: JSON.stringify(state.facilities),
           doctors_json: JSON.stringify(state.featuredDoctors),
           gallery_json: JSON.stringify(state.galleryPhotos),
@@ -404,6 +424,11 @@ export const useCMSStore = create<CMSState>()(
           heroTitle: 'Solusi Kesehatan Terbaik & Terpercaya Untuk Keluarga Anda',
           heroSubtitle: 'Layanan medis profesional berstandar internasional dengan dokter spesialis berpengalaman, fasilitas Home Service, IV Drips, dan MCU modern.',
           heroBadge: '🏥 Klinik Medis Terakreditasi 2026',
+          galleryHeaderTitle: 'Klinik Modern & Terpercaya Untuk Keluarga Anda',
+          galleryHeaderSubtitle: 'Memberikan pelayanan medis terbaik dengan tim dokter spesialis berpengalaman dan fasilitas kesehatan modern lengkap.',
+          doctorsHeaderTitle: 'TIM DOKTER SPESIALIS UNGGULAN',
+          doctorsHeaderSubtitle: 'Ditangani Oleh Dokter Spesialis Berpengalaman. Setiap pasien mendapatkan perawatan medis terbaik dari dokter spesialis profesional berlisensi resmi dengan standar pelayanan ramah dan tepat.',
+          promosHeaderTitle: 'PROMO & ARTIKEL KESEHATAN BERLANGSUNG',
           facilities: DEFAULT_FACILITIES,
           featuredDoctors: DEFAULT_DOCTORS,
           galleryPhotos: DEFAULT_GALLERY,

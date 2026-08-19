@@ -39,7 +39,7 @@ export const LandingPage: React.FC = () => {
   const { t } = useLanguageStore();
   const { isDarkMode, toggleTheme } = useThemeStore();
   const cms = useCMSStore();
-  const { clinicName, clinicTagline, clinicLogoIcon, heroTitle, heroSubtitle, heroBadge, facilities, featuredDoctors, galleryPhotos, promos, contactPhone, contactEmail, contactInstagram, clinicAddress } = cms;
+  const { clinicName, clinicTagline, clinicLogoIcon, heroTitle, heroSubtitle, heroBadge, galleryHeaderTitle, galleryHeaderSubtitle, doctorsHeaderTitle, doctorsHeaderSubtitle, promosHeaderTitle, facilities, featuredDoctors, galleryPhotos, promos, contactPhone, contactEmail, contactInstagram, clinicAddress } = cms;
 
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
 
@@ -158,11 +158,11 @@ export const LandingPage: React.FC = () => {
           </div>
 
           <h2 className="text-4xl sm:text-6xl font-black tracking-tight text-white leading-tight drop-shadow-lg">
-            Klinik Modern & Terpercaya Untuk Keluarga Anda
+            {galleryHeaderTitle || 'Klinik Modern & Terpercaya Untuk Keluarga Anda'}
           </h2>
 
           <p className="text-slate-200 text-sm sm:text-lg max-w-3xl mx-auto leading-relaxed font-medium drop-shadow-md">
-            Memberikan pelayanan medis terbaik dengan tim dokter spesialis berpengalaman dan fasilitas kesehatan modern lengkap.
+            {galleryHeaderSubtitle || 'Memberikan pelayanan medis terbaik dengan tim dokter spesialis berpengalaman dan fasilitas kesehatan modern lengkap.'}
           </p>
 
           {/* Active Photo Info Badge */}
@@ -215,7 +215,7 @@ export const LandingPage: React.FC = () => {
       <section className="py-20 px-6 max-w-7xl mx-auto w-full space-y-12">
         <div className="text-center space-y-3">
           <span className="px-3.5 py-1.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-xs font-bold font-mono uppercase tracking-wider inline-flex items-center gap-1.5">
-            <Gift className="w-4 h-4 text-amber-500" /> PROMO & ARTIKEL KESEHATAN BERLANGSUNG
+            <Gift className="w-4 h-4 text-amber-500" /> {promosHeaderTitle || 'PROMO & ARTIKEL KESEHATAN BERLANGSUNG'}
           </span>
           <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
             Penawaran Spesial & Paket Hemat Klinik
@@ -331,9 +331,9 @@ export const LandingPage: React.FC = () => {
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="text-center space-y-3">
             <span className="px-3 py-1 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 text-xs font-bold font-mono uppercase tracking-wider">
-              TIM DOKTER SPESIALIS UNGGULAN
+              {doctorsHeaderTitle || 'TIM DOKTER SPESIALIS UNGGULAN'}
             </span>
-            <h2 className="text-3xl font-black text-slate-900 dark:text-white">Ditangani Oleh Dokter Spesialis Berpengalaman</h2>
+            <h2 className="text-3xl font-black text-slate-900 dark:text-white">{doctorsHeaderSubtitle || 'Ditangani Oleh Dokter Spesialis Berpengalaman'}</h2>
             <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm max-w-2xl mx-auto">
               Setiap pasien mendapatkan perawatan medis terbaik dari dokter spesialis profesional berlisensi resmi dengan standar pelayanan ramah dan tepat.
             </p>
