@@ -38,6 +38,7 @@ export interface CMSPromo {
   discountTag: string;
   promoCode: string;
   validUntil: string;
+  createdAt?: string;
   description: string;
   photoUrl: string;
   actionUrl: string;
@@ -224,6 +225,7 @@ const DEFAULT_PROMOS: CMSPromo[] = [
     discountTag: 'DISKON 35%',
     promoCode: 'MCU-ALWI-35',
     validUntil: 'Berlaku s/d 31 Agustus 2026',
+    createdAt: '19 Agustus 2026',
     description: 'Pemeriksaan laboratorium darah lengkap, EKG Jantung, Cek Gula Darah & Kolesterol, serta konsultasi gratis Dokter Spesialis Penyakit Dalam.',
     photoUrl: 'https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=1000&q=80',
     actionUrl: '/login',
@@ -235,6 +237,7 @@ const DEFAULT_PROMOS: CMSPromo[] = [
     discountTag: 'DISKON 20%',
     promoCode: 'VAKSIN-SEHAT20',
     validUntil: 'Berlaku s/d 15 September 2026',
+    createdAt: '18 Agustus 2026',
     description: 'Lindungi diri dan orang tua tercinta dari risiko pneumonia & ISPA. Sudah termasuk biaya tindakan suntik perawat & sertifikat imunisasi.',
     photoUrl: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=1000&q=80',
     actionUrl: '/login',
@@ -246,6 +249,7 @@ const DEFAULT_PROMOS: CMSPromo[] = [
     discountTag: 'BUY 2 GET 1 FREE',
     promoCode: 'IVDRIP-BOOSTER',
     validUntil: 'Berlaku s/d 20 September 2026',
+    createdAt: '17 Agustus 2026',
     description: 'Formula infus multivitamin konsentrasi tinggi untuk pemulihan kondisi stamina pasca sakit, pencerah kulit sehat, dan pencegahan dehidrasi.',
     photoUrl: 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=1000&q=80',
     actionUrl: '/login',
@@ -257,6 +261,7 @@ const DEFAULT_PROMOS: CMSPromo[] = [
     discountTag: 'BEBAS ONGKIR 10KM',
     promoCode: 'HOME-SERVICE10',
     validUntil: 'Berlaku s/d 30 September 2026',
+    createdAt: '16 Agustus 2026',
     description: 'Tim medis profesional lengkap datang ke rumah Anda untuk konsultasi fisik, sampel laboratorium darah, atau pemasangan terapi infus rutin.',
     photoUrl: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1000&q=80',
     actionUrl: '/login',
@@ -268,6 +273,7 @@ const DEFAULT_PROMOS: CMSPromo[] = [
     discountTag: 'DISKON 25%',
     promoCode: 'TULANG-SEHAT25',
     validUntil: 'Berlaku s/d 10 Oktober 2026',
+    createdAt: '15 Agustus 2026',
     description: 'Skrining osteoporosis, asam urat, kadar kalsium, serta terapi fisioterapi ringan untuk mendukung mobilitas lansia yang aktif.',
     photoUrl: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=1000&q=80',
     actionUrl: '/login',
@@ -279,6 +285,7 @@ const DEFAULT_PROMOS: CMSPromo[] = [
     discountTag: 'VOUCHER 50RB',
     promoCode: 'IMUNISASI-ANAK50',
     validUntil: 'Berlaku s/d 15 Oktober 2026',
+    createdAt: '14 Agustus 2026',
     description: 'Vaksinasi rutin balita oleh Dokter Spesialis Anak disertai grafik konsultasi gizi, tinggi badan, dan suplementasi vitamin anak.',
     photoUrl: 'https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=1000&q=80',
     actionUrl: '/login',
@@ -290,6 +297,7 @@ const DEFAULT_PROMOS: CMSPromo[] = [
     discountTag: 'DISKON 30%',
     promoCode: 'JANTUNG-SEHAT30',
     validUntil: 'Berlaku s/d 25 Oktober 2026',
+    createdAt: '12 Agustus 2026',
     description: 'Pemeriksaan EKG 12-lead, rekaman detak jantung, profil lipid kolesterol LDL/HDL, serta evaluasi gaya hidup sehat dari tim dokter medis.',
     photoUrl: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=1000&q=80',
     actionUrl: '/login',
@@ -301,6 +309,7 @@ const DEFAULT_PROMOS: CMSPromo[] = [
     discountTag: 'PAKET HEMAT 99RB',
     promoCode: 'DIABETES-CARE99',
     validUntil: 'Berlaku s/d 31 Oktober 2026',
+    createdAt: '10 Agustus 2026',
     description: 'Cek Gula Darah Puasa (GDP), Gula Darah 2 Jam PP, HbA1c, serta edukasi pola makan sehat untuk pencegahan komplikasi diabetes.',
     photoUrl: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=1000&q=80',
     actionUrl: '/login',
@@ -455,8 +464,11 @@ export const useCMSStore = create<CMSState>()(
       },
 
       addPromo: (promo) => {
+        const today = new Date();
+        const formattedDate = today.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
         const newPromo: CMSPromo = {
           id: Date.now(),
+          createdAt: promo.createdAt || formattedDate,
           ...promo,
         };
         set((state) => ({

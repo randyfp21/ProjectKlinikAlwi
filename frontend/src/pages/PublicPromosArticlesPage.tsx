@@ -164,10 +164,12 @@ export const PublicPromosArticlesPage: React.FC = () => {
                 <h2 className="text-2xl font-black text-slate-900 dark:text-white leading-tight">
                   {selectedPromo.title}
                 </h2>
-                <div className="flex items-center gap-3 mt-2 text-xs font-mono text-slate-400">
+                <div className="flex items-center gap-3 mt-2 text-xs font-mono text-slate-400 flex-wrap">
+                  <span>🕒 Dibuat: <strong className="text-emerald-600 dark:text-emerald-400">{selectedPromo.createdAt || '19 Agustus 2026'}</strong></span>
+                  <span>•</span>
                   <span>📅 Masa Berlaku: <strong className="text-sky-600 dark:text-sky-400">{selectedPromo.validUntil}</strong></span>
                   <span>•</span>
-                  <span>🏥 {clinicName} Official Promo</span>
+                  <span>🏥 {clinicName} Official</span>
                 </div>
               </div>
 

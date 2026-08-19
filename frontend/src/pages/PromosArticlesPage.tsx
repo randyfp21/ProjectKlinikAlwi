@@ -237,11 +237,13 @@ export const PromosArticlesPage: React.FC = () => {
               </div>
 
               <div className="p-5 space-y-3">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-1 flex-wrap">
                   <span className="px-2.5 py-1 rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400 font-mono text-[10px] font-extrabold border border-sky-500/20 uppercase">
                     KODE: {promo.promoCode}
                   </span>
-                  <span className="text-[10px] text-slate-400 font-medium">{promo.validUntil}</span>
+                  <span className="text-[10px] text-slate-400 font-medium">
+                    🕒 Dibuat: {promo.createdAt || '19 Agustus 2026'}
+                  </span>
                 </div>
 
                 <h3 className="font-extrabold text-slate-900 dark:text-slate-100 text-base leading-snug">
@@ -310,7 +312,7 @@ export const PromosArticlesPage: React.FC = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Label Diskon</label>
                   <input
@@ -332,7 +334,9 @@ export const PromosArticlesPage: React.FC = () => {
                     className="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border rounded-xl font-mono font-bold text-sky-600 focus:outline-none uppercase"
                   />
                 </div>
+              </div>
 
+              <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Masa Berlaku</label>
                   <input
@@ -341,6 +345,16 @@ export const PromosArticlesPage: React.FC = () => {
                     value={editingPromo.validUntil}
                     onChange={(e) => setEditingPromo({ ...editingPromo, validUntil: e.target.value })}
                     className="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border rounded-xl font-mono text-slate-600 dark:text-slate-300 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Tanggal Artikel Dibuat</label>
+                  <input
+                    type="text"
+                    required
+                    value={editingPromo.createdAt || '19 Agustus 2026'}
+                    onChange={(e) => setEditingPromo({ ...editingPromo, createdAt: e.target.value })}
+                    className="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border rounded-xl font-mono text-slate-900 dark:text-slate-100 focus:outline-none"
                   />
                 </div>
               </div>

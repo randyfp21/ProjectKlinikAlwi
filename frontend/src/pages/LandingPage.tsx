@@ -249,9 +249,14 @@ export const LandingPage: React.FC = () => {
                 </div>
 
                 <div className="px-6 space-y-2">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 font-mono">
-                    {promo.badge}
-                  </span>
+                  <div className="flex items-center justify-between gap-1 text-[10px] font-mono">
+                    <span className="font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
+                      {promo.badge}
+                    </span>
+                    <span className="text-slate-400 font-medium">
+                      🕒 {promo.createdAt || '19 Ags 2026'}
+                    </span>
+                  </div>
                   <h3 className="text-lg font-bold text-slate-900 dark:text-white leading-snug group-hover:text-sky-600 dark:group-hover:text-sky-400 transition">
                     {promo.title}
                   </h3>
