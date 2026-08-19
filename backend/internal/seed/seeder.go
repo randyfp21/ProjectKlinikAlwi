@@ -538,6 +538,68 @@ func SeedAll(db *gorm.DB) error {
 	db.Where("medicine_code = ?", "MED-001").First(&med1)
 	db.Where("medicine_code = ?", "MED-003").First(&med3)
 
+	// 5b. Seed Multi-Date Queues & Appointments for PostgreSQL 5432
+	type QueueSeedItem struct {
+		AppNumber   string
+		PatNumber   string
+		DocCode     string
+		QueueDate   string
+		QueueNumber int
+		Status      string
+		EstTime     string
+		Complaint   string
+	}
+
+	queueSeeds := []QueueSeedItem{
+		// Today (2026-08-19)
+		{AppNumber: "APT-20260819-001", PatNumber: "PAT-20260807-001", DocCode: "DOC-001", QueueDate: "2026-08-19", QueueNumber: 1, Status: domain.QueueStatusInConsultation, EstTime: "09:00 WIB", Complaint: "Sakit kepala hebat dan pusing"},
+		{AppNumber: "APT-20260819-002", PatNumber: "PAT-20260807-002", DocCode: "DOC-002", QueueDate: "2026-08-19", QueueNumber: 2, Status: domain.QueueStatusWaiting, EstTime: "09:20 WIB", Complaint: "Sesak napas kambuh"},
+		{AppNumber: "APT-20260819-003", PatNumber: "PAT-20260807-003", DocCode: "DOC-001", QueueDate: "2026-08-19", QueueNumber: 3, Status: domain.QueueStatusWaiting, EstTime: "09:40 WIB", Complaint: "Nyeri ulu hati menekan"},
+		{AppNumber: "APT-20260819-004", PatNumber: "PAT-004", DocCode: "DOC-001", QueueDate: "2026-08-19", QueueNumber: 4, Status: domain.QueueStatusWaiting, EstTime: "10:00 WIB", Complaint: "Migrain berat sebelah kanan"},
+		// History 1 Month Ago (2026-07-22)
+		{AppNumber: "APT-20260722-001", PatNumber: "PAT-005", DocCode: "DOC-001", QueueDate: "2026-07-22", QueueNumber: 1, Status: domain.QueueStatusCompleted, EstTime: "10:00 WIB", Complaint: "Badan lemas & sering haus"},
+		{AppNumber: "APT-20260722-002", PatNumber: "PAT-006", DocCode: "DOC-002", QueueDate: "2026-07-22", QueueNumber: 2, Status: domain.QueueStatusCompleted, EstTime: "10:20 WIB", Complaint: "Batuk kering & demam"},
+		// History 2 Months Ago (2026-06-18)
+		{AppNumber: "APT-20260618-001", PatNumber: "PAT-007", DocCode: "DOC-001", QueueDate: "2026-06-18", QueueNumber: 1, Status: domain.QueueStatusCompleted, EstTime: "11:00 WIB", Complaint: "Tengkuk pegal sesudah makan"},
+		// History 3 Months Ago (2026-05-15)
+		{AppNumber: "APT-20260515-001", PatNumber: "PAT-009", DocCode: "DOC-001", QueueDate: "2026-05-15", QueueNumber: 1, Status: domain.QueueStatusCompleted, EstTime: "14:00 WIB", Complaint: "Gatal kemerahan di lengan"},
+	}
+
+	for _, qs := range queueSeeds {
+		var count int64
+		db.Model(&domain.Appointment{}).Where("appointment_number = ?", qs.AppNumber).Count(&count)
+		if count == 0 {
+			var pat domain.Patient
+			var doc domain.Doctor
+			db.Where("patient_number = ?", qs.PatNumber).First(&pat)
+			db.Where("doctor_code = ?", qs.DocCode).First(&doc)
+
+			if pat.ID > 0 && doc.ID > 0 {
+				app := domain.Appointment{
+					AppointmentNumber: qs.AppNumber,
+					PatientID:         pat.ID,
+					DoctorID:          doc.ID,
+					AppointmentDate:   qs.QueueDate,
+					TimeSlot:          qs.EstTime,
+					QueueNumber:       qs.QueueNumber,
+					Status:            domain.AppointmentStatusConfirmed,
+					Complaint:         qs.Complaint,
+				}
+				db.Create(&app)
+
+				db.Create(&domain.Queue{
+					AppointmentID: app.ID,
+					PatientID:     pat.ID,
+					DoctorID:      doc.ID,
+					QueueNumber:   qs.QueueNumber,
+					QueueDate:     qs.QueueDate,
+					Status:        qs.Status,
+					EstimatedTime: qs.EstTime,
+				})
+			}
+		}
+	}
+
 	// 6. Seed Appointments, Consultations, Invoices & Medical Records (All 15 Patients)
 	type MedicalRecordSeedData struct {
 		RecordNumber        string
