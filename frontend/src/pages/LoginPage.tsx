@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Hospital, LogIn, Lock, User, AlertCircle, ArrowLeft, Sun, Moon, Heart, Activity, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
@@ -20,8 +20,12 @@ export const LoginPage: React.FC = () => {
   const { setAuth } = useAuthStore();
   const { t } = useLanguageStore();
   const { isDarkMode, toggleTheme } = useThemeStore();
-  const { clinicName, clinicTagline, clinicLogoIcon } = useCMSStore();
+  const { clinicName, clinicTagline, clinicLogoIcon, fetchCMSFromDB } = useCMSStore();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchCMSFromDB();
+  }, [fetchCMSFromDB]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,8 +87,12 @@ export const LoginPage: React.FC = () => {
 
       <div className="w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-2xl space-y-6 transition-colors">
         <div className="text-center space-y-2">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-sky-500 to-teal-400 text-white flex items-center justify-center mx-auto shadow-lg shadow-sky-500/20">
-            <Hospital className="w-7 h-7" />
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-sky-500 to-teal-400 text-white flex items-center justify-center mx-auto shadow-lg shadow-sky-500/20 overflow-hidden p-1">
+            {clinicLogoIcon && (clinicLogoIcon.startsWith('/') || clinicLogoIcon.startsWith('http') || clinicLogoIcon.startsWith('data:')) ? (
+              <img src={clinicLogoIcon} alt={clinicName} className="w-full h-full object-contain rounded-xl" />
+            ) : (
+              <Hospital className="w-7 h-7" />
+            )}
           </div>
           <h1 className="text-2xl font-black text-slate-900 dark:text-white">{clinicName}</h1>
           <p className="text-xs text-sky-600 dark:text-sky-400 font-semibold">{t('loginTitle')} - {clinicTagline}</p>
