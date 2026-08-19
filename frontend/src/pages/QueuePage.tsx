@@ -187,10 +187,14 @@ export const QueuePage: React.FC = () => {
     setTimeout(() => setAnnouncement(''), 5000);
   };
 
-  const currentCallingQueue = activeQueues.find((q) => q.status === 'In Consultation') || activeQueues[0];
+  // Filter pending queues (Waiting / In Consultation) and completed queues
+  const pendingQueues = activeQueues.filter((q) => q.status !== 'Completed');
+  const completedQueues = activeQueues.filter((q) => q.status === 'Completed');
+  const currentCallingQueue = pendingQueues.find((q) => q.status === 'In Consultation') || pendingQueues[0];
+
   const waitingCount = activeQueues.filter((q) => q.status === 'Waiting').length;
   const inConsultCount = activeQueues.filter((q) => q.status === 'In Consultation').length;
-  const completedCount = activeQueues.filter((q) => q.status === 'Completed').length;
+  const completedCount = completedQueues.length;
 
   return (
     <div className="space-y-6 font-sans pb-12">
@@ -317,7 +321,7 @@ export const QueuePage: React.FC = () => {
                 {currentCallingQueue ? `#00${currentCallingQueue.queue_number}` : '---'}
               </h2>
               <div className="pt-2">
-                <span className="text-lg font-black text-sky-300 block">{currentCallingQueue?.patient?.full_name || 'Tidak Ada Pasien'}</span>
+                <span className="text-lg font-black text-sky-300 block">{currentCallingQueue?.patient?.full_name || 'Tidak Ada Pasien Aktif'}</span>
                 <span className="text-xs text-slate-300 font-medium block mt-0.5">{currentCallingQueue?.doctor?.name}</span>
                 <span className="text-[11px] font-mono text-slate-400 block mt-1">Est. Waktu: {currentCallingQueue?.estimated_time || '-'}</span>
               </div>
@@ -329,14 +333,14 @@ export const QueuePage: React.FC = () => {
             {isAdmin ? (
               <button
                 onClick={() => {
-                  const nextWaiting = activeQueues.find((q) => q.status === 'Waiting');
+                  const nextWaiting = pendingQueues.find((q) => q.status === 'Waiting');
                   if (nextWaiting) {
                     callQueue(nextWaiting);
                   } else if (currentCallingQueue) {
                     callQueue(currentCallingQueue);
                   }
                 }}
-                disabled={activeQueues.length === 0}
+                disabled={pendingQueues.length === 0}
                 className="w-full py-4 rounded-2xl bg-sky-600 hover:bg-sky-500 active:scale-95 disabled:opacity-50 text-white font-extrabold text-xs shadow-xl shadow-sky-600/30 transition flex items-center justify-center gap-2.5 cursor-pointer uppercase tracking-wider"
               >
                 <Volume2 className="w-5 h-5 text-yellow-300 animate-pulse" /> Panggil Antrean Berikutnya (Audio Call)
@@ -349,29 +353,29 @@ export const QueuePage: React.FC = () => {
           </div>
         </div>
 
-        {/* LIVE QUEUE TABLE FOR SELECTED DATE */}
+        {/* ACTIVE / WAITING QUEUE TABLE (EXCLUDES COMPLETED) */}
         <div className="md:col-span-2 glass-card p-6 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4 shadow-sm bg-white dark:bg-slate-900/90">
           <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
             <div>
               <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
                 <ListOrdered className="w-5 h-5 text-sky-500" />
-                Daftar Antrean Tanggal: {formatDateIndonesian(selectedDate)}
+                Antrean Berjalan Tanggal: {formatDateIndonesian(selectedDate)}
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Daftar urutan kunjungan pasien berobat yang terdaftar pada sistem</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Daftar pasien yang sedang menunggu dipanggil atau sedang diperiksa dokter</p>
             </div>
 
-            <span className="px-3 py-1 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 font-mono text-xs font-bold">
-              {activeQueues.length} Pasien Terdaftar
+            <span className="px-3 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-mono text-xs font-bold">
+              {pendingQueues.length} Pasien Belum Selesai
             </span>
           </div>
 
-          {activeQueues.length === 0 ? (
-            <div className="p-12 text-center text-xs text-slate-400 font-semibold space-y-3 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-200 dark:border-slate-800">
-              <Clock className="w-10 h-10 text-slate-400 mx-auto" />
+          {pendingQueues.length === 0 ? (
+            <div className="p-8 text-center text-xs text-slate-400 font-semibold space-y-2 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-200 dark:border-slate-800">
+              <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto" />
               <div>
-                <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">Tidak Ada Antrean Pasien pada Tanggal Ini</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-md mx-auto leading-relaxed">
-                  Belum ada janji temu / pendaftaran pasien berobat pada tanggal <strong>{formatDateIndonesian(selectedDate)}</strong>. Antrean baru akan otomatis masuk secara real-time saat registrasi dilakukan.
+                <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">Semua Antrean Aktif Telah Selesai Dipanggil!</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  Seluruh pasien pada antrean hari ini sudah selesai berkonsultasi dan dipindahkan ke tabel <strong>Daftar Pasien Selesai</strong> di bawah.
                 </p>
               </div>
             </div>
@@ -389,7 +393,7 @@ export const QueuePage: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
-                  {activeQueues.map((q) => (
+                  {pendingQueues.map((q) => (
                     <tr key={q.id} className="hover:bg-sky-500/10 transition">
                       <td className="py-3.5 px-4 font-mono font-black text-sky-600 dark:text-sky-400 text-sm">
                         #00{q.queue_number}
@@ -412,16 +416,10 @@ export const QueuePage: React.FC = () => {
                           className={`px-3 py-1 rounded-full text-[11px] font-extrabold border ${
                             q.status === 'In Consultation'
                               ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
-                              : q.status === 'Completed'
-                              ? 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/20'
                               : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
                           }`}
                         >
-                          {q.status === 'In Consultation'
-                            ? 'SEDANG DIPERIKSA'
-                            : q.status === 'Completed'
-                            ? 'SELESAI'
-                            : 'MENUNGGU'}
+                          {q.status === 'In Consultation' ? 'SEDANG DIPERIKSA' : 'MENUNGGU'}
                         </span>
                       </td>
                       <td className="py-3.5 px-4 text-right">
@@ -437,7 +435,7 @@ export const QueuePage: React.FC = () => {
                             <button
                               onClick={() => completeQueue(q.id)}
                               className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] transition shadow-xs flex items-center gap-1 cursor-pointer"
-                              title="Tandai Antrean Selesai Berobat"
+                              title="Tandai Antrean Selesai Berobat & Pindahkan ke Tabel Selesai"
                             >
                               <CheckCircle2 className="w-3.5 h-3.5" /> Selesai
                             </button>
@@ -453,6 +451,79 @@ export const QueuePage: React.FC = () => {
             </div>
           )}
         </div>
+      </div>
+
+      {/* DEDICATED TABLE FOR COMPLETED QUEUES (DAFTAR PASIEN SELESAI) */}
+      <div className="glass-card p-6 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4 shadow-sm bg-white dark:bg-slate-900/90">
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
+          <div>
+            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+              <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+              Daftar Pasien Selesai Berobat (Tanggal: {formatDateIndonesian(selectedDate)})
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              Arsip daftar pasien yang telah selesai berkonsultasi dengan dokter dan lanjut ke proses pembayaran kasir / apotek
+            </p>
+          </div>
+
+          <span className="px-3.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-mono text-xs font-extrabold flex items-center gap-1.5">
+            <CheckCircle2 className="w-4 h-4 text-emerald-500" /> {completedQueues.length} Pasien Selesai
+          </span>
+        </div>
+
+        {completedQueues.length === 0 ? (
+          <div className="p-8 text-center text-xs text-slate-400 font-semibold space-y-2 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-200 dark:border-slate-800">
+            <Clock className="w-8 h-8 text-slate-400 mx-auto" />
+            <p>Belum ada pasien yang selesai diperiksa untuk tanggal {formatDateIndonesian(selectedDate)}.</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800">
+            <table className="w-full text-left text-xs text-slate-600 dark:text-slate-300 whitespace-nowrap">
+              <thead className="bg-emerald-500/10 dark:bg-emerald-950/30 uppercase text-[10px] text-emerald-700 dark:text-emerald-400 font-extrabold tracking-wider border-b border-emerald-500/20">
+                <tr>
+                  <th className="py-3.5 px-4">No. Antrean</th>
+                  <th className="py-3.5 px-4">Nama Pasien & NIK</th>
+                  <th className="py-3.5 px-4">Dokter & Ruang Poli</th>
+                  <th className="py-3.5 px-4">Est. Jam Kunjungan</th>
+                  <th className="py-3.5 px-4">Status Layanan</th>
+                  <th className="py-3.5 px-4 text-right">Keterangan Audit</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
+                {completedQueues.map((q) => (
+                  <tr key={q.id} className="hover:bg-emerald-500/5 transition">
+                    <td className="py-3.5 px-4 font-mono font-black text-emerald-600 dark:text-emerald-400 text-sm">
+                      #00{q.queue_number}
+                    </td>
+                    <td className="py-3.5 px-4">
+                      <div className="font-extrabold text-slate-900 dark:text-slate-100">{q.patient?.full_name}</div>
+                      {q.patient?.national_id && (
+                        <div className="text-[10px] font-mono text-slate-500 dark:text-slate-400">NIK: {q.patient.national_id}</div>
+                      )}
+                    </td>
+                    <td className="py-3.5 px-4 font-bold text-slate-800 dark:text-slate-200">
+                      <div>{q.doctor?.name}</div>
+                      <div className="text-[10px] text-slate-500 dark:text-slate-400 font-normal">{q.doctor?.practice_room}</div>
+                    </td>
+                    <td className="py-3.5 px-4 font-mono text-xs text-slate-600 dark:text-slate-400 font-bold">
+                      {q.estimated_time}
+                    </td>
+                    <td className="py-3.5 px-4">
+                      <span className="px-3 py-1 rounded-full text-[11px] font-extrabold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5 w-fit">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> SELESAI BEROBAT
+                      </span>
+                    </td>
+                    <td className="py-3.5 px-4 text-right">
+                      <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+                        Lanjut ke Kasir & Resep Obat
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );
