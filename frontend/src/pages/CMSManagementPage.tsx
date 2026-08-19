@@ -575,40 +575,6 @@ export const CMSManagementPage: React.FC = () => {
         </div>
 
         <form onSubmit={handleSaveHero} className="space-y-4 text-xs">
-          <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 space-y-3">
-            <h3 className="font-bold text-amber-600 dark:text-amber-400 text-xs uppercase tracking-wider">A. BANNER HERO UTAMA (Halaman Atas)</h3>
-            <div>
-              <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Teks Badge Header Banner</label>
-              <input
-                type="text"
-                value={heroForm.heroBadge}
-                onChange={(e) => setHeroForm({ ...heroForm, heroBadge: e.target.value })}
-                className="w-full p-2.5 bg-white dark:bg-slate-800 border rounded-xl font-bold text-amber-600 dark:text-amber-400 focus:outline-none"
-              />
-            </div>
-
-            <div>
-              <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Judul Utama Hero Banner</label>
-              <input
-                type="text"
-                required
-                value={heroForm.heroTitle}
-                onChange={(e) => setHeroForm({ ...heroForm, heroTitle: e.target.value })}
-                className="w-full p-2.5 bg-white dark:bg-slate-800 border rounded-xl font-extrabold text-slate-900 dark:text-slate-100 text-sm focus:outline-none"
-              />
-            </div>
-
-            <div>
-              <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Deskripsi Subtitle Hero Banner</label>
-              <textarea
-                rows={2}
-                required
-                value={heroForm.heroSubtitle}
-                onChange={(e) => setHeroForm({ ...heroForm, heroSubtitle: e.target.value })}
-                className="w-full p-2.5 bg-white dark:bg-slate-800 border rounded-xl text-slate-900 dark:text-slate-100 focus:outline-none"
-              />
-            </div>
-          </div>
 
           <div className="p-4 rounded-2xl bg-sky-500/10 border border-sky-500/20 space-y-3">
             <h3 className="font-bold text-sky-600 dark:text-sky-400 text-xs uppercase tracking-wider">B. JUDUL PHOTO SLIDER HEADER BACKGROUND (No. 5)</h3>

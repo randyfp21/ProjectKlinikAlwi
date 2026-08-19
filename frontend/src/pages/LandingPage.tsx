@@ -135,37 +135,7 @@ export const LandingPage: React.FC = () => {
 
 
 
-      {/* TOP HERO BANNER SECTION (CMS Synced) */}
-      <section className="relative py-16 sm:py-24 px-6 bg-gradient-to-b from-sky-500/10 via-teal-500/5 to-transparent border-b border-slate-200 dark:border-slate-800 transition-colors">
-        <div className="max-w-5xl mx-auto text-center space-y-6">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-bold font-mono tracking-wider shadow-xs">
-            <Sparkles className="w-4 h-4 text-amber-500" /> {heroBadge || '🏥 Klinik Medis Terakreditasi 2026'}
-          </div>
 
-          <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
-            {heroTitle || 'Solusi Kesehatan Terbaik & Terpercaya Untuk Keluarga Anda'}
-          </h1>
-
-          <p className="text-slate-600 dark:text-slate-300 text-sm sm:text-lg max-w-3xl mx-auto leading-relaxed font-medium">
-            {heroSubtitle || 'Layanan medis profesional berstandar internasional dengan dokter spesialis berpengalaman, fasilitas Home Service, IV Drips, dan MCU modern.'}
-          </p>
-
-          <div className="pt-4 flex flex-wrap items-center justify-center gap-4">
-            <Link
-              to="/register"
-              className="px-6 py-3.5 rounded-2xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-sm shadow-xl shadow-sky-600/30 transition flex items-center gap-2"
-            >
-              <CalendarCheck className="w-5 h-5" /> Booking Janji Temu Dokter
-            </Link>
-            <a
-              href={`tel:${contactPhone.replace(/\s+/g, '')}`}
-              className="px-6 py-3.5 rounded-2xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-sm border border-slate-200 dark:border-slate-700 shadow-md transition flex items-center gap-2"
-            >
-              <Phone className="w-5 h-5 text-teal-500" /> Hubungi Layanan Darurat ({contactPhone})
-            </a>
-          </div>
-        </div>
-      </section>
 
       {/* PHOTO SLIDER CONTAINER AS FULL BACKGROUND HEADER FOR "Klinik Modern & Terpercaya Untuk Keluarga Anda" */}
       <section className="relative py-24 sm:py-32 px-6 overflow-hidden border-b border-slate-200 dark:border-slate-800 transition-colors">
