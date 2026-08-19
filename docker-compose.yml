@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: klinik_alwi_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: klinik_alwi
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: klinik_alwi_backend
+    restart: always
+    ports:
+      - "8086:8086"
+    environment:
+      APP_PORT: "8086"
+      APP_ENV: "production"
+      DB_DRIVER: "postgres"
+      DB_HOST: "postgres"
+      DB_PORT: "5432"
+      DB_USER: "postgres"
+      DB_PASSWORD: "postgrespassword"
+      DB_NAME: "klinik_alwi"
+      DB_SSLMODE: "disable"
+      JWT_SECRET: "enterprise-super-secret-klinik-alwi-2026"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
