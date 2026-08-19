@@ -20,6 +20,7 @@ import { LoginPage } from './pages/LoginPage';
 import { RegisterPatientPage } from './pages/RegisterPatientPage';
 import { UserManagementPage } from './pages/UserManagementPage';
 import { MasterDataManagementPage } from './pages/MasterDataManagementPage';
+import { PublicQueueMonitorPage } from './pages/PublicQueueMonitorPage';
 import { useAuthStore } from './store/useAuthStore';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -38,6 +39,7 @@ export function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPatientPage />} />
+        <Route path="/public-queue-monitor" element={<PublicQueueMonitorPage />} />
 
         {/* Protected Dashboard Routes */}
         <Route

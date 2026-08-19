@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Menu, Bell, Search, ShieldCheck, Sun, Moon, ChevronDown, Settings, Globe, LogOut, BarChart3, ShieldAlert, Database } from 'lucide-react';
+import { Menu, Bell, Search, ShieldCheck, Sun, Moon, ChevronDown, Settings, Globe, LogOut, BarChart3, ShieldAlert, Database, Monitor } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
 import { useLanguageStore } from '../store/useLanguageStore';
@@ -133,6 +133,16 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSidebar }) => {
                   >
                     <BarChart3 className="w-4 h-4 text-indigo-500" /> Laporan & Analytics
                   </Link>
+                  {user?.role === 'Super Admin' && (
+                    <Link
+                      to="/public-queue-monitor"
+                      target="_blank"
+                      onClick={() => setIsProfileOpen(false)}
+                      className="flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-sky-600 dark:text-sky-400 bg-sky-50/80 dark:bg-sky-950/40 hover:bg-sky-100 dark:hover:bg-sky-900/60 transition border-y border-sky-100 dark:border-sky-900/40 my-1"
+                    >
+                      <Monitor className="w-4 h-4 text-sky-500 animate-pulse" /> Layar Monitor Antrean (Public TV)
+                    </Link>
+                  )}
                   {user?.role === 'Super Admin' && (
                     <Link
                       to="/dashboard/master-data"
