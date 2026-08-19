@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Hospital, LogIn, Lock, User, AlertCircle, ArrowLeft, Sun, Moon } from 'lucide-react';
+import { Hospital, LogIn, Lock, User, AlertCircle, ArrowLeft, Sun, Moon, Heart, Activity, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useLanguageStore } from '../store/useLanguageStore';
 import { useThemeStore } from '../store/useThemeStore';
@@ -12,12 +12,15 @@ export const LoginPage: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isSuccessLoading, setIsSuccessLoading] = useState(false);
   const [error, setError] = useState('');
+  const [loggedInUserRole, setLoggedInUserRole] = useState('');
+  const [loggedInUserName, setLoggedInUserName] = useState('');
 
   const { setAuth } = useAuthStore();
   const { t } = useLanguageStore();
   const { isDarkMode, toggleTheme } = useThemeStore();
-  const { clinicName, clinicTagline } = useCMSStore();
+  const { clinicName, clinicTagline, clinicLogoIcon } = useCMSStore();
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -30,7 +33,15 @@ export const LoginPage: React.FC = () => {
       if (res.data.success) {
         const { user, tokens, doctor, patient } = res.data.data;
         setAuth(user, tokens.access_token, doctor, patient);
-        navigate('/dashboard');
+        setLoggedInUserRole(user.role);
+        setLoggedInUserName(user.full_name);
+        setLoading(false);
+        setIsSuccessLoading(true);
+
+        // Wait for Medical ECG Animation sequence before navigating!
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 2200);
         return;
       } else {
         setError(res.data.message || 'Username/Email atau Password salah.');
@@ -167,6 +178,54 @@ export const LoginPage: React.FC = () => {
           </Link>
         </div>
       </div>
+
+      {/* COOL MEDICAL THEMED LOADING SCREEN OVERLAY ON SUCCESSFUL LOGIN */}
+      {isSuccessLoading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-950/90 backdrop-blur-xl animate-fadeIn">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-8 text-center space-y-6 shadow-2xl relative overflow-hidden">
+            {/* Ambient Medical Glow Background */}
+            <div className="absolute -top-20 -left-20 w-48 h-48 bg-teal-500/20 rounded-full blur-3xl" />
+            <div className="absolute -bottom-20 -right-20 w-48 h-48 bg-sky-500/20 rounded-full blur-3xl" />
+
+            {/* Pulsing Heart & Stethoscope Medical Icon */}
+            <div className="relative w-24 h-24 mx-auto flex items-center justify-center">
+              <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-teal-500/20 via-sky-500/20 to-emerald-500/20 animate-ping" />
+              <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-sky-500 via-teal-500 to-emerald-400 text-white flex items-center justify-center shadow-xl shadow-teal-500/30 animate-heartbeat">
+                <Heart className="w-10 h-10 fill-white" />
+              </div>
+            </div>
+
+            {/* Medical Dynamic ECG Monitor Pulse Line */}
+            <div className="py-2 px-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2">
+              <div className="flex items-center justify-between text-[10px] font-mono text-emerald-400">
+                <span className="flex items-center gap-1"><Activity className="w-3.5 h-3.5 text-teal-400 animate-pulse" /> EKG VITAL MONITOR</span>
+                <span className="font-bold">78 BPM • NORMAL</span>
+              </div>
+              <svg className="w-full h-12 text-teal-400" viewBox="0 0 500 100" fill="none">
+                <path
+                  d="M0,50 L120,50 L140,20 L160,80 L180,10 L200,90 L220,50 L340,50 L360,20 L380,80 L400,10 L420,90 L440,50 L500,50"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="animate-ecg"
+                />
+              </svg>
+            </div>
+
+            {/* Success Status Text */}
+            <div className="space-y-1.5 pt-1">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-black uppercase tracking-wider">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Otentikasi Medis Berhasil
+              </div>
+              <h2 className="text-xl font-black text-white pt-1">Selamat Datang, {loggedInUserName}!</h2>
+              <p className="text-xs text-slate-400 flex items-center justify-center gap-1">
+                <ShieldCheck className="w-3.5 h-3.5 text-sky-400" /> Peran: <strong className="text-teal-300">{loggedInUserRole}</strong> — Menyiapkan Portal Medis Klinik...
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
