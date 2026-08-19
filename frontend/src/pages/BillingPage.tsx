@@ -331,26 +331,26 @@ export const BillingPage: React.FC = () => {
         </div>
       ) : !selectedInvoice ? (
         /* =========================================================================
-            VIEW 2: ADMIN / CASHIER ROLE -> PATIENT BILLING QUEUE
+            VIEW 2: ADMIN / CASHIER ROLE -> UNPAID PATIENT BILLING QUEUE (ONLY PENDING)
            ========================================================================= */
         <div className="glass-card p-6 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4 shadow-sm bg-white dark:bg-slate-900/90">
           <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
             <div>
               <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                <Receipt className="w-5 h-5 text-sky-500" />
-                Antrean Tagihan Pasien Meja Kasir ({displayInvoices.length})
+                <Receipt className="w-5 h-5 text-amber-500" />
+                Antrean Tagihan Belum Lunas Meja Kasir ({pendingInvoices.length})
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Daftar invoice aktif yang dapat diproses dan dikonfirmasi pembayarannya</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Daftar invoice aktif yang belum lunas dan siap diproses pembayarannya</p>
             </div>
-            <span className="px-3 py-1 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 text-xs font-bold font-mono">
-              {displayInvoices.length} Pasien
+            <span className="px-3 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-xs font-bold font-mono">
+              {pendingInvoices.length} Pasien Belum Lunas
             </span>
           </div>
 
-          {displayInvoices.length === 0 ? (
+          {pendingInvoices.length === 0 ? (
             <div className="p-12 text-center text-xs text-slate-400 font-semibold space-y-2">
               <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto" />
-              <p>Belum ada antrean invoice tagihan pasien di meja kasir saat ini.</p>
+              <p>Tidak ada antrean tagihan belum lunas di meja kasir saat ini. Semua tagihan telah diproses lunas!</p>
             </div>
           ) : (
             <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800">
@@ -367,7 +367,7 @@ export const BillingPage: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
-                  {displayInvoices.map((inv) => (
+                  {pendingInvoices.map((inv) => (
                     <tr
                       key={inv.id}
                       onClick={() => setSelectedInvoice(inv)}
@@ -388,12 +388,8 @@ export const BillingPage: React.FC = () => {
                         Rp {inv.grand_total.toLocaleString()}
                       </td>
                       <td className="py-3.5 px-4">
-                        <span className={`px-3 py-1 rounded-full text-[11px] font-extrabold border ${
-                          inv.payment_status === 'Paid'
-                            ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
-                            : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
-                        }`}>
-                          {inv.payment_status === 'Paid' ? 'LUNAS' : 'MENUNGGU'}
+                        <span className="px-3 py-1 rounded-full text-[11px] font-extrabold border bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20">
+                          MENUNGGU BAYAR
                         </span>
                       </td>
                       <td className="py-3.5 px-4 text-right">
