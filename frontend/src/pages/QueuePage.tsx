@@ -623,8 +623,8 @@ export const QueuePage: React.FC = () => {
               </div>
             </div>
 
-            <p className="text-xs text-slate-600 dark:text-slate-300 text-center leading-relaxed">
-              Apakah Anda yakin pasien ini telah selesai diperiksa? Status antrean di database PostgreSQL akan diubah menjadi <strong>Completed (Selesai)</strong> dan dipindahkan ke tabel <strong>Daftar Pasien Selesai Berobat</strong>.
+            <p className="text-sm font-semibold text-slate-800 dark:text-slate-200 text-center leading-relaxed py-2">
+              Apakah Anda yakin pasien ini telah selesai diperiksa?
             </p>
 
             <div className="flex items-center justify-end gap-3 pt-2">
