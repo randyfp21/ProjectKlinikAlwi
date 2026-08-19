@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Globe, Edit3, Save, CheckCircle2, RotateCcw, Hospital, Home, Pill, Syringe, Droplet, Stethoscope, Handshake, Eye, Sparkles, UserCheck, ShieldCheck, Upload, Image as ImageIcon, Plus, Trash2, Gift, Tag } from 'lucide-react';
+import { Globe, Edit3, Save, CheckCircle2, RotateCcw, Hospital, Home, Pill, Syringe, Droplet, Stethoscope, Handshake, Eye, Sparkles, UserCheck, ShieldCheck, Upload, Image as ImageIcon, Plus, Trash2, Gift, Tag, Camera } from 'lucide-react';
 import { useCMSStore, CMSFacility, CMSFeaturedDoctor, CMSClinicGallery, CMSPromo } from '../store/useCMSStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { apiClient } from '../api/client';
@@ -51,6 +51,7 @@ export const CMSManagementPage: React.FC = () => {
     clinicTagline: cms.clinicTagline,
     contactPhone: cms.contactPhone,
     contactEmail: cms.contactEmail,
+    contactInstagram: cms.contactInstagram,
     clinicAddress: cms.clinicAddress,
   });
 
@@ -386,6 +387,7 @@ export const CMSManagementPage: React.FC = () => {
                 clinicTagline: 'Layanan Kesehatan Modern, Cepat & Terpercaya',
                 contactPhone: '+628-13-1100-103',
                 contactEmail: 'info@klinikalwi.id',
+                contactInstagram: 'https://instagram.com/klinikalwi.official',
                 clinicAddress: 'Jl. Jalur 20, blok 47, No.24B Meruya Utara, Kembangan Jakarta barat',
               });
               setHeroForm({
@@ -476,6 +478,20 @@ export const CMSManagementPage: React.FC = () => {
               value={brandingForm.contactEmail}
               onChange={(e) => setBrandingForm({ ...brandingForm, contactEmail: e.target.value })}
               className="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border rounded-xl text-slate-900 dark:text-slate-100 focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold flex items-center gap-1">
+              <Camera className="w-3.5 h-3.5 text-rose-500" /> URL Akun Instagram Resmi Klinik
+            </label>
+            <input
+              type="text"
+              required
+              placeholder="https://instagram.com/klinikalwi.official"
+              value={brandingForm.contactInstagram}
+              onChange={(e) => setBrandingForm({ ...brandingForm, contactInstagram: e.target.value })}
+              className="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border rounded-xl font-mono text-rose-600 dark:text-rose-400 focus:outline-none"
             />
           </div>
 

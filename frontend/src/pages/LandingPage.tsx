@@ -27,7 +27,8 @@ import {
   ChevronRight,
   Image as ImageIcon,
   Tag,
-  Gift
+  Gift,
+  Camera
 } from 'lucide-react';
 import { useLanguageStore } from '../store/useLanguageStore';
 import { useThemeStore } from '../store/useThemeStore';
@@ -38,7 +39,7 @@ export const LandingPage: React.FC = () => {
   const { t } = useLanguageStore();
   const { isDarkMode, toggleTheme } = useThemeStore();
   const cms = useCMSStore();
-  const { clinicName, clinicTagline, clinicLogoIcon, heroTitle, heroSubtitle, heroBadge, facilities, featuredDoctors, galleryPhotos, promos, contactPhone, contactEmail, clinicAddress } = cms;
+  const { clinicName, clinicTagline, clinicLogoIcon, heroTitle, heroSubtitle, heroBadge, facilities, featuredDoctors, galleryPhotos, promos, contactPhone, contactEmail, contactInstagram, clinicAddress } = cms;
 
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
 
@@ -456,15 +457,28 @@ export const LandingPage: React.FC = () => {
           </div>
 
           <div className="space-y-2">
-            <span className="font-bold text-slate-900 dark:text-white block uppercase text-[10px] tracking-wider">KONTAK & LOKASI</span>
+            <span className="font-bold text-slate-900 dark:text-white block uppercase text-[10px] tracking-wider">KONTAK & SOSIAL MEDIA</span>
             <div className="flex items-center gap-2">
               <Phone className="w-4 h-4 text-sky-500" /> <span>{contactPhone}</span>
             </div>
             <div className="flex items-center gap-2">
               <Mail className="w-4 h-4 text-teal-500" /> <span>{contactEmail}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-amber-500" /> <span>{clinicAddress}</span>
+            {contactInstagram && (
+              <div className="flex items-center gap-2">
+                <Camera className="w-4 h-4 text-rose-500" />
+                <a
+                  href={contactInstagram.startsWith('http') ? contactInstagram : `https://${contactInstagram}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:underline text-rose-600 dark:text-rose-400 font-bold"
+                >
+                  Instagram Klinik Alwi
+                </a>
+              </div>
+            )}
+            <div className="flex items-center gap-2 pt-1">
+              <MapPin className="w-4 h-4 text-amber-500 shrink-0" /> <span>{clinicAddress}</span>
             </div>
           </div>
 

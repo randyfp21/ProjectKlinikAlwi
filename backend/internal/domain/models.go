@@ -317,6 +317,7 @@ type ClinicCMSSetting struct {
 	ClinicLogoIcon string    `gorm:"size:255" json:"clinic_logo_icon"`
 	ContactPhone   string    `gorm:"size:50;default:'+628-13-1100-103'" json:"contact_phone"`
 	ContactEmail   string    `gorm:"size:100;default:'info@klinikalwi.id'" json:"contact_email"`
+	ContactInstagram string  `gorm:"size:255;default:'https://instagram.com/klinikalwi.official'" json:"contact_instagram"`
 	ClinicAddress  string    `gorm:"type:text" json:"clinic_address"`
 	HeroTitle      string    `gorm:"size:255" json:"hero_title"`
 	HeroSubtitle   string    `gorm:"type:text" json:"hero_subtitle"`

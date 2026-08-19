@@ -330,6 +330,7 @@ CREATE TABLE clinic_cms_settings (
     clinic_logo_icon VARCHAR(255),
     contact_phone VARCHAR(50) DEFAULT '+628-13-1100-103',
     contact_email VARCHAR(100) DEFAULT 'info@klinikalwi.id',
+    contact_instagram VARCHAR(255) DEFAULT 'https://instagram.com/klinikalwi.official',
     clinic_address TEXT,
     hero_title VARCHAR(255),
     hero_subtitle TEXT,

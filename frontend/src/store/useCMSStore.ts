@@ -50,6 +50,7 @@ export interface CMSState {
   clinicLogoIcon: string;
   contactPhone: string;
   contactEmail: string;
+  contactInstagram: string;
   clinicAddress: string;
 
   // Hero Section
@@ -74,7 +75,7 @@ export interface CMSState {
   saveCMSToDB: () => Promise<void>;
 
   // Local Actions
-  updateBranding: (data: Partial<Pick<CMSState, 'clinicName' | 'clinicTagline' | 'clinicLogoIcon' | 'contactPhone' | 'contactEmail' | 'clinicAddress'>>) => void;
+  updateBranding: (data: Partial<Pick<CMSState, 'clinicName' | 'clinicTagline' | 'clinicLogoIcon' | 'contactPhone' | 'contactEmail' | 'contactInstagram' | 'clinicAddress'>>) => void;
   updateHero: (data: Partial<Pick<CMSState, 'heroTitle' | 'heroSubtitle' | 'heroBadge'>>) => void;
   updateFacility: (id: string, updated: Partial<CMSFacility>) => void;
   updateDoctor: (id: number, updated: Partial<CMSFeaturedDoctor>) => void;
@@ -253,6 +254,7 @@ export const useCMSStore = create<CMSState>()(
       clinicLogoIcon: 'Hospital',
       contactPhone: '+628-13-1100-103',
       contactEmail: 'info@klinikalwi.id',
+      contactInstagram: 'https://instagram.com/klinikalwi.official',
       clinicAddress: 'Jl. Jalur 20, blok 47, No.24B Meruya Utara, Kembangan Jakarta barat',
 
       heroTitle: 'Solusi Kesehatan Terbaik & Terpercaya Untuk Keluarga Anda',
@@ -275,6 +277,7 @@ export const useCMSStore = create<CMSState>()(
               clinicLogoIcon: data.clinic_logo_icon || get().clinicLogoIcon,
               contactPhone: data.contact_phone || get().contactPhone,
               contactEmail: data.contact_email || get().contactEmail,
+              contactInstagram: data.contact_instagram || get().contactInstagram,
               clinicAddress: data.clinic_address || get().clinicAddress,
               heroTitle: data.hero_title || get().heroTitle,
               heroSubtitle: data.hero_subtitle || get().heroSubtitle,
@@ -298,6 +301,7 @@ export const useCMSStore = create<CMSState>()(
           clinic_logo_icon: state.clinicLogoIcon,
           contact_phone: state.contactPhone,
           contact_email: state.contactEmail,
+          contact_instagram: state.contactInstagram,
           clinic_address: state.clinicAddress,
           hero_title: state.heroTitle,
           hero_subtitle: state.heroSubtitle,
