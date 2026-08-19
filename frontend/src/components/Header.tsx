@@ -1,5 +1,6 @@
-import React from 'react';
-import { Menu, Bell, Search, ShieldCheck, Sun, Moon } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Menu, Bell, Search, ShieldCheck, Sun, Moon, ChevronDown, Settings, Globe, LogOut } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
 import { useLanguageStore } from '../store/useLanguageStore';
 import { useThemeStore } from '../store/useThemeStore';
@@ -10,9 +11,25 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ onOpenSidebar }) => {
-  const { user } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const { t } = useLanguageStore();
   const { isDarkMode, toggleTheme } = useThemeStore();
+  const navigate = useNavigate();
+
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const isAdminOrSuper = user?.role === 'Super Admin' || user?.role === 'Admin';
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsProfileOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   return (
     <header className="sticky top-0 z-30 h-16 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 lg:px-8 flex items-center justify-between transition-colors">
@@ -61,17 +78,70 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSidebar }) => {
           <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500" />
         </button>
 
-        {/* User Pill */}
-        <div className="flex items-center gap-3 pl-3 border-l border-slate-200 dark:border-slate-800">
-          <div className="text-right hidden md:block">
-            <div className="text-xs font-bold text-slate-800 dark:text-slate-100">{user?.full_name}</div>
-            <div className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-end gap-1">
-              <ShieldCheck className="w-3 h-3 text-sky-500" /> {user?.role}
+        {/* User Profile Dropdown Pill */}
+        <div className="relative border-l border-slate-200 dark:border-slate-800 pl-3" ref={dropdownRef}>
+          <button
+            onClick={() => setIsProfileOpen(!isProfileOpen)}
+            className="flex items-center gap-2.5 p-1 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+          >
+            <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-sky-500 to-teal-400 text-white flex items-center justify-center font-bold text-sm shadow-md shadow-sky-500/20 shrink-0">
+              {user?.full_name?.charAt(0) || 'U'}
             </div>
-          </div>
-          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-sky-500 to-teal-400 text-white flex items-center justify-center font-bold text-sm shadow-md shadow-sky-500/20">
-            {user?.full_name?.charAt(0) || 'U'}
-          </div>
+            <div className="text-left hidden md:block">
+              <div className="text-xs font-bold text-slate-800 dark:text-slate-100 leading-tight">{user?.full_name}</div>
+              <div className="text-[10px] text-slate-500 dark:text-slate-400 flex items-center gap-0.5">
+                <ShieldCheck className="w-3 h-3 text-sky-500" /> {user?.role}
+              </div>
+            </div>
+            <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${isProfileOpen ? 'rotate-180' : ''}`} />
+          </button>
+
+          {/* Profile Dropdown Menu */}
+          {isProfileOpen && (
+            <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+              <div className="px-4 py-2 border-b border-slate-100 dark:border-slate-800 md:hidden">
+                <p className="text-xs font-bold text-slate-900 dark:text-slate-100">{user?.full_name}</p>
+                <p className="text-[10px] text-sky-500 font-semibold">{user?.role}</p>
+              </div>
+
+              {/* Admin & Super Admin Profile Menu Items */}
+              {isAdminOrSuper && (
+                <div className="py-1 border-b border-slate-100 dark:border-slate-800">
+                  <div className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                    SISTEM & CMS MANAGEMENT
+                  </div>
+                  <Link
+                    to="/dashboard/cms"
+                    onClick={() => setIsProfileOpen(false)}
+                    className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-sky-50 dark:hover:bg-slate-800/80 hover:text-sky-600 dark:hover:text-sky-400 transition"
+                  >
+                    <Globe className="w-4 h-4 text-sky-500" /> CMS & Landing Page
+                  </Link>
+                  <Link
+                    to="/dashboard/tariffs"
+                    onClick={() => setIsProfileOpen(false)}
+                    className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-sky-50 dark:hover:bg-slate-800/80 hover:text-sky-600 dark:hover:text-sky-400 transition"
+                  >
+                    <Settings className="w-4 h-4 text-teal-500" /> Pengaturan Tarif Klinik
+                  </Link>
+                </div>
+              )}
+
+              {/* Logout Action */}
+              <div className="pt-1">
+                <button
+                  onClick={() => {
+                    setIsProfileOpen(false);
+                    logout();
+                    navigate('/login');
+                  }}
+                  className="w-full text-left flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition"
+                >
+                  <LogOut className="w-4 h-4" /> Keluar Dari Akun (Logout)
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </header>

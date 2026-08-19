@@ -50,8 +50,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     { name: t('menuPharmacy'), path: '/dashboard/pharmacy', icon: Pill, roles: ['Super Admin', 'Admin', 'Pharmacist'] },
     { name: t('menuBilling'), path: '/dashboard/billing', icon: CreditCard, roles: ['Super Admin', 'Admin', 'Patient'] },
     { name: 'History Transaksi', path: '/dashboard/payment-history', icon: ReceiptText, roles: ['Super Admin', 'Admin'] },
-    { name: 'Pengaturan Tarif', path: '/dashboard/tariffs', icon: Settings, roles: ['Super Admin', 'Admin'] },
-    { name: 'CMS & Landing Page', path: '/dashboard/cms', icon: Globe, roles: ['Super Admin', 'Admin'] },
     { name: t('menuMedicalRecords'), path: '/dashboard/medical-records', icon: History, roles: ['Super Admin', 'Admin', 'Doctor', 'Patient'] },
     { name: t('menuReports'), path: '/dashboard/reports', icon: BarChart3, roles: ['Super Admin', 'Admin'] },
     { name: t('menuAuditLogs'), path: '/dashboard/audit-logs', icon: ShieldAlert, roles: ['Super Admin'] },
