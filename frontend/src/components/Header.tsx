@@ -54,9 +54,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSidebar }) => {
 
       {/* Right Header Controls */}
       <div className="flex items-center gap-3">
-        {/* Language Selector ID / EN */}
-        <LanguageSelector />
-
         {/* Dark/Light Mode Switcher */}
         <button
           onClick={toggleTheme}
@@ -98,10 +95,15 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSidebar }) => {
 
           {/* Profile Dropdown Menu */}
           {isProfileOpen && (
-            <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
-              <div className="px-4 py-2 border-b border-slate-100 dark:border-slate-800 md:hidden">
-                <p className="text-xs font-bold text-slate-900 dark:text-slate-100">{user?.full_name}</p>
+            <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl py-2.5 z-50 animate-in fade-in slide-in-from-top-2 duration-150 space-y-2">
+              <div className="px-4 py-2 border-b border-slate-100 dark:border-slate-800">
+                <p className="text-xs font-extrabold text-slate-900 dark:text-slate-100 truncate">{user?.full_name}</p>
                 <p className="text-[10px] text-sky-500 font-semibold">{user?.role}</p>
+              </div>
+
+              {/* Language Selector Inside Profile Dropdown */}
+              <div className="px-3 pb-2 border-b border-slate-100 dark:border-slate-800">
+                <LanguageSelector />
               </div>
 
               {/* Admin & Super Admin Profile Menu Items */}
