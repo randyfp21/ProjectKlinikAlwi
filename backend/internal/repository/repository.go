@@ -408,5 +408,29 @@ func (r *Repository) GetCMSSetting() (*domain.ClinicCMSSetting, error) {
 
 func (r *Repository) UpdateCMSSetting(setting *domain.ClinicCMSSetting) error {
 	setting.ID = 1
+	var existing domain.ClinicCMSSetting
+	if err := r.DB.First(&existing, 1).Error; err == nil {
+		if setting.ClinicName == "" { setting.ClinicName = existing.ClinicName }
+		if setting.ClinicTagline == "" { setting.ClinicTagline = existing.ClinicTagline }
+		if setting.ClinicLogoIcon == "" { setting.ClinicLogoIcon = existing.ClinicLogoIcon }
+		if setting.ContactPhone == "" { setting.ContactPhone = existing.ContactPhone }
+		if setting.ContactEmail == "" { setting.ContactEmail = existing.ContactEmail }
+		if setting.ContactInstagram == "" { setting.ContactInstagram = existing.ContactInstagram }
+		if setting.ClinicAddress == "" { setting.ClinicAddress = existing.ClinicAddress }
+		if setting.HeroTitle == "" { setting.HeroTitle = existing.HeroTitle }
+		if setting.HeroSubtitle == "" { setting.HeroSubtitle = existing.HeroSubtitle }
+		if setting.HeroBadge == "" { setting.HeroBadge = existing.HeroBadge }
+		if setting.GalleryHeaderTitle == "" { setting.GalleryHeaderTitle = existing.GalleryHeaderTitle }
+		if setting.GalleryHeaderSubtitle == "" { setting.GalleryHeaderSubtitle = existing.GalleryHeaderSubtitle }
+		if setting.DoctorsHeaderTitle == "" { setting.DoctorsHeaderTitle = existing.DoctorsHeaderTitle }
+		if setting.DoctorsHeaderMainTitle == "" { setting.DoctorsHeaderMainTitle = existing.DoctorsHeaderMainTitle }
+		if setting.DoctorsHeaderSubtitle == "" { setting.DoctorsHeaderSubtitle = existing.DoctorsHeaderSubtitle }
+		if setting.PromosHeaderTitle == "" { setting.PromosHeaderTitle = existing.PromosHeaderTitle }
+		if setting.FacilitiesJSON == "" { setting.FacilitiesJSON = existing.FacilitiesJSON }
+		if setting.DoctorsJSON == "" { setting.DoctorsJSON = existing.DoctorsJSON }
+		if setting.GalleryJSON == "" { setting.GalleryJSON = existing.GalleryJSON }
+		if setting.PromosJSON == "" { setting.PromosJSON = existing.PromosJSON }
+		if setting.PaymentMethodsJSON == "" { setting.PaymentMethodsJSON = existing.PaymentMethodsJSON }
+	}
 	return r.DB.Save(setting).Error
 }
