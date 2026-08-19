@@ -371,18 +371,18 @@ export const PatientManagementPage: React.FC = () => {
             />
           </div>
 
-          <div className="glass-card rounded-2xl border overflow-hidden shadow-sm">
+          <div className="glass-card rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs text-slate-600 dark:text-slate-300">
-                <thead className="bg-slate-100 dark:bg-slate-800/80 uppercase text-[10px] text-slate-500 dark:text-slate-400 font-semibold">
+                <thead className="bg-slate-100 dark:bg-slate-800/80 uppercase text-[10px] text-slate-500 dark:text-slate-400 font-bold tracking-wider">
                   <tr>
-                    <th className="p-3.5">Nomor Pasien</th>
-                    <th className="p-3.5">Nama Lengkap & NIK</th>
-                    <th className="p-3.5">Email Aktif & Status Akun</th>
-                    <th className="p-3.5">Gol. Darah</th>
-                    <th className="p-3.5">Alergi Obat</th>
-                    <th className="p-3.5">Telepon & Kontak Darurat</th>
-                    <th className="p-3.5 text-right">Kelola & Akses Admin</th>
+                    <th className="py-4 px-4 whitespace-nowrap">MRN Pasien</th>
+                    <th className="py-4 px-4 whitespace-nowrap">Nama Lengkap & NIK</th>
+                    <th className="py-4 px-4 whitespace-nowrap">Email & Status Akun</th>
+                    <th className="py-4 px-4 whitespace-nowrap text-center">Gol. Darah</th>
+                    <th className="py-4 px-4 whitespace-nowrap">Alergi Obat</th>
+                    <th className="py-4 px-4 whitespace-nowrap">Telepon & Kontak Darurat</th>
+                    <th className="py-4 px-4 text-right whitespace-nowrap">Aksi Kelola</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
@@ -392,62 +392,66 @@ export const PatientManagementPage: React.FC = () => {
                       onClick={() => setSelectedPatientDetail(p)}
                       className="hover:bg-sky-500/10 cursor-pointer transition"
                     >
-                      <td className="p-3.5 font-mono font-bold text-sky-600 dark:text-sky-400">{p.patient_number}</td>
-                      <td className="p-3.5">
-                        <div className="font-bold text-slate-900 dark:text-slate-100">{p.full_name}</div>
-                        <div className="text-[10px] text-slate-500 dark:text-slate-400">NIK: {p.national_id}</div>
+                      <td className="py-4 px-4 whitespace-nowrap font-mono font-bold text-sky-600 dark:text-sky-400">{p.patient_number}</td>
+                      <td className="py-4 px-4 whitespace-nowrap">
+                        <div className="font-bold text-slate-900 dark:text-slate-100 text-sm">{p.full_name}</div>
+                        <div className="text-[10px] text-slate-400 mt-0.5 font-mono">NIK: {p.national_id}</div>
                       </td>
-                      <td className="p-3.5">
+                      <td className="py-4 px-4 whitespace-nowrap">
                         <div className="font-semibold text-slate-800 dark:text-slate-200">{p.email}</div>
-                        <div className="flex items-center gap-1 mt-0.5">
-                          <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 text-[10px] font-bold flex items-center gap-1">
+                        <div className="flex items-center gap-1 mt-1">
+                          <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 text-[10px] font-bold flex items-center gap-1">
                             <Check className="w-3 h-3" /> Akun User Active
                           </span>
                         </div>
                       </td>
-                      <td className="p-3.5 font-bold text-rose-500">{p.blood_type}</td>
-                      <td className="p-3.5">
-                        {p.allergy !== 'None' ? (
-                          <span className="px-2 py-0.5 rounded bg-rose-500/10 text-rose-600 border border-rose-500/20 text-[10px] font-bold flex items-center gap-1 w-fit">
-                            <ShieldAlert className="w-3 h-3" /> {p.allergy}
+                      <td className="py-4 px-4 whitespace-nowrap text-center">
+                        <span className="w-7 h-7 rounded-full bg-rose-500/10 text-rose-600 font-bold text-xs inline-flex items-center justify-center border border-rose-500/20">
+                          {p.blood_type}
+                        </span>
+                      </td>
+                      <td className="py-4 px-4 whitespace-nowrap">
+                        {p.allergy !== 'None' && p.allergy !== 'Tidak ada' ? (
+                          <span className="px-2.5 py-1 rounded-full bg-rose-500/10 text-rose-600 border border-rose-500/20 text-[11px] font-bold flex items-center gap-1 w-fit">
+                            <ShieldAlert className="w-3.5 h-3.5" /> {p.allergy}
                           </span>
                         ) : (
-                          <span className="text-slate-400">None</span>
+                          <span className="text-slate-400 italic">Tidak ada</span>
                         )}
                       </td>
 
                       {/* Explicit High-Visibility Phone & Emergency Contact Column */}
-                      <td className="p-3.5">
-                        <div className="font-semibold text-slate-800 dark:text-slate-200">{p.phone}</div>
-                        <div className="text-[11px] font-bold text-teal-600 dark:text-teal-400 flex items-center gap-1 mt-1 bg-teal-500/10 border border-teal-500/20 px-2 py-0.5 rounded-md w-fit">
-                          <PhoneCall className="w-3 h-3 shrink-0" /> Darurat: {p.emergency_contact}
+                      <td className="py-4 px-4 whitespace-nowrap">
+                        <div className="font-semibold text-slate-800 dark:text-slate-200 font-mono text-xs">{p.phone}</div>
+                        <div className="text-[11px] font-bold text-teal-600 dark:text-teal-400 flex items-center gap-1 mt-1 bg-teal-500/10 border border-teal-500/20 px-2.5 py-0.5 rounded-lg w-fit">
+                          <PhoneCall className="w-3.5 h-3.5 shrink-0" /> Darurat: {p.emergency_contact}
                         </div>
                       </td>
 
-                      <td className="p-3.5 text-right">
-                        <div className="flex items-center justify-end gap-1.5" onClick={(e) => e.stopPropagation()}>
+                      <td className="py-4 px-4 text-right whitespace-nowrap">
+                        <div className="flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
                           <button
                             onClick={() => setSelectedPatientDetail(p)}
-                            className="px-2.5 py-1 rounded-lg bg-sky-500/10 hover:bg-sky-500 text-sky-600 hover:text-white font-semibold text-[11px] flex items-center gap-1 transition"
+                            className="px-3 py-1.5 rounded-xl bg-sky-500/10 hover:bg-sky-500 text-sky-600 hover:text-white font-bold text-xs flex items-center gap-1.5 transition shadow-xs"
                           >
-                            <Eye className="w-3.5 h-3.5" /> Detail
+                            <Eye className="w-4 h-4" /> Detail
                           </button>
 
                           {isAdmin && (
                             <>
                               <button
                                 onClick={() => setPasswordResetPatient(p)}
-                                className="px-2.5 py-1 rounded-lg bg-amber-500/10 hover:bg-amber-600 text-amber-600 hover:text-white font-semibold text-[11px] flex items-center gap-1 transition"
+                                className="px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-600 text-amber-600 hover:text-white font-bold text-xs flex items-center gap-1.5 transition shadow-xs"
                                 title="Bantu Pasien Reset Password Akun"
                               >
-                                <Key className="w-3.5 h-3.5" /> Reset Pass
+                                <Key className="w-4 h-4" /> Reset Pass
                               </button>
 
                               <button
                                 onClick={() => setEditingPatient(p)}
-                                className="px-2.5 py-1 rounded-lg bg-teal-500/10 hover:bg-teal-600 text-teal-600 hover:text-white font-semibold text-[11px] flex items-center gap-1 transition"
+                                className="px-3 py-1.5 rounded-xl bg-teal-500/10 hover:bg-teal-600 text-teal-600 hover:text-white font-bold text-xs flex items-center gap-1.5 transition shadow-xs"
                               >
-                                <Edit3 className="w-3.5 h-3.5" /> Edit
+                                <Edit3 className="w-4 h-4" /> Edit
                               </button>
                             </>
                           )}
