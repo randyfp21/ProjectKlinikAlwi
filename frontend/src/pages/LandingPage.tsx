@@ -444,8 +444,16 @@ export const LandingPage: React.FC = () => {
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-xs text-slate-600 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800 pb-8">
           <div className="space-y-3">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-sky-500 to-teal-400 flex items-center justify-center text-white font-bold">
-                <Hospital className="w-5 h-5" />
+              <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 overflow-hidden ${
+                clinicLogoIcon && (clinicLogoIcon.startsWith('/') || clinicLogoIcon.startsWith('http') || clinicLogoIcon.startsWith('data:'))
+                  ? 'bg-transparent'
+                  : 'bg-gradient-to-tr from-sky-500 to-teal-400 text-white font-bold shadow-md'
+              }`}>
+                {clinicLogoIcon && (clinicLogoIcon.startsWith('/') || clinicLogoIcon.startsWith('http') || clinicLogoIcon.startsWith('data:')) ? (
+                  <img src={clinicLogoIcon} alt={clinicName} className="w-full h-full object-contain" />
+                ) : (
+                  <Hospital className="w-5 h-5" />
+                )}
               </div>
               <span className="font-extrabold text-base text-slate-900 dark:text-white">{clinicName}</span>
             </div>
