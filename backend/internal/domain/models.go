@@ -257,6 +257,10 @@ type Invoice struct {
 	PaymentStatus  string        `gorm:"size:30;default:'Pending';index" json:"payment_status"` // Pending, Paid, Cancelled
 	PaymentMethod  string        `gorm:"size:50" json:"payment_method"`                         // Cash, Credit Card, Insurance, QRIS
 	PaidAt         *time.Time    `json:"paid_at,omitempty"`
+	Subjective     string        `gorm:"type:text" json:"subjective,omitempty"`
+	Diagnosis      string        `gorm:"size:255" json:"diagnosis,omitempty"`
+	ICD10Code      string        `gorm:"size:30" json:"icd10_code,omitempty"`
+	Plan           string        `gorm:"type:text" json:"plan,omitempty"`
 	Items          []InvoiceItem `gorm:"foreignKey:InvoiceID" json:"items,omitempty"`
 	CreatedAt      time.Time     `json:"created_at"`
 	UpdatedAt      time.Time     `json:"updated_at"`
@@ -271,6 +275,7 @@ type InvoiceItem struct {
 	Quantity    int     `gorm:"default:1" json:"quantity"`
 	UnitPrice   float64 `gorm:"type:decimal(12,2);not null" json:"unit_price"`
 	Subtotal    float64 `gorm:"type:decimal(12,2);not null" json:"subtotal"`
+	ExpiryDate  string  `gorm:"size:20" json:"expiry_date,omitempty"`
 }
 
 // Medical Record Model (Soft delete only)
