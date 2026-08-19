@@ -53,7 +53,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { name: t('menuConsultation'), path: '/dashboard/consultation', icon: FileText, roles: ['Super Admin', 'Doctor'] },
     { name: t('menuPharmacy'), path: '/dashboard/pharmacy', icon: Pill, roles: ['Super Admin', 'Admin', 'Pharmacist'] },
     { name: t('menuBilling'), path: '/dashboard/billing', icon: CreditCard, roles: ['Super Admin', 'Admin', 'Patient'] },
-    { name: 'History Transaksi', path: '/dashboard/payment-history', icon: ReceiptText, roles: ['Super Admin', 'Admin'] },
+    { name: 'History Transaksi', path: '/dashboard/payment-history', icon: ReceiptText, roles: ['Super Admin', 'Admin', 'Patient'] },
     { name: t('menuMedicalRecords'), path: '/dashboard/medical-records', icon: History, roles: ['Super Admin', 'Admin', 'Doctor', 'Patient'] },
   ];
 
