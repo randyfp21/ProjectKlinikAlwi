@@ -243,13 +243,13 @@ export const DoctorManagementPage: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {filteredDoctors.map((doc) => (
           <div key={doc.id} className="glass-card p-6 rounded-2xl border shadow-sm space-y-4">
-            <div className="flex items-start justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-sky-500 to-teal-400 text-white font-bold flex items-center justify-center text-lg shadow-md">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-sky-500 to-teal-400 text-white font-bold flex items-center justify-center text-lg shadow-md shrink-0">
                   {doc.name.charAt(4) || 'D'}
                 </div>
                 <div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-500/10 text-sky-500 border border-sky-500/20 font-mono">
                       {doc.doctor_code}
                     </span>
@@ -257,15 +257,15 @@ export const DoctorManagementPage: React.FC = () => {
                       Fee: Rp {(doc.consultation_fee || 150000).toLocaleString()}
                     </span>
                   </div>
-                  <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 mt-1">{doc.name}</h2>
+                  <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 mt-1 leading-snug">{doc.name}</h2>
                   <p className="text-xs text-teal-600 dark:text-teal-400 font-medium">{doc.specialization}</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center justify-end gap-2 shrink-0">
                 <button
                   onClick={() => setSelectedDoctorDetail(doc)}
-                  className="px-2.5 py-1 rounded-lg bg-sky-500/10 hover:bg-sky-500 text-sky-600 hover:text-white font-semibold text-[11px] flex items-center gap-1 transition"
+                  className="px-2.5 py-1 rounded-lg bg-sky-500/10 hover:bg-sky-500 text-sky-600 hover:text-white font-semibold text-[11px] flex items-center gap-1 transition cursor-pointer"
                   title="Lihat Detail Profil Dokter"
                 >
                   <Eye className="w-3.5 h-3.5" /> Detail
@@ -276,14 +276,14 @@ export const DoctorManagementPage: React.FC = () => {
                   <div className="flex items-center gap-1 border-l border-slate-200 dark:border-slate-800 pl-2">
                     <button
                       onClick={() => setEditingDoctor(doc)}
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-sky-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-sky-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
                       title="Edit Doctor & Fee (Admin Only)"
                     >
                       <Edit3 className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => setDeletingDoctor(doc)}
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition"
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition cursor-pointer"
                       title="Delete Doctor (Admin Only)"
                     >
                       <Trash2 className="w-4 h-4" />

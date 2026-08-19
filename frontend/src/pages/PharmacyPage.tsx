@@ -256,27 +256,27 @@ export const PharmacyPage: React.FC = () => {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2">
+      <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2">
         <button
           onClick={() => setActiveTab('inventory')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${
+          className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer ${
             activeTab === 'inventory'
               ? 'bg-sky-600 text-white shadow-md'
               : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'
           }`}
         >
-          <Package className="w-4 h-4" /> Stok & Inventaris Obat ({medicines.length})
+          <Package className="w-4 h-4" /> Stok & Inventaris ({medicines.length})
         </button>
 
         <button
           onClick={() => setActiveTab('categories')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${
+          className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer ${
             activeTab === 'categories'
               ? 'bg-teal-600 text-white shadow-md'
               : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800'
           }`}
         >
-          <Layers className="w-4 h-4" /> Kategori Obat Terpisah ({categories.length})
+          <Layers className="w-4 h-4" /> Kategori Obat ({categories.length})
         </button>
       </div>
 

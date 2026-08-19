@@ -50,13 +50,13 @@ export const PublicQueueMonitorPage: React.FC = () => {
   const tagline = clinicTagline || 'Layanan Kesehatan Modern, Cepat & Terpercaya';
 
   return (
-    <div className={`min-h-screen font-sans flex flex-col justify-between p-6 lg:p-10 transition-colors duration-300 select-none overflow-x-hidden ${
+    <div className={`min-h-screen font-sans flex flex-col justify-between p-3 sm:p-6 lg:p-10 transition-colors duration-300 select-none overflow-x-hidden ${
       isDarkMode 
         ? 'bg-slate-950 text-slate-100' 
         : 'bg-gradient-to-br from-slate-50 via-sky-50/40 to-slate-100 text-slate-900'
     }`}>
       {/* PROFESSIONAL TV MONITOR HEADER WITH ANIMATED ECG MONITOR BAR */}
-      <header className={`flex flex-col md:flex-row items-center justify-between gap-6 pb-6 border-b transition-colors relative ${
+      <header className={`flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6 pb-4 sm:pb-6 border-b transition-colors relative ${
         isDarkMode ? 'border-slate-800' : 'border-slate-200'
       }`}>
         {/* Clinic Identity & Brand */}
