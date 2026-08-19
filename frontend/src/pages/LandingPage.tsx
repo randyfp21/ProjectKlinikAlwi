@@ -473,7 +473,7 @@ export const LandingPage: React.FC = () => {
                   rel="noreferrer"
                   className="hover:underline text-rose-600 dark:text-rose-400 font-bold"
                 >
-                  Instagram Klinik Alwi
+                  Sosial Media Kami
                 </a>
               </div>
             )}
