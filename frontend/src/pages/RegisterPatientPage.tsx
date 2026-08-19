@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { UserPlus, ArrowLeft, CheckCircle2, AlertCircle, ShieldAlert, Sun, Moon } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useLanguageStore } from '../store/useLanguageStore';
 import { useThemeStore } from '../store/useThemeStore';
+import { useCMSStore } from '../store/useCMSStore';
 import { LanguageSelector } from '../components/LanguageSelector';
 import { apiClient } from '../api/client';
 
@@ -29,7 +30,12 @@ export const RegisterPatientPage: React.FC = () => {
   const { setAuth } = useAuthStore();
   const { t } = useLanguageStore();
   const { isDarkMode, toggleTheme } = useThemeStore();
+  const { clinicName, fetchCMSFromDB } = useCMSStore();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchCMSFromDB();
+  }, [fetchCMSFromDB]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -120,7 +126,7 @@ export const RegisterPatientPage: React.FC = () => {
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           <div className="grid grid-cols-2 gap-3">
             <div className="col-span-2 p-3 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-700 dark:text-sky-300 font-semibold text-[11px]">
-              ⚠️ PERHATIAN: Pengisian <span className="text-sky-600 dark:text-sky-400 font-bold underline">NIK KTP (16 Digit)</span> bersifat MANDATORI / WAJIB diisi untuk verifikasi data medis pasien di Klinik Alwi.
+              ⚠️ PERHATIAN: Pengisian <span className="text-sky-600 dark:text-sky-400 font-bold underline">NIK KTP (16 Digit)</span> bersifat MANDATORI / WAJIB diisi untuk verifikasi data medis pasien di <strong className="text-sky-700 dark:text-sky-200 font-black">{clinicName || 'Klinik Utama Alwi'}</strong>.
             </div>
 
             <div>
