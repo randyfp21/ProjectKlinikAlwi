@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { History, Search, ShieldCheck, FileText, Lock, UserCheck, Eye, X, Award, CalendarCheck, User, Stethoscope, Filter, Calendar, SlidersHorizontal, RefreshCw, Activity, HeartPulse, Pill, ArrowUpDown, ArrowUp, ArrowDown, Sparkles, Building2, MapPin, Phone, Mail } from 'lucide-react';
+import { History, Search, ShieldCheck, FileText, Lock, UserCheck, Eye, X, Award, CalendarCheck, User, Stethoscope, Filter, Calendar, SlidersHorizontal, RefreshCw, Activity, HeartPulse, Pill, ArrowUpDown, ArrowUp, ArrowDown, Sparkles, Building2, MapPin, Phone, Mail, Paperclip, FileImage, Download, ExternalLink } from 'lucide-react';
 import { MedicalRecord } from '../types';
 import { useAuthStore } from '../store/useAuthStore';
 import { useLanguageStore } from '../store/useLanguageStore';
@@ -55,6 +55,10 @@ export const MedicalRecordPage: React.FC = () => {
       prescription_summary: 'Amlodipine 10mg (10 tabs), Paracetamol 500mg (10 tabs)',
       lab_summary: 'Pemeriksaan Profil Lipid & Kreatinin Darah direkomendasikan minggu depan',
       total_cost: 282700,
+      attachments: [
+        { id: 101, file_name: 'Hasil_Laboratorium_Profil_Lipid_Budi.pdf', file_type: 'lab_result', file_size: '1.2 MB', file_url: '#', uploaded_at: '2026-08-07T09:45:00Z' },
+        { id: 102, file_name: 'EKG_Elektrokardiogram_Budi.png', file_type: 'image', file_size: '850 KB', file_url: '#', uploaded_at: '2026-08-07T09:50:00Z' }
+      ],
       created_at: '2026-08-07T09:30:00Z',
     },
     {
@@ -74,6 +78,9 @@ export const MedicalRecordPage: React.FC = () => {
       prescription_summary: 'Amoxicillin 500mg (15 caps)',
       lab_summary: 'Tes Fungsi Paru (Spirometri) dijadwalkan ulang',
       total_cost: 252500,
+      attachments: [
+        { id: 103, file_name: 'Foto_Rontgen_Thorax_Siti.pdf', file_type: 'xray', file_size: '3.4 MB', file_url: '#', uploaded_at: '2026-08-07T10:30:00Z' }
+      ],
       created_at: '2026-08-07T10:15:00Z',
     },
     {
@@ -93,10 +100,32 @@ export const MedicalRecordPage: React.FC = () => {
       prescription_summary: 'Omeprazole 20mg (14 caps)',
       lab_summary: 'Evaluasi Endoskopi jika keluhan berlanjut 2 minggu',
       total_cost: 220000,
+      attachments: [
+        { id: 104, file_name: 'USG_Abdomen_Upper_Ahmad.pdf', file_type: 'lab_result', file_size: '2.1 MB', file_url: '#', uploaded_at: '2026-08-06T11:20:00Z' }
+      ],
       created_at: '2026-08-06T11:00:00Z',
     },
     {
       id: 4,
+      record_number: 'MR-APT-20260805-001',
+      appointment_id: 4,
+      appointment_number: 'APT-20260805-001',
+      patient_id: 4,
+      patient: { id: 4, patient_number: 'PAT-004', full_name: 'Dewi Lestari', gender: 'Female', age: 28, phone: '+628155', national_id: '3171012345670004', birth_date: '1998-04-12', address: 'Jl. Pemuda No. 10', email: 'dewi@gmail.com', blood_type: 'AB+', allergy: 'Tidak Ada', disease_history: 'Migraine', current_complaint: '', emergency_contact: '' },
+      doctor_id: 1,
+      doctor: { id: 1, user_id: 3, doctor_code: 'DOC-001', name: 'dr. Alwi Shahab, Sp.PD', specialization: 'Spesialis Penyakit Dalam', gender: 'Male', phone: '', email: '', practice_license_number: 'SIP.123/KK/2024', education: '', practice_room: 'Ruang 101 (Poli Dalam)', active_status: true },
+      consultation_id: 4,
+      visit_date: '2026-08-05',
+      diagnosis: 'Migraine without aura',
+      icd10_code: 'G43.0',
+      soap_summary: 'S: Nyeri kepala sebelah kanan berdenyut. O: Refleks cahaya pupil (+/+), TD 120/80 mmHg. A: Migrain Tanpa Aura. P: Ibuprofen 400mg 3x1 sesudah makan.',
+      prescription_summary: 'Ibuprofen 400mg (10 tabs)',
+      lab_summary: 'Pemeriksaan saraf cranial normal',
+      total_cost: 280500,
+      created_at: '2026-08-05T14:30:00Z',
+    },
+    {
+      id: 5,
       record_number: 'MR-APT-20260722-001',
       appointment_id: 5,
       appointment_number: 'APT-20260722-001',
@@ -112,10 +141,13 @@ export const MedicalRecordPage: React.FC = () => {
       prescription_summary: 'Metformin 500mg (30 tabs)',
       lab_summary: 'Cek HbA1c & Fungsi Ginjal (Ureum/Kreatinin) direkomendasikan',
       total_cost: 324500,
+      attachments: [
+        { id: 105, file_name: 'Hasil_Lab_HbA1c_Gula_Darah_Rudi.pdf', file_type: 'lab_result', file_size: '1.8 MB', file_url: '#', uploaded_at: '2026-07-22T10:40:00Z' }
+      ],
       created_at: '2026-07-22T10:00:00Z',
     },
     {
-      id: 5,
+      id: 6,
       record_number: 'MR-APT-20260710-002',
       appointment_id: 6,
       appointment_number: 'APT-20260710-002',
@@ -134,7 +166,7 @@ export const MedicalRecordPage: React.FC = () => {
       created_at: '2026-07-10T15:15:00Z',
     },
     {
-      id: 6,
+      id: 7,
       record_number: 'MR-APT-20260618-001',
       appointment_id: 7,
       appointment_number: 'APT-20260618-001',
@@ -150,10 +182,13 @@ export const MedicalRecordPage: React.FC = () => {
       prescription_summary: 'Simvastatin 20mg (30 tabs)',
       lab_summary: 'Evaluasi Profil Lipid lengkap (HDL, LDL, Trigliserida) bulan depan',
       total_cost: 379500,
+      attachments: [
+        { id: 106, file_name: 'Panel_Kolesterol_Lengkap_Bambang.pdf', file_type: 'lab_result', file_size: '980 KB', file_url: '#', uploaded_at: '2026-06-18T11:50:00Z' }
+      ],
       created_at: '2026-06-18T11:30:00Z',
     },
     {
-      id: 7,
+      id: 8,
       record_number: 'MR-APT-20260515-001',
       appointment_id: 9,
       appointment_number: 'APT-20260515-001',
@@ -172,7 +207,7 @@ export const MedicalRecordPage: React.FC = () => {
       created_at: '2026-05-15T14:00:00Z',
     },
     {
-      id: 8,
+      id: 9,
       record_number: 'MR-APT-20260410-001',
       appointment_id: 10,
       appointment_number: 'APT-20260410-001',
@@ -188,7 +223,136 @@ export const MedicalRecordPage: React.FC = () => {
       prescription_summary: 'Sangobion / Tablet Tambah Darah (30 tabs)',
       lab_summary: 'Pemeriksaan Darah Lengkap (DPL) ulang dalam 1 bulan',
       total_cost: 324500,
+      attachments: [
+        { id: 107, file_name: 'Pemeriksaan_Darah_Lengkap_DPL_Maya.pdf', file_type: 'lab_result', file_size: '1.1 MB', file_url: '#', uploaded_at: '2026-04-10T11:15:00Z' }
+      ],
       created_at: '2026-04-10T10:30:00Z',
+    },
+    {
+      id: 10,
+      record_number: 'MR-APT-20260402-002',
+      appointment_id: 11,
+      appointment_number: 'APT-20260402-002',
+      patient_id: 11,
+      patient: { id: 11, patient_number: 'PAT-011', full_name: 'Fikri Ardiansyah', gender: 'Male', age: 38, phone: '+628122', national_id: '3171012345670011', birth_date: '1988-08-20', address: 'Jl. Casablanca No. 77', email: 'fikri@gmail.com', blood_type: 'B+', allergy: 'Tidak Ada', disease_history: 'Asam Urat / Gout', current_complaint: '', emergency_contact: '' },
+      doctor_id: 1,
+      doctor: { id: 1, user_id: 3, doctor_code: 'DOC-001', name: 'dr. Alwi Shahab, Sp.PD', specialization: 'Spesialis Penyakit Dalam', gender: 'Male', phone: '', email: '', practice_license_number: 'SIP.123/KK/2024', education: '', practice_room: 'Ruang 101 (Poli Dalam)', active_status: true },
+      consultation_id: 11,
+      visit_date: '2026-04-02',
+      diagnosis: 'Idiopathic gout without tophus',
+      icd10_code: 'M10.0',
+      soap_summary: 'S: Nyeri hebat pada sendi jempol kaki kanan, merah & bengkak. O: Asam Urat 8.7 mg/dL, inflamasi (+). A: Gout Arthritis Akut. P: Allopurinol 100mg 1x1 & Meloxicam 15mg 1x1.',
+      prescription_summary: 'Allopurinol 100mg (10 tabs), Meloxicam 15mg (10 tabs)',
+      lab_summary: 'Hindari konsumsi jeroan, kacang-kacangan, dan emping',
+      total_cost: 310000,
+      attachments: [
+        { id: 108, file_name: 'Tes_Asam_Urat_Serum_Fikri.pdf', file_type: 'lab_result', file_size: '720 KB', file_url: '#', uploaded_at: '2026-04-02T10:10:00Z' }
+      ],
+      created_at: '2026-04-02T09:45:00Z',
+    },
+    {
+      id: 11,
+      record_number: 'MR-APT-20260320-001',
+      appointment_id: 12,
+      appointment_number: 'APT-20260320-001',
+      patient_id: 12,
+      patient: { id: 12, patient_number: 'PAT-012', full_name: 'Ratna Juwita', gender: 'Female', age: 33, phone: '+628134', national_id: '3171012345670012', birth_date: '1993-01-11', address: 'Jl. Rasuna Said No. 50', email: 'ratna@gmail.com', blood_type: 'A+', allergy: 'Tidak Ada', disease_history: 'Tifoid / Tipus', current_complaint: '', emergency_contact: '' },
+      doctor_id: 1,
+      doctor: { id: 1, user_id: 3, doctor_code: 'DOC-001', name: 'dr. Alwi Shahab, Sp.PD', specialization: 'Spesialis Penyakit Dalam', gender: 'Male', phone: '', email: '', practice_license_number: 'SIP.123/KK/2024', education: '', practice_room: 'Ruang 101 (Poli Dalam)', active_status: true },
+      consultation_id: 12,
+      visit_date: '2026-03-20',
+      diagnosis: 'Typhoid fever',
+      icd10_code: 'A01.0',
+      soap_summary: 'S: Demam bertahap naik di sore/malam hari 4 hari, lidah kotor. O: Suhu 38.5 C, Widal Titer O 1/320. A: Demam Tifoid. P: Ciprofloxacin 500mg 2x1 & Paracetamol 500mg 3x1.',
+      prescription_summary: 'Ciprofloxacin 500mg (10 tabs), Paracetamol 500mg (10 tabs)',
+      lab_summary: 'Bed rest total 5 hari dan makan makanan lunak/bubur',
+      total_cost: 365000,
+      attachments: [
+        { id: 109, file_name: 'Pemeriksaan_Widal_Darah_Ratna.pdf', file_type: 'lab_result', file_size: '1.4 MB', file_url: '#', uploaded_at: '2026-03-20T14:40:00Z' }
+      ],
+      created_at: '2026-03-20T14:00:00Z',
+    },
+    {
+      id: 12,
+      record_number: 'MR-APT-20260312-003',
+      appointment_id: 13,
+      appointment_number: 'APT-20260312-003',
+      patient_id: 13,
+      patient: { id: 13, patient_number: 'PAT-013', full_name: 'Taufik Hidayatullah', gender: 'Male', age: 48, phone: '+628156', national_id: '3171012345670013', birth_date: '1978-05-30', address: 'Jl. Fatmawati No. 19', email: 'taufik@gmail.com', blood_type: 'O+', allergy: 'Tidak Ada', disease_history: 'Osteoarthritis Lutut', current_complaint: '', emergency_contact: '' },
+      doctor_id: 1,
+      doctor: { id: 1, user_id: 3, doctor_code: 'DOC-001', name: 'dr. Alwi Shahab, Sp.PD', specialization: 'Spesialis Penyakit Dalam', gender: 'Male', phone: '', email: '', practice_license_number: 'SIP.123/KK/2024', education: '', practice_room: 'Ruang 101 (Poli Dalam)', active_status: true },
+      consultation_id: 13,
+      visit_date: '2026-03-12',
+      diagnosis: 'Primary generalized osteoarthritis',
+      icd10_code: 'M15.0',
+      soap_summary: 'S: Lutut kanan gemeretak dan nyeri saat naik-turun tangga. O: Krepitasi (+), bengkak minimal. A: Osteoartritis Lutut Derajat 2. P: Glukosamin 500mg 2x1 & Natrium Diklofenak 50mg 2x1.',
+      prescription_summary: 'Glukosamin 500mg (30 tabs), Natrium Diklofenak (10 tabs)',
+      lab_summary: 'Rontgen Genu Dextra 2 posisi direkomendasikan',
+      total_cost: 340000,
+      attachments: [
+        { id: 110, file_name: 'Rontgen_Genu_Lutut_Taufik.pdf', file_type: 'xray', file_size: '4.1 MB', file_url: '#', uploaded_at: '2026-03-12T11:30:00Z' }
+      ],
+      created_at: '2026-03-12T11:00:00Z',
+    },
+    {
+      id: 13,
+      record_number: 'MR-APT-20260225-001',
+      appointment_id: 14,
+      appointment_number: 'APT-20260225-001',
+      patient_id: 14,
+      patient: { id: 14, patient_number: 'PAT-014', full_name: 'Lestari Anggraini', gender: 'Female', age: 29, phone: '+628189', national_id: '3171012345670014', birth_date: '1997-10-17', address: 'Jl. Kebayoran Baru No. 2', email: 'lestari@gmail.com', blood_type: 'AB+', allergy: 'Tidak Ada', disease_history: 'Faringitis Akut', current_complaint: '', emergency_contact: '' },
+      doctor_id: 2,
+      doctor: { id: 2, user_id: 4, doctor_code: 'DOC-002', name: 'dr. Sarah Lestari, Sp.A', specialization: 'Spesialis Anak', gender: 'Female', phone: '', email: '', practice_license_number: 'SIP.456/KK/2024', education: '', practice_room: 'Ruang 102 (Poli Anak)', active_status: true },
+      consultation_id: 14,
+      visit_date: '2026-02-25',
+      diagnosis: 'Acute pharyngitis, unspecified',
+      icd10_code: 'J02.9',
+      soap_summary: 'S: Sukar menelan makanan padat, tenggorokan perih & demam ringan. O: TONSIL T1/T1, Faring hiperemis (+). A: Faringitis Akut. P: Cefadroxil 500mg 2x1 & FG Troches 3x1.',
+      prescription_summary: 'Cefadroxil 500mg (10 caps), FG Troches (10 tabs)',
+      lab_summary: 'Kumur dengan air garam hangat 3x sehari',
+      total_cost: 255000,
+      created_at: '2026-02-25T16:00:00Z',
+    },
+    {
+      id: 14,
+      record_number: 'MR-APT-20260214-002',
+      appointment_id: 15,
+      appointment_number: 'APT-20260214-002',
+      patient_id: 15,
+      patient: { id: 15, patient_number: 'PAT-015', full_name: 'Irwan Setiawan', gender: 'Male', age: 40, phone: '+628190', national_id: '3171012345670015', birth_date: '1986-04-04', address: 'Jl. MT Haryono No. 11', email: 'irwan@gmail.com', blood_type: 'O+', allergy: 'Tidak Ada', disease_history: 'Insomnia / Gangguan Tidur', current_complaint: '', emergency_contact: '' },
+      doctor_id: 1,
+      doctor: { id: 1, user_id: 3, doctor_code: 'DOC-001', name: 'dr. Alwi Shahab, Sp.PD', specialization: 'Spesialis Penyakit Dalam', gender: 'Male', phone: '', email: '', practice_license_number: 'SIP.123/KK/2024', education: '', practice_room: 'Ruang 101 (Poli Dalam)', active_status: true },
+      consultation_id: 15,
+      visit_date: '2026-02-14',
+      diagnosis: 'Nonorganic insomnia, unspecified',
+      icd10_code: 'F51.01',
+      soap_summary: 'S: Sulit memulai tidur & sering terbangun tengah malam karena stres pekerjaan. O: Vital signs normal, TD 125/80 mmHg. A: Insomnia Non-Organik. P: Edukasi Sleep Hygiene & Vitamin B-Complex 1x1.',
+      prescription_summary: 'Vitamin B-Complex (30 tabs)',
+      lab_summary: 'Batasi penggunaan HP/Laptop 1 jam sebelum tidur',
+      total_cost: 230000,
+      created_at: '2026-02-14T10:15:00Z',
+    },
+    {
+      id: 15,
+      record_number: 'MR-APT-20260130-001',
+      appointment_id: 16,
+      appointment_number: 'APT-20260130-001',
+      patient_id: 16,
+      patient: { id: 16, patient_number: 'PAT-016', full_name: 'Dian Sastro', gender: 'Female', age: 30, phone: '+628178', national_id: '3171012345670016', birth_date: '1996-06-22', address: 'Jl. Kemang Raya No. 18', email: 'dian@gmail.com', blood_type: 'A+', allergy: 'Penicillin', disease_history: 'Konjungtivitis Mata', current_complaint: '', emergency_contact: '' },
+      doctor_id: 1,
+      doctor: { id: 1, user_id: 3, doctor_code: 'DOC-001', name: 'dr. Alwi Shahab, Sp.PD', specialization: 'Spesialis Penyakit Dalam', gender: 'Male', phone: '', email: '', practice_license_number: 'SIP.123/KK/2024', education: '', practice_room: 'Ruang 101 (Poli Dalam)', active_status: true },
+      consultation_id: 16,
+      visit_date: '2026-01-30',
+      diagnosis: 'Acute conjunctivitis, unspecified',
+      icd10_code: 'H10.9',
+      soap_summary: 'S: Mata kanan merah, berair, dan terasa mengganjal sejak 2 hari. O: Injeksi konjungtiva (+), sekret serous (+). A: Konjungtivitis Akut. P: Tetes Mata Chloramphenicol 4x1 tetes.',
+      prescription_summary: 'Chloramphenicol Tetes Mata 0.5% (1 botol)',
+      lab_summary: 'Gunakan kacamata pelindung dan hindari mengucek mata',
+      total_cost: 215000,
+      attachments: [
+        { id: 111, file_name: 'Foto_Kondisi_Mata_Konjungtiva_Dian.png', file_type: 'image', file_size: '640 KB', file_url: '#', uploaded_at: '2026-01-30T13:45:00Z' }
+      ],
+      created_at: '2026-01-30T13:30:00Z',
     },
   ]);
 
@@ -605,6 +769,12 @@ export const MedicalRecordPage: React.FC = () => {
 
                   <td className="py-4 px-4 text-slate-500 max-w-xs truncate font-medium">
                     {mr.soap_summary}
+                    {mr.attachments && mr.attachments.length > 0 && (
+                      <div className="mt-1 flex items-center gap-1 text-[10px] text-sky-600 dark:text-sky-400 font-bold">
+                        <Paperclip className="w-3 h-3 text-sky-500" />
+                        <span>{mr.attachments.length} Dokumen Lampiran</span>
+                      </div>
+                    )}
                   </td>
 
                   <td className="py-4 px-4 text-right">
@@ -728,6 +898,52 @@ export const MedicalRecordPage: React.FC = () => {
                   </div>
                 )}
               </div>
+
+              {/* ATTACHED CONSULTATION DOCUMENTS (If Available) */}
+              {selectedRecord.attachments && selectedRecord.attachments.length > 0 && (
+                <div className="p-4 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-900 dark:text-sky-200 space-y-3">
+                  <span className="font-extrabold text-xs uppercase tracking-wider flex items-center gap-1.5 text-sky-700 dark:text-sky-300">
+                    <Paperclip className="w-4 h-4 text-sky-500" /> Dokumen Lampiran Hasil Pemeriksaan / Lab ({selectedRecord.attachments.length} Berkas):
+                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                    {selectedRecord.attachments.map((att) => (
+                      <div key={att.id} className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-3 shadow-xs">
+                        <div className="flex items-center gap-2.5 overflow-hidden">
+                          <div className="p-2 rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400 shrink-0">
+                            {att.file_type === 'xray' || att.file_type === 'image' ? (
+                              <FileImage className="w-4 h-4" />
+                            ) : (
+                              <FileText className="w-4 h-4" />
+                            )}
+                          </div>
+                          <div className="overflow-hidden">
+                            <span className="font-bold text-slate-900 dark:text-slate-100 text-xs block truncate" title={att.file_name}>
+                              {att.file_name}
+                            </span>
+                            <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-mono">
+                              {att.file_size} • {formatDateIndonesian(att.uploaded_at)}
+                            </span>
+                          </div>
+                        </div>
+
+                        <a
+                          href={att.file_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            alert(`Membuka lampiran berkas resmi: ${att.file_name}`);
+                          }}
+                          className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-sky-600 hover:text-white text-slate-600 dark:text-slate-300 transition shrink-0"
+                          title="Buka / Unduh Lampiran"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Modal Footer */}

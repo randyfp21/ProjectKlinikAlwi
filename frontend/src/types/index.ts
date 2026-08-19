@@ -204,6 +204,15 @@ export interface Medicine {
   barcode: string;
 }
 
+export interface MedicalRecordAttachment {
+  id: number;
+  file_name: string;
+  file_type: 'pdf' | 'image' | 'lab_result' | 'xray';
+  file_size: string;
+  file_url: string;
+  uploaded_at: string;
+}
+
 export interface MedicalRecord {
   id: number;
   record_number: string;
@@ -221,6 +230,7 @@ export interface MedicalRecord {
   prescription_summary: string;
   lab_summary: string;
   total_cost: number;
+  attachments?: MedicalRecordAttachment[];
   created_at: string;
 }
 
