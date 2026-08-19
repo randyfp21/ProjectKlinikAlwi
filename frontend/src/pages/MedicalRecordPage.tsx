@@ -4,6 +4,7 @@ import { MedicalRecord } from '../types';
 import { useAuthStore } from '../store/useAuthStore';
 import { useLanguageStore } from '../store/useLanguageStore';
 import { apiClient } from '../api/client';
+import { formatDateIndonesian } from '../utils/formatDate';
 
 export const MedicalRecordPage: React.FC = () => {
   const { user } = useAuthStore();
@@ -345,7 +346,7 @@ export const MedicalRecordPage: React.FC = () => {
                       {mr.record_number}
                     </span>
                     <div className="text-[11px] font-semibold text-slate-500 mt-1 flex items-center gap-1">
-                      <Calendar className="w-3 h-3 text-slate-400" /> {mr.visit_date}
+                      <Calendar className="w-3 h-3 text-slate-400" /> {formatDateIndonesian(mr.visit_date)}
                     </div>
                   </td>
 

@@ -3,6 +3,7 @@ import { Pill, Search, Plus, AlertTriangle, CheckCircle2, History, Package, Edit
 import { useMedicineStore } from '../store/useMedicineStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { Medicine, MedicineCategory } from '../types';
+import { formatDateIndonesian } from '../utils/formatDate';
 
 export const PharmacyPage: React.FC = () => {
   const { user } = useAuthStore();
@@ -351,7 +352,7 @@ export const PharmacyPage: React.FC = () => {
                         </td>
 
                         <td className="py-4 px-4 whitespace-nowrap">
-                          <div className="font-mono font-bold text-xs text-rose-600 dark:text-rose-400">{med.expiry_date || '-'}</div>
+                          <div className="font-mono font-bold text-xs text-rose-600 dark:text-rose-400">{formatDateIndonesian(med.expiry_date)}</div>
                           <div className="text-[10px] text-slate-400 mt-0.5">Batch: {med.batch_number || 'N/A'}</div>
                         </td>
 
@@ -819,7 +820,7 @@ export const PharmacyPage: React.FC = () => {
               </div>
               <div className="flex justify-between py-1">
                 <span className="text-slate-500">Expired Date:</span>
-                <span className="font-mono font-bold text-rose-600 dark:text-rose-400">{selectedMedDetail.expiry_date}</span>
+                <span className="font-mono font-bold text-rose-600 dark:text-rose-400">{formatDateIndonesian(selectedMedDetail.expiry_date)}</span>
               </div>
             </div>
 

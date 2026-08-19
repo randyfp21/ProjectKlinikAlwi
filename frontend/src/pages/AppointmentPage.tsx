@@ -5,6 +5,7 @@ import { useAuthStore } from '../store/useAuthStore';
 import { useLanguageStore } from '../store/useLanguageStore';
 import { useConsultationStore } from '../store/useConsultationStore';
 import { apiClient } from '../api/client';
+import { formatDateIndonesian } from '../utils/formatDate';
 
 export const AppointmentPage: React.FC = () => {
   const { user } = useAuthStore();
@@ -342,7 +343,7 @@ export const AppointmentPage: React.FC = () => {
                       <div className="text-[10px] text-slate-500 dark:text-slate-400">{app.doctor?.practice_room}</div>
                     </td>
                     <td className="p-3.5">
-                      <div className="font-semibold text-slate-800 dark:text-slate-200">{app.appointment_date}</div>
+                      <div className="font-semibold text-slate-800 dark:text-slate-200">{formatDateIndonesian(app.appointment_date)}</div>
                       <div className="text-[10px] font-mono text-sky-500">{app.time_slot}</div>
                     </td>
                     <td className="p-3.5 text-slate-600 dark:text-slate-400">{app.complaint}</td>

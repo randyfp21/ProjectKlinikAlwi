@@ -4,6 +4,7 @@ import { useInvoiceStore } from '../store/useInvoiceStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { useCMSStore } from '../store/useCMSStore';
 import { Invoice } from '../types';
+import { formatDateIndonesian, formatDateTimeIndonesian } from '../utils/formatDate';
 
 export const BillingPage: React.FC = () => {
   const { user } = useAuthStore();
@@ -152,7 +153,7 @@ export const BillingPage: React.FC = () => {
                           {inv.items.find((i) => i.item_type === 'Doctor Fee')?.item_name || 'Konsultasi Dokter'}
                         </h3>
                         <p className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2">
-                          <span>Waktu: {new Date(inv.created_at).toLocaleString('id-ID')}</span>
+                          <span>Waktu: {formatDateTimeIndonesian(inv.created_at)}</span>
                         </p>
                       </div>
 
@@ -223,7 +224,7 @@ export const BillingPage: React.FC = () => {
                               <td className="py-3 px-4">
                                 {item.item_type === 'Medicine' ? (
                                   <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-mono text-[10px] font-bold">
-                                    {item.expiry_date || '2027-12-31'}
+                                    {formatDateIndonesian(item.expiry_date || '2027-12-31')}
                                   </span>
                                 ) : (
                                   <span className="text-slate-400 font-mono text-[10px]">-</span>
@@ -296,7 +297,7 @@ export const BillingPage: React.FC = () => {
                     {paidInvoicesHistory.map((inv) => (
                       <tr key={inv.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
                         <td className="py-3.5 px-4 font-mono text-slate-500 dark:text-slate-400 text-xs">
-                          {inv.paid_at ? new Date(inv.paid_at).toLocaleString('id-ID') : inv.created_at}
+                          {formatDateTimeIndonesian(inv.paid_at || inv.created_at)}
                         </td>
                         <td className="py-3.5 px-4">
                           <span className="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-mono font-extrabold">
@@ -455,7 +456,7 @@ export const BillingPage: React.FC = () => {
                   Pasien: {selectedInvoice.patient?.full_name}
                 </h2>
                 <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">
-                  NIK: {selectedInvoice.patient?.national_id} | Tanggal: {new Date(selectedInvoice.created_at).toLocaleString('id-ID')}
+                  NIK: {selectedInvoice.patient?.national_id} | Tanggal: {formatDateTimeIndonesian(selectedInvoice.created_at)}
                 </p>
               </div>
 
@@ -529,7 +530,7 @@ export const BillingPage: React.FC = () => {
                       <td className="py-3 px-4">
                         {item.item_type === 'Medicine' ? (
                           <span className="px-2.5 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-mono text-[10px] font-bold">
-                            {item.expiry_date || '2027-12-31'}
+                            {formatDateIndonesian(item.expiry_date || '2027-12-31')}
                           </span>
                         ) : (
                           <span className="text-slate-400 font-mono text-[10px]">-</span>

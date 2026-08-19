@@ -5,6 +5,7 @@ import { useAuthStore } from '../store/useAuthStore';
 import { useLanguageStore } from '../store/useLanguageStore';
 import { useCMSStore } from '../store/useCMSStore';
 import { Invoice } from '../types';
+import { formatDateTimeIndonesian } from '../utils/formatDate';
 
 export const PaymentHistoryPage: React.FC = () => {
   const { user } = useAuthStore();
@@ -99,7 +100,7 @@ export const PaymentHistoryPage: React.FC = () => {
                     className="hover:bg-emerald-500/10 cursor-pointer transition"
                   >
                     <td className="p-3.5 font-mono text-slate-400 text-[11px]">
-                      {inv.paid_at ? new Date(inv.paid_at).toLocaleString() : inv.created_at}
+                      {formatDateTimeIndonesian(inv.paid_at || inv.created_at)}
                     </td>
                     <td className="p-3.5">
                       <span className="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 font-mono font-bold">
@@ -170,7 +171,7 @@ export const PaymentHistoryPage: React.FC = () => {
                   Official Cashier Receipt — {selectedInvoice.patient?.full_name}
                 </h2>
                 <p className="text-xs text-slate-400">
-                  Paid Date: {selectedInvoice.paid_at ? new Date(selectedInvoice.paid_at).toLocaleString() : selectedInvoice.created_at} | Method: {selectedInvoice.payment_method}
+                  Paid Date: {formatDateTimeIndonesian(selectedInvoice.paid_at || selectedInvoice.created_at)} | Method: {selectedInvoice.payment_method}
                 </p>
               </div>
             </div>

@@ -7,6 +7,7 @@ import { useMedicineStore } from '../store/useMedicineStore';
 import { useInvoiceStore } from '../store/useInvoiceStore';
 import { useConsultationStore } from '../store/useConsultationStore';
 import { apiClient } from '../api/client';
+import { formatDateIndonesian } from '../utils/formatDate';
 
 interface SelectedRxItem {
   medicine_id: number;
@@ -595,7 +596,7 @@ export const ConsultationPage: React.FC = () => {
                       </td>
                       <td className="p-3">
                         <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 border border-amber-500/20 font-mono text-[10px] font-bold">
-                          {item.expiry_date || '2027-12-31'}
+                          {formatDateIndonesian(item.expiry_date || '2027-12-31')}
                         </span>
                       </td>
                       <td className="p-3 font-bold text-teal-500">Rp {item.subtotal.toLocaleString()}</td>

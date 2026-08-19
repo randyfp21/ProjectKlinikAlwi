@@ -1,6 +1,7 @@
 import React from 'react';
-import { ShieldAlert, Activity, UserCheck, Terminal } from 'lucide-react';
+import { ShieldAlert, Database, Lock } from 'lucide-react';
 import { AuditLog } from '../types';
+import { formatDateTimeIndonesian } from '../utils/formatDate';
 
 export const AuditLogPage: React.FC = () => {
   const mockLogs: AuditLog[] = [
@@ -38,7 +39,7 @@ export const AuditLogPage: React.FC = () => {
               {mockLogs.map((log) => (
                 <tr key={log.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
                   <td className="p-3.5 font-mono font-bold text-sky-500">#{log.id}</td>
-                  <td className="p-3.5 font-mono text-slate-400">{log.created_at}</td>
+                  <td className="p-3.5 font-mono text-slate-400">{formatDateTimeIndonesian(log.created_at)}</td>
                   <td className="p-3.5">
                     <div className="font-bold text-slate-900 dark:text-slate-100">{log.user_email}</div>
                     <div className="text-[10px] text-sky-400 font-semibold">{log.user_role}</div>
