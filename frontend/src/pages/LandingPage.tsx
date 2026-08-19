@@ -228,7 +228,7 @@ export const LandingPage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {promos && promos.map((promo) => (
+          {promos && promos.slice(0, 6).map((promo) => (
             <div
               key={promo.id}
               className="glass-card rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 overflow-hidden shadow-lg hover:shadow-2xl transition space-y-4 flex flex-col justify-between group hover:-translate-y-1"
@@ -274,6 +274,16 @@ export const LandingPage: React.FC = () => {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* VIEW ALL PROMOS & ARTICLES BUTTON */}
+        <div className="text-center pt-4">
+          <Link
+            to="/promos-articles"
+            className="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-950 font-black text-xs shadow-xl shadow-amber-500/20 transition cursor-pointer uppercase tracking-wider"
+          >
+            Lihat Lebih Banyak Promo & Artikel ({promos?.length || 0}) <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
       </section>
 

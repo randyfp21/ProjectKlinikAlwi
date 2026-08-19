@@ -21,6 +21,7 @@ import { RegisterPatientPage } from './pages/RegisterPatientPage';
 import { UserManagementPage } from './pages/UserManagementPage';
 import { MasterDataManagementPage } from './pages/MasterDataManagementPage';
 import { PublicQueueMonitorPage } from './pages/PublicQueueMonitorPage';
+import { PublicPromosArticlesPage } from './pages/PublicPromosArticlesPage';
 import { PromosArticlesPage } from './pages/PromosArticlesPage';
 import { useAuthStore } from './store/useAuthStore';
 
@@ -41,6 +42,7 @@ export function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPatientPage />} />
         <Route path="/public-queue-monitor" element={<PublicQueueMonitorPage />} />
+        <Route path="/promos-articles" element={<PublicPromosArticlesPage />} />
 
         {/* Protected Dashboard Routes */}
         <Route
