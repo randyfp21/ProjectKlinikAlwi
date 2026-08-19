@@ -22,7 +22,7 @@ export const AppointmentPage: React.FC = () => {
   // Date Filter State (Today, Yesterday, Custom Date, All)
   const todayStr = '2026-08-07';
   const yesterdayStr = '2026-08-06';
-  const [dateFilterMode, setDateFilterMode] = useState<'all' | 'today' | 'yesterday' | 'custom'>('all');
+  const [dateFilterMode, setDateFilterMode] = useState<'all' | 'today' | 'yesterday' | 'custom'>('today');
   const [customDateInput, setCustomDateInput] = useState<string>('2026-08-07');
 
   // Doctors directory with weekly practice schedule best practice
