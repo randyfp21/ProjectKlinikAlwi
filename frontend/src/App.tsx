@@ -19,6 +19,7 @@ import { LandingPage } from './pages/LandingPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPatientPage } from './pages/RegisterPatientPage';
 import { UserManagementPage } from './pages/UserManagementPage';
+import { MasterDataManagementPage } from './pages/MasterDataManagementPage';
 import { useAuthStore } from './store/useAuthStore';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -48,6 +49,7 @@ export function App() {
           }
         >
           <Route index element={<DashboardOverview />} />
+          <Route path="master-data" element={<MasterDataManagementPage />} />
           <Route path="users" element={<UserManagementPage />} />
           <Route path="doctors" element={<DoctorManagementPage />} />
           <Route path="patients" element={<PatientManagementPage />} />
