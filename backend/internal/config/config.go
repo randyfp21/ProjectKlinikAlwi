@@ -33,7 +33,7 @@ func LoadConfig() *Config {
 	dbPassword := getEnv("DB_PASSWORD", "postgres")
 	dbName := getEnv("DB_NAME", "klinik_alwi")
 	dbSSLMode := getEnv("DB_SSLMODE", "disable")
-	dbDriver := getEnv("DB_DRIVER", "sqlite") // Default sqlite for immediate test/standalone execution!
+	dbDriver := getEnv("DB_DRIVER", "postgres") // Default postgres 5432 for production local database!
 	sqlitePath := getEnv("SQLITE_PATH", "klinik_alwi.db")
 	jwtSecret := getEnv("JWT_SECRET", "super-secret-klinik-alwi-key-2026")
 
