@@ -265,18 +265,31 @@ export const QueuePage: React.FC = () => {
           </div>
         </div>
 
-        {/* Date Selector & Reset Button */}
+        {/* Date Selector & Reset Button (Admin Only Date Picker, View-Only Today for Non-Admin) */}
         <div className="flex flex-wrap items-center gap-3 shrink-0">
-          <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 text-xs font-bold">
-            <Calendar className="w-4 h-4 text-sky-400" />
-            <span className="text-slate-300 text-[11px]">Tanggal Antrean:</span>
-            <input
-              type="date"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              className="bg-transparent font-mono font-extrabold text-sky-400 focus:outline-none cursor-pointer"
-            />
-          </div>
+          {isAdmin ? (
+            <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 text-xs font-bold">
+              <Calendar className="w-4 h-4 text-sky-400" />
+              <span className="text-slate-300 text-[11px]">Audit Tanggal Antrean:</span>
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                className="bg-transparent font-mono font-extrabold text-sky-400 focus:outline-none cursor-pointer"
+              />
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 text-xs font-bold text-slate-300">
+              <Calendar className="w-4 h-4 text-sky-400" />
+              <span className="text-slate-300 text-[11px]">Tanggal Antrean (Hari Ini):</span>
+              <span className="font-mono font-extrabold text-sky-400">
+                {formatDateIndonesian(new Date().toISOString().slice(0, 10))}
+              </span>
+              <span className="px-2 py-0.5 rounded-full bg-slate-800 text-[10px] font-semibold text-slate-400 border border-slate-700 ml-1">
+                View Only
+              </span>
+            </div>
+          )}
 
           {isAdmin && (
             <button
