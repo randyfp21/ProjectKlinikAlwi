@@ -259,8 +259,8 @@ export const LandingPage: React.FC = () => {
               </div>
 
               <div className="p-6 pt-0 border-t border-slate-100 dark:border-slate-800/80 mt-4 flex items-center justify-between">
-                <span className="text-xs text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1">
-                  <CheckCircle2 className="w-4 h-4" /> Kuota Promo Aktif
+                <span className="text-xs text-sky-600 dark:text-sky-400 font-mono font-bold flex items-center gap-1 bg-sky-500/10 dark:bg-sky-500/20 px-2.5 py-1 rounded-lg border border-sky-500/20">
+                  <Tag className="w-3.5 h-3.5 text-sky-500" /> {promo.promoCode || 'PROMO-ALWI'}
                 </span>
                 <Link
                   to="/login"

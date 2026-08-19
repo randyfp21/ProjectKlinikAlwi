@@ -36,6 +36,7 @@ export interface CMSPromo {
   title: string;
   badge: string;
   discountTag: string;
+  promoCode: string;
   validUntil: string;
   description: string;
   photoUrl: string;
@@ -214,6 +215,7 @@ const DEFAULT_PROMOS: CMSPromo[] = [
     title: 'Paket Medical Check Up (MCU) Eksekutif Keluarga',
     badge: 'PROMO SPESIAL BULAN INI',
     discountTag: 'DISKON 35%',
+    promoCode: 'MCU-ALWI-35',
     validUntil: 'Berlaku s/d 31 Agustus 2026',
     description: 'Pemeriksaan laboratorium darah lengkap, EKG Jantung, Cek Gula Darah & Kolesterol, serta konsultasi gratis Dokter Spesialis Penyakit Dalam.',
     photoUrl: 'https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=1000&q=80',
@@ -224,6 +226,7 @@ const DEFAULT_PROMOS: CMSPromo[] = [
     title: 'Vaksinasi Influenza & Pneumonia Dewasa / Lansia',
     badge: 'CEGAH INFEKSI SALURAN NAPAS',
     discountTag: 'DISKON 20%',
+    promoCode: 'VAKSIN-SEHAT20',
     validUntil: 'Berlaku s/d 15 September 2026',
     description: 'Lindungi diri dan orang tua tercinta dari risiko pneumonia & ISPA. Sudah termasuk biaya tindakan suntik perawat & sertifikat imunisasi.',
     photoUrl: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=1000&q=80',
@@ -234,6 +237,7 @@ const DEFAULT_PROMOS: CMSPromo[] = [
     title: 'Terapi IV Drips Multivitamin & Stamina Recovery',
     badge: 'BOOSTER KESEHATAN CEPAT',
     discountTag: 'BUY 2 GET 1 FREE',
+    promoCode: 'IVDRIP-BOOSTER',
     validUntil: 'Berlaku s/d 20 September 2026',
     description: 'Formula infus multivitamin konsentrasi tinggi untuk pemulihan kondisi stamina pasca sakit, pencerah kulit sehat, dan pencegahan dehidrasi.',
     photoUrl: 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=1000&q=80',

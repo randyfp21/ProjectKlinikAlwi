@@ -38,6 +38,7 @@ export const CMSManagementPage: React.FC = () => {
     title: '',
     badge: 'PROMO SPESIAL',
     discountTag: 'DISKON 20%',
+    promoCode: 'PROMO-ALWI20',
     validUntil: 'Berlaku s/d Akhir Bulan',
     description: '',
     photoUrl: '',
@@ -307,6 +308,7 @@ export const CMSManagementPage: React.FC = () => {
       title: '',
       badge: 'PROMO SPESIAL',
       discountTag: 'DISKON 20%',
+      promoCode: 'PROMO-ALWI20',
       validUntil: 'Berlaku s/d Akhir Bulan',
       description: '',
       photoUrl: '',
@@ -759,7 +761,12 @@ export const CMSManagementPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <span className="text-[10px] font-bold text-sky-600 dark:text-sky-400 uppercase font-mono block">{promo.badge}</span>
+                  <div className="flex items-center justify-between gap-1 mb-1">
+                    <span className="text-[10px] font-bold text-sky-600 dark:text-sky-400 uppercase font-mono block">{promo.badge}</span>
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 flex items-center gap-1">
+                      <Tag className="w-3 h-3" /> {promo.promoCode || 'PROMO-ALWI'}
+                    </span>
+                  </div>
                   <h3 className="font-bold text-slate-900 dark:text-slate-100 text-sm leading-snug">{promo.title}</h3>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed mt-1">{promo.description}</p>
                 </div>
@@ -1200,9 +1207,9 @@ export const CMSManagementPage: React.FC = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Label Diskon (Tag)</label>
+                  <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Label Diskon</label>
                   <input
                     type="text"
                     required
@@ -1213,7 +1220,18 @@ export const CMSManagementPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Masa Berlaku Promo</label>
+                  <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Kode Promo</label>
+                  <input
+                    type="text"
+                    required
+                    value={editingPromo.promoCode}
+                    onChange={(e) => setEditingPromo({ ...editingPromo, promoCode: e.target.value })}
+                    className="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border rounded-xl font-mono font-bold text-sky-600 focus:outline-none uppercase"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Masa Berlaku</label>
                   <input
                     type="text"
                     required
@@ -1321,9 +1339,9 @@ export const CMSManagementPage: React.FC = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Label Diskon (Tag)</label>
+                  <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Label Diskon</label>
                   <input
                     type="text"
                     required
@@ -1335,11 +1353,23 @@ export const CMSManagementPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Masa Berlaku Promo</label>
+                  <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Kode Promo</label>
                   <input
                     type="text"
                     required
-                    placeholder="Berlaku s/d 30 Sept 2026"
+                    placeholder="MCU-30%"
+                    value={newPromoForm.promoCode}
+                    onChange={(e) => setNewPromoForm({ ...newPromoForm, promoCode: e.target.value })}
+                    className="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border rounded-xl font-mono font-bold text-sky-600 focus:outline-none uppercase"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Masa Berlaku</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="s/d 30 Sept 2026"
                     value={newPromoForm.validUntil}
                     onChange={(e) => setNewPromoForm({ ...newPromoForm, validUntil: e.target.value })}
                     className="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border rounded-xl font-mono text-slate-600 dark:text-slate-300 focus:outline-none"
