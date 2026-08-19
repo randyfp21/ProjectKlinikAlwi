@@ -31,6 +31,17 @@ export interface CMSClinicGallery {
   description: string;
 }
 
+export interface CMSPromo {
+  id: number;
+  title: string;
+  badge: string;
+  discountTag: string;
+  validUntil: string;
+  description: string;
+  photoUrl: string;
+  actionUrl: string;
+}
+
 export interface CMSState {
   // Clinic Branding & Contact Parameters
   clinicName: string;
@@ -54,6 +65,9 @@ export interface CMSState {
   // Photo Slider / Gallery
   galleryPhotos: CMSClinicGallery[];
 
+  // Ongoing Promos & Articles
+  promos: CMSPromo[];
+
   // Sync Actions
   fetchCMSFromDB: () => Promise<void>;
   saveCMSToDB: () => Promise<void>;
@@ -66,6 +80,9 @@ export interface CMSState {
   updateGalleryPhoto: (id: number, updated: Partial<CMSClinicGallery>) => void;
   addGalleryPhoto: (photo: Omit<CMSClinicGallery, 'id'>) => void;
   deleteGalleryPhoto: (id: number) => void;
+  updatePromo: (id: number, updated: Partial<CMSPromo>) => void;
+  addPromo: (promo: Omit<CMSPromo, 'id'>) => void;
+  deletePromo: (id: number) => void;
   resetToDefault: () => void;
 }
 
@@ -191,6 +208,39 @@ const DEFAULT_GALLERY: CMSClinicGallery[] = [
   },
 ];
 
+const DEFAULT_PROMOS: CMSPromo[] = [
+  {
+    id: 1,
+    title: 'Paket Medical Check Up (MCU) Eksekutif Keluarga',
+    badge: 'PROMO SPESIAL BULAN INI',
+    discountTag: 'DISKON 35%',
+    validUntil: 'Berlaku s/d 31 Agustus 2026',
+    description: 'Pemeriksaan laboratorium darah lengkap, EKG Jantung, Cek Gula Darah & Kolesterol, serta konsultasi gratis Dokter Spesialis Penyakit Dalam.',
+    photoUrl: 'https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=1000&q=80',
+    actionUrl: '/login',
+  },
+  {
+    id: 2,
+    title: 'Vaksinasi Influenza & Pneumonia Dewasa / Lansia',
+    badge: 'CEGAH INFEKSI SALURAN NAPAS',
+    discountTag: 'DISKON 20%',
+    validUntil: 'Berlaku s/d 15 September 2026',
+    description: 'Lindungi diri dan orang tua tercinta dari risiko pneumonia & ISPA. Sudah termasuk biaya tindakan suntik perawat & sertifikat imunisasi.',
+    photoUrl: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=1000&q=80',
+    actionUrl: '/login',
+  },
+  {
+    id: 3,
+    title: 'Terapi IV Drips Multivitamin & Stamina Recovery',
+    badge: 'BOOSTER KESEHATAN CEPAT',
+    discountTag: 'BUY 2 GET 1 FREE',
+    validUntil: 'Berlaku s/d 20 September 2026',
+    description: 'Formula infus multivitamin konsentrasi tinggi untuk pemulihan kondisi stamina pasca sakit, pencerah kulit sehat, dan pencegahan dehidrasi.',
+    photoUrl: 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=1000&q=80',
+    actionUrl: '/login',
+  },
+];
+
 export const useCMSStore = create<CMSState>()(
   persist(
     (set, get) => ({
@@ -208,6 +258,7 @@ export const useCMSStore = create<CMSState>()(
       facilities: DEFAULT_FACILITIES,
       featuredDoctors: DEFAULT_DOCTORS,
       galleryPhotos: DEFAULT_GALLERY,
+      promos: DEFAULT_PROMOS,
 
       fetchCMSFromDB: async () => {
         try {
@@ -227,6 +278,7 @@ export const useCMSStore = create<CMSState>()(
               facilities: data.facilities_json ? JSON.parse(data.facilities_json) : get().facilities,
               featuredDoctors: data.doctors_json ? JSON.parse(data.doctors_json) : get().featuredDoctors,
               galleryPhotos: data.gallery_json ? JSON.parse(data.gallery_json) : get().galleryPhotos,
+              promos: data.promos_json ? JSON.parse(data.promos_json) : get().promos,
             });
           }
         } catch (err) {
@@ -249,6 +301,7 @@ export const useCMSStore = create<CMSState>()(
           facilities_json: JSON.stringify(state.facilities),
           doctors_json: JSON.stringify(state.featuredDoctors),
           gallery_json: JSON.stringify(state.galleryPhotos),
+          promos_json: JSON.stringify(state.promos),
         };
 
         try {
@@ -307,6 +360,31 @@ export const useCMSStore = create<CMSState>()(
         get().saveCMSToDB();
       },
 
+      updatePromo: (id, updated) => {
+        set((state) => ({
+          promos: state.promos.map((p) => (p.id === id ? { ...p, ...updated } : p)),
+        }));
+        get().saveCMSToDB();
+      },
+
+      addPromo: (promo) => {
+        const newPromo: CMSPromo = {
+          id: Date.now(),
+          ...promo,
+        };
+        set((state) => ({
+          promos: [...state.promos, newPromo],
+        }));
+        get().saveCMSToDB();
+      },
+
+      deletePromo: (id) => {
+        set((state) => ({
+          promos: state.promos.filter((p) => p.id !== id),
+        }));
+        get().saveCMSToDB();
+      },
+
       resetToDefault: () => {
         set({
           clinicName: 'Klinik Utama Alwi',
@@ -321,6 +399,7 @@ export const useCMSStore = create<CMSState>()(
           facilities: DEFAULT_FACILITIES,
           featuredDoctors: DEFAULT_DOCTORS,
           galleryPhotos: DEFAULT_GALLERY,
+          promos: DEFAULT_PROMOS,
         });
         get().saveCMSToDB();
       },

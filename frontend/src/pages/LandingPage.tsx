@@ -25,7 +25,9 @@ import {
   Star,
   ChevronLeft,
   ChevronRight,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Tag,
+  Gift
 } from 'lucide-react';
 import { useLanguageStore } from '../store/useLanguageStore';
 import { useThemeStore } from '../store/useThemeStore';
@@ -36,7 +38,7 @@ export const LandingPage: React.FC = () => {
   const { t } = useLanguageStore();
   const { isDarkMode, toggleTheme } = useThemeStore();
   const cms = useCMSStore();
-  const { clinicName, clinicTagline, clinicLogoIcon, heroTitle, heroSubtitle, heroBadge, facilities, featuredDoctors, galleryPhotos, contactPhone, contactEmail, clinicAddress } = cms;
+  const { clinicName, clinicTagline, clinicLogoIcon, heroTitle, heroSubtitle, heroBadge, facilities, featuredDoctors, galleryPhotos, promos, contactPhone, contactEmail, clinicAddress } = cms;
 
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
 
@@ -164,84 +166,144 @@ export const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* PHOTO SLIDER SECTION: KLINIK MODERN & TERPERCAYA UNTUK KELUARGA ANDA (CMS Synced) */}
-      <section className="py-16 px-6 max-w-7xl mx-auto w-full space-y-8">
-        <div className="text-center space-y-3">
-          <span className="px-3.5 py-1.5 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 text-xs font-bold font-mono uppercase tracking-wider inline-flex items-center gap-1.5">
-            <ImageIcon className="w-4 h-4 text-sky-500" /> GALERI FOTO FASKES & TENAGA MEDIS
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+      {/* PHOTO SLIDER CONTAINER AS FULL BACKGROUND HEADER FOR "Klinik Modern & Terpercaya Untuk Keluarga Anda" */}
+      <section className="relative py-24 sm:py-32 px-6 overflow-hidden border-b border-slate-200 dark:border-slate-800 transition-colors">
+        {/* Full-width Background Photo Slider */}
+        {galleryPhotos && galleryPhotos.length > 0 && (
+          <div className="absolute inset-0 z-0 overflow-hidden">
+            <img
+              key={activeSlideIndex}
+              src={galleryPhotos[activeSlideIndex]?.photoUrl}
+              alt={galleryPhotos[activeSlideIndex]?.title}
+              className="w-full h-full object-cover transition-all duration-1000 ease-in-out scale-105"
+            />
+            {/* Dark Blur Overlay for readability */}
+            <div className="absolute inset-0 bg-slate-950/75 backdrop-blur-[2px]" />
+          </div>
+        )}
+
+        {/* Content Box Centered Over Photo Slider Background */}
+        <div className="max-w-5xl mx-auto text-center space-y-6 relative z-10 text-white">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sky-500/20 border border-sky-400/40 text-sky-300 text-xs font-bold font-mono tracking-wider shadow-lg backdrop-blur-md">
+            <Sparkles className="w-4 h-4 text-sky-400" /> KLINIK PRATAMA & UTAMA TERAKREDITASI
+          </div>
+
+          <h2 className="text-4xl sm:text-6xl font-black tracking-tight text-white leading-tight drop-shadow-lg">
             Klinik Modern & Terpercaya Untuk Keluarga Anda
           </h2>
+
+          <p className="text-slate-200 text-sm sm:text-lg max-w-3xl mx-auto leading-relaxed font-medium drop-shadow-md">
+            Memberikan pelayanan medis terbaik dengan tim dokter spesialis berpengalaman dan fasilitas kesehatan modern lengkap.
+          </p>
+
+          {/* Active Photo Info Badge */}
+          {galleryPhotos && galleryPhotos.length > 0 && (
+            <div className="pt-2 inline-flex items-center gap-3 px-4 py-2 rounded-2xl bg-black/40 backdrop-blur-md border border-white/20 text-xs text-slate-300 shadow-xl">
+              <ImageIcon className="w-4 h-4 text-sky-400" />
+              <span className="font-semibold text-white">{galleryPhotos[activeSlideIndex]?.title}</span>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-sky-600/80 text-white font-bold">
+                {activeSlideIndex + 1}/{galleryPhotos.length}
+              </span>
+            </div>
+          )}
+
+          {/* Slider Controls */}
+          {galleryPhotos && galleryPhotos.length > 0 && (
+            <div className="pt-4 flex items-center justify-center gap-3">
+              <button
+                onClick={() => setActiveSlideIndex((prev) => (prev === 0 ? galleryPhotos.length - 1 : prev - 1))}
+                className="w-10 h-10 rounded-full bg-white/10 hover:bg-sky-600 text-white border border-white/20 flex items-center justify-center transition backdrop-blur-md shadow-md"
+                title="Foto Sebelumnya"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+
+              <div className="flex items-center gap-1.5 px-2">
+                {galleryPhotos.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setActiveSlideIndex(idx)}
+                    className={`h-2.5 rounded-full transition-all duration-300 ${
+                      idx === activeSlideIndex ? 'w-8 bg-sky-400 shadow-md' : 'w-2.5 bg-white/40 hover:bg-white/70'
+                    }`}
+                  />
+                ))}
+              </div>
+
+              <button
+                onClick={() => setActiveSlideIndex((prev) => (prev + 1) % galleryPhotos.length)}
+                className="w-10 h-10 rounded-full bg-white/10 hover:bg-sky-600 text-white border border-white/20 flex items-center justify-center transition backdrop-blur-md shadow-md"
+                title="Foto Selanjutnya"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* ONGOING CLINIC PROMOS & ARTICLES CARDS (CMS Synced) */}
+      <section className="py-20 px-6 max-w-7xl mx-auto w-full space-y-12">
+        <div className="text-center space-y-3">
+          <span className="px-3.5 py-1.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-xs font-bold font-mono uppercase tracking-wider inline-flex items-center gap-1.5">
+            <Gift className="w-4 h-4 text-amber-500" /> PROMO & ARTIKEL KESEHATAN BERLANGSUNG
+          </span>
+          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+            Penawaran Spesial & Paket Hemat Klinik
+          </h2>
           <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed">
-            Intip suasana kenyamanan gedung klinik, ruang periksa dokter yang steril, laboratorium canggih, serta dedikasi tim medis profesional kami.
+            Dapatkan potongan harga khusus untuk pemeriksaan MCU rutin, imunisasi keluarga, dan terapi vitamin stamina yang sedang berlangsung di Klinik Alwi.
           </p>
         </div>
 
-        {/* Photo Slider Container */}
-        {galleryPhotos && galleryPhotos.length > 0 && (
-          <div className="relative rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-2xl bg-slate-900 group aspect-[16/9] sm:aspect-[21/9] max-h-[500px]">
-            {/* Active Slide Image */}
-            <img
-              src={galleryPhotos[activeSlideIndex]?.photoUrl}
-              alt={galleryPhotos[activeSlideIndex]?.title}
-              className="w-full h-full object-cover transition-all duration-700 ease-in-out transform group-hover:scale-105"
-            />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {promos && promos.map((promo) => (
+            <div
+              key={promo.id}
+              className="glass-card rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 overflow-hidden shadow-lg hover:shadow-2xl transition space-y-4 flex flex-col justify-between group hover:-translate-y-1"
+            >
+              <div className="space-y-4">
+                <div className="relative aspect-video overflow-hidden bg-slate-900">
+                  <img
+                    src={promo.photoUrl}
+                    alt={promo.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                  />
+                  <span className="absolute top-3 left-3 px-3 py-1 rounded-full bg-amber-500 text-white font-extrabold text-xs shadow-md">
+                    {promo.discountTag}
+                  </span>
+                  <span className="absolute bottom-3 left-3 right-3 px-2.5 py-1 rounded-xl bg-black/60 backdrop-blur-md text-white text-[10px] font-mono border border-white/20">
+                    {promo.validUntil}
+                  </span>
+                </div>
 
-            {/* Dark Overlay Gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
-
-            {/* Slide Information Badge & Description */}
-            <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10 space-y-2 text-white">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="px-3 py-1 rounded-full bg-sky-500/80 backdrop-blur-md text-white text-[11px] font-bold tracking-wider uppercase shadow-md">
-                  {galleryPhotos[activeSlideIndex]?.category || 'Fasilitas Klinik'}
-                </span>
-                <span className="px-2.5 py-0.5 rounded-full bg-black/40 backdrop-blur-md text-slate-300 text-[10px] font-mono border border-white/20">
-                  {activeSlideIndex + 1} / {galleryPhotos.length}
-                </span>
+                <div className="px-6 space-y-2">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 font-mono">
+                    {promo.badge}
+                  </span>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white leading-snug group-hover:text-sky-600 dark:group-hover:text-sky-400 transition">
+                    {promo.title}
+                  </h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed pt-1">
+                    {promo.description}
+                  </p>
+                </div>
               </div>
-              <h3 className="text-xl sm:text-3xl font-extrabold text-white tracking-tight">
-                {galleryPhotos[activeSlideIndex]?.title}
-              </h3>
-              <p className="text-slate-200 text-xs sm:text-sm max-w-3xl leading-relaxed font-normal drop-shadow-md">
-                {galleryPhotos[activeSlideIndex]?.description}
-              </p>
+
+              <div className="p-6 pt-0 border-t border-slate-100 dark:border-slate-800/80 mt-4 flex items-center justify-between">
+                <span className="text-xs text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1">
+                  <CheckCircle2 className="w-4 h-4" /> Kuota Promo Aktif
+                </span>
+                <Link
+                  to="/login"
+                  className="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs shadow-md flex items-center gap-1.5 transition"
+                >
+                  Ambil Promo <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
             </div>
-
-            {/* Previous Slide Button */}
-            <button
-              onClick={() => setActiveSlideIndex((prev) => (prev === 0 ? galleryPhotos.length - 1 : prev - 1))}
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-slate-900/60 hover:bg-sky-600 text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition opacity-80 hover:opacity-100 shadow-lg"
-              title="Foto Sebelumnya"
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </button>
-
-            {/* Next Slide Button */}
-            <button
-              onClick={() => setActiveSlideIndex((prev) => (prev + 1) % galleryPhotos.length)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-slate-900/60 hover:bg-sky-600 text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition opacity-80 hover:opacity-100 shadow-lg"
-              title="Foto Selanjutnya"
-            >
-              <ChevronRight className="w-6 h-6" />
-            </button>
-
-            {/* Pagination Indicators / Dots */}
-            <div className="absolute bottom-4 right-6 flex items-center gap-1.5 z-20">
-              {galleryPhotos.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setActiveSlideIndex(idx)}
-                  className={`h-2.5 rounded-full transition-all duration-300 ${
-                    idx === activeSlideIndex ? 'w-8 bg-sky-500 shadow-md' : 'w-2.5 bg-white/40 hover:bg-white/70'
-                  }`}
-                  title={`Foto ${idx + 1}`}
-                />
-              ))}
-            </div>
-          </div>
-        )}
+          ))}
+        </div>
       </section>
 
       {/* 6 CLINIC FACILITIES & SERVICES GRID */}

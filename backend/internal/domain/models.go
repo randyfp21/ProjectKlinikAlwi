@@ -324,5 +324,6 @@ type ClinicCMSSetting struct {
 	FacilitiesJSON string    `gorm:"type:text" json:"facilities_json"`
 	DoctorsJSON    string    `gorm:"type:text" json:"doctors_json"`
 	GalleryJSON    string    `gorm:"type:text" json:"gallery_json"`
+	PromosJSON     string    `gorm:"type:text" json:"promos_json"`
 	UpdatedAt      time.Time `json:"updated_at"`
 }

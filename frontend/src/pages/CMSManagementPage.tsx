@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Globe, Edit3, Save, CheckCircle2, RotateCcw, Hospital, Home, Pill, Syringe, Droplet, Stethoscope, Handshake, Eye, Sparkles, UserCheck, ShieldCheck, Upload, Image as ImageIcon, Plus, Trash2 } from 'lucide-react';
-import { useCMSStore, CMSFacility, CMSFeaturedDoctor, CMSClinicGallery } from '../store/useCMSStore';
+import { Globe, Edit3, Save, CheckCircle2, RotateCcw, Hospital, Home, Pill, Syringe, Droplet, Stethoscope, Handshake, Eye, Sparkles, UserCheck, ShieldCheck, Upload, Image as ImageIcon, Plus, Trash2, Gift, Tag } from 'lucide-react';
+import { useCMSStore, CMSFacility, CMSFeaturedDoctor, CMSClinicGallery, CMSPromo } from '../store/useCMSStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { apiClient } from '../api/client';
 import { Link } from 'react-router-dom';
@@ -21,6 +21,7 @@ export const CMSManagementPage: React.FC = () => {
   const [editingFacility, setEditingFacility] = useState<CMSFacility | null>(null);
   const [editingDoctor, setEditingDoctor] = useState<CMSFeaturedDoctor | null>(null);
   const [editingGallery, setEditingGallery] = useState<CMSClinicGallery | null>(null);
+  const [editingPromo, setEditingPromo] = useState<CMSPromo | null>(null);
 
   // New Photo Form State
   const [showAddPhotoModal, setShowAddPhotoModal] = useState(false);
@@ -29,6 +30,18 @@ export const CMSManagementPage: React.FC = () => {
     category: 'Fasilitas Gedung',
     photoUrl: '',
     description: '',
+  });
+
+  // New Promo Form State
+  const [showAddPromoModal, setShowAddPromoModal] = useState(false);
+  const [newPromoForm, setNewPromoForm] = useState({
+    title: '',
+    badge: 'PROMO SPESIAL',
+    discountTag: 'DISKON 20%',
+    validUntil: 'Berlaku s/d Akhir Bulan',
+    description: '',
+    photoUrl: '',
+    actionUrl: '/login',
   });
 
   // Branding Form State
@@ -208,6 +221,98 @@ export const CMSManagementPage: React.FC = () => {
       description: '',
     });
     showToast('Foto galeri baru berhasil ditambahkan ke Photo Slider Landing Page!');
+  };
+
+  // 4. UPLOAD PROMO PHOTO FILE
+  const handlePromoPhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>, promoId: number) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    const data = new FormData();
+    data.append('file', file);
+
+    try {
+      const res = await apiClient.post('/upload', data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      if (res.data.data?.url) {
+        if (editingPromo && editingPromo.id === promoId) {
+          setEditingPromo({ ...editingPromo, photoUrl: res.data.data.url });
+        }
+        cms.updatePromo(promoId, { photoUrl: res.data.data.url });
+        showToast(`Foto banner promo #${promoId} berhasil diupload & tersimpan!`);
+      }
+    } catch (err) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (typeof reader.result === 'string') {
+          if (editingPromo && editingPromo.id === promoId) {
+            setEditingPromo({ ...editingPromo, photoUrl: reader.result });
+          }
+          cms.updatePromo(promoId, { photoUrl: reader.result });
+          showToast(`Foto banner promo #${promoId} berhasil diupload!`);
+        }
+      };
+      reader.readAsDataURL(file);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleNewPromoPhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    const data = new FormData();
+    data.append('file', file);
+
+    try {
+      const res = await apiClient.post('/upload', data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      if (res.data.data?.url) {
+        setNewPromoForm({ ...newPromoForm, photoUrl: res.data.data.url });
+        showToast('Foto banner promo baru berhasil diupload!');
+      }
+    } catch (err) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (typeof reader.result === 'string') {
+          setNewPromoForm({ ...newPromoForm, photoUrl: reader.result });
+          showToast('Foto banner promo baru berhasil diupload!');
+        }
+      };
+      reader.readAsDataURL(file);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleSavePromoSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingPromo) return;
+    cms.updatePromo(editingPromo.id, editingPromo);
+    setEditingPromo(null);
+    showToast(`Promo "${editingPromo.title}" berhasil diperbarui!`);
+  };
+
+  const handleAddPromoSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newPromoForm.title || !newPromoForm.photoUrl) return;
+    cms.addPromo(newPromoForm);
+    setShowAddPromoModal(false);
+    setNewPromoForm({
+      title: '',
+      badge: 'PROMO SPESIAL',
+      discountTag: 'DISKON 20%',
+      validUntil: 'Berlaku s/d Akhir Bulan',
+      description: '',
+      photoUrl: '',
+      actionUrl: '/login',
+    });
+    showToast('Kartu promo baru berhasil ditambahkan ke Landing Page!');
   };
 
   const handleSaveBranding = (e: React.FormEvent) => {
@@ -619,6 +724,84 @@ export const CMSManagementPage: React.FC = () => {
         </div>
       </div>
 
+      {/* SECTION 6: ONGOING PROMOS & ARTICLES CMS */}
+      <div className="glass-card p-6 rounded-3xl border shadow-sm space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 gap-3">
+          <div>
+            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+              <Gift className="w-5 h-5 text-amber-500" /> 6. Kelola Kartu Promo & Artikel Berlangsung (Penawaran Spesial & Paket Hemat)
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Tambah, upload foto banner, atur diskon, dan edit artikel promo kesehatan yang tampil di bawah photo slider Landing Page.
+            </p>
+          </div>
+
+          <button
+            onClick={() => setShowAddPromoModal(true)}
+            className="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-md flex items-center gap-1.5 shrink-0"
+          >
+            <Plus className="w-4 h-4" /> Tambah Promo Baru
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {cms.promos && cms.promos.map((promo) => (
+            <div key={promo.id} className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-3 flex flex-col justify-between">
+              <div className="space-y-2">
+                <div className="relative aspect-video rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-900 group">
+                  <img src={promo.photoUrl} alt={promo.title} className="w-full h-full object-cover group-hover:scale-105 transition" />
+                  <span className="absolute top-2 left-2 px-2.5 py-0.5 rounded-full bg-amber-500 text-white text-[10px] font-extrabold shadow-md">
+                    {promo.discountTag}
+                  </span>
+                  <span className="absolute bottom-2 left-2 right-2 px-2 py-0.5 rounded-lg bg-black/60 backdrop-blur-md text-white text-[9px] font-mono">
+                    {promo.validUntil}
+                  </span>
+                </div>
+
+                <div>
+                  <span className="text-[10px] font-bold text-sky-600 dark:text-sky-400 uppercase font-mono block">{promo.badge}</span>
+                  <h3 className="font-bold text-slate-900 dark:text-slate-100 text-sm leading-snug">{promo.title}</h3>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed mt-1">{promo.description}</p>
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between gap-2">
+                <label className="px-3 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-[10px] shadow-sm cursor-pointer flex items-center gap-1">
+                  <Upload className="w-3.5 h-3.5" /> Upload Banner
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handlePromoPhotoUpload(e, promo.id)}
+                    disabled={uploading}
+                    className="hidden"
+                  />
+                </label>
+
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={() => setEditingPromo(promo)}
+                    className="px-2.5 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-[10px] shadow-sm flex items-center gap-1"
+                  >
+                    <Edit3 className="w-3 h-3" /> Edit
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (confirm(`Hapus kartu promo "${promo.title}"?`)) {
+                        cms.deletePromo(promo.id);
+                        showToast(`Promo "${promo.title}" dihapus!`);
+                      }
+                    }}
+                    className="px-2.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-[10px] shadow-sm flex items-center gap-1"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* MODAL 1: EDIT FACILITY */}
       {editingFacility && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 glass-modal font-sans">
@@ -974,6 +1157,246 @@ export const CMSManagementPage: React.FC = () => {
                 className="px-5 py-2 rounded-xl bg-sky-600 text-white font-bold text-xs shadow-md"
               >
                 Simpan & Tampilkan Di Slider
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* MODAL 5: EDIT PROMO */}
+      {editingPromo && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 glass-modal font-sans">
+          <form onSubmit={handleSavePromoSubmit} className="bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-6 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-4">
+            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+              <Gift className="w-5 h-5 text-amber-500" /> Edit Kartu Promo #{editingPromo.id}
+            </h2>
+
+            <div className="space-y-3 text-xs">
+              <div className="flex items-center gap-3 p-3 bg-slate-100 dark:bg-slate-800 rounded-2xl">
+                <img src={editingPromo.photoUrl} alt={editingPromo.title} className="w-16 h-16 rounded-xl object-cover border shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <span className="font-bold text-slate-900 dark:text-slate-100 text-sm block truncate">{editingPromo.title}</span>
+                  <span className="text-slate-400 text-[10px] block truncate">Path: {editingPromo.photoUrl}</span>
+                </div>
+                <label className="px-3 py-1.5 rounded-xl bg-teal-600 text-white font-bold text-[10px] cursor-pointer shrink-0">
+                  Upload Banner Baru
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handlePromoPhotoUpload(e, editingPromo.id)}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+
+              <div>
+                <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Judul Kartu Promo</label>
+                <input
+                  type="text"
+                  required
+                  value={editingPromo.title}
+                  onChange={(e) => setEditingPromo({ ...editingPromo, title: e.target.value })}
+                  className="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border rounded-xl font-bold text-slate-900 dark:text-slate-100 focus:outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Label Diskon (Tag)</label>
+                  <input
+                    type="text"
+                    required
+                    value={editingPromo.discountTag}
+                    onChange={(e) => setEditingPromo({ ...editingPromo, discountTag: e.target.value })}
+                    className="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border rounded-xl font-extrabold text-amber-500 focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Masa Berlaku Promo</label>
+                  <input
+                    type="text"
+                    required
+                    value={editingPromo.validUntil}
+                    onChange={(e) => setEditingPromo({ ...editingPromo, validUntil: e.target.value })}
+                    className="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border rounded-xl font-mono text-slate-600 dark:text-slate-300 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Header Badge Promo</label>
+                <input
+                  type="text"
+                  required
+                  value={editingPromo.badge}
+                  onChange={(e) => setEditingPromo({ ...editingPromo, badge: e.target.value })}
+                  className="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border rounded-xl font-mono font-bold text-sky-600 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">URL / Path Banner Gambar</label>
+                <input
+                  type="text"
+                  required
+                  value={editingPromo.photoUrl}
+                  onChange={(e) => setEditingPromo({ ...editingPromo, photoUrl: e.target.value })}
+                  className="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border rounded-xl font-mono text-sky-600 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Deskripsi Syarat & Ketentuan Promo</label>
+                <textarea
+                  rows={3}
+                  required
+                  value={editingPromo.description}
+                  onChange={(e) => setEditingPromo({ ...editingPromo, description: e.target.value })}
+                  className="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border rounded-xl text-slate-900 dark:text-slate-100 focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-4 border-t border-slate-200 dark:border-slate-800">
+              <button
+                type="button"
+                onClick={() => setEditingPromo(null)}
+                className="px-4 py-2 rounded-xl bg-slate-200 dark:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-slate-200"
+              >
+                Batal
+              </button>
+              <button
+                type="submit"
+                className="px-5 py-2 rounded-xl bg-amber-600 text-white font-bold text-xs shadow-md"
+              >
+                Simpan Promo
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* MODAL 6: ADD NEW PROMO */}
+      {showAddPromoModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 glass-modal font-sans">
+          <form onSubmit={handleAddPromoSubmit} className="bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-6 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-4">
+            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+              <Plus className="w-5 h-5 text-amber-500" /> Tambah Kartu Promo / Artikel Baru
+            </h2>
+
+            <div className="space-y-3 text-xs">
+              <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  {newPromoForm.photoUrl ? (
+                    <img src={newPromoForm.photoUrl} alt="Preview" className="w-14 h-14 rounded-xl object-cover border" />
+                  ) : (
+                    <div className="w-14 h-14 rounded-xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-400">
+                      <Gift className="w-6 h-6" />
+                    </div>
+                  )}
+                  <div>
+                    <span className="font-bold text-slate-900 dark:text-slate-100 block">Upload Berkas Banner</span>
+                    <span className="text-[10px] text-slate-400 block truncate max-w-[200px]">
+                      {newPromoForm.photoUrl || 'Belum ada berkas terpilih'}
+                    </span>
+                  </div>
+                </div>
+
+                <label className="px-3.5 py-2 rounded-xl bg-amber-600 text-white font-bold text-xs cursor-pointer shadow-sm shrink-0">
+                  Upload Foto
+                  <input type="file" accept="image/*" onChange={handleNewPromoPhotoUpload} disabled={uploading} className="hidden" />
+                </label>
+              </div>
+
+              <div>
+                <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Judul Kartu Promo</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Contoh: Promo Paket MCU Lansia Sehat"
+                  value={newPromoForm.title}
+                  onChange={(e) => setNewPromoForm({ ...newPromoForm, title: e.target.value })}
+                  className="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border rounded-xl font-bold text-slate-900 dark:text-slate-100 focus:outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Label Diskon (Tag)</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="DISKON 30%"
+                    value={newPromoForm.discountTag}
+                    onChange={(e) => setNewPromoForm({ ...newPromoForm, discountTag: e.target.value })}
+                    className="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border rounded-xl font-extrabold text-amber-500 focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Masa Berlaku Promo</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Berlaku s/d 30 Sept 2026"
+                    value={newPromoForm.validUntil}
+                    onChange={(e) => setNewPromoForm({ ...newPromoForm, validUntil: e.target.value })}
+                    className="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border rounded-xl font-mono text-slate-600 dark:text-slate-300 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Header Badge Promo</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="PAKET HEMAT ANGGOTA KELUARGA"
+                  value={newPromoForm.badge}
+                  onChange={(e) => setNewPromoForm({ ...newPromoForm, badge: e.target.value })}
+                  className="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border rounded-xl font-mono font-bold text-sky-600 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">URL / Path Foto Banner</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="https://images.unsplash.com/... atau /uploads/promo.jpg"
+                  value={newPromoForm.photoUrl}
+                  onChange={(e) => setNewPromoForm({ ...newPromoForm, photoUrl: e.target.value })}
+                  className="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border rounded-xl font-mono text-sky-600 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Deskripsi Syarat & Ketentuan</label>
+                <textarea
+                  rows={3}
+                  required
+                  placeholder="Jelaskan detail cakupan paket & benefit promo ini..."
+                  value={newPromoForm.description}
+                  onChange={(e) => setNewPromoForm({ ...newPromoForm, description: e.target.value })}
+                  className="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border rounded-xl text-slate-900 dark:text-slate-100 focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-4 border-t border-slate-200 dark:border-slate-800">
+              <button
+                type="button"
+                onClick={() => setShowAddPromoModal(false)}
+                className="px-4 py-2 rounded-xl bg-slate-200 dark:bg-slate-800 text-xs font-semibold text-slate-800 dark:text-slate-200"
+              >
+                Batal
+              </button>
+              <button
+                type="submit"
+                className="px-5 py-2 rounded-xl bg-amber-600 text-white font-bold text-xs shadow-md"
+              >
+                Simpan & Tampilkan Di Landing Page
               </button>
             </div>
           </form>

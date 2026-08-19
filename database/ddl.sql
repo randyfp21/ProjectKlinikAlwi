@@ -337,5 +337,6 @@ CREATE TABLE clinic_cms_settings (
     facilities_json TEXT,
     doctors_json TEXT,
     gallery_json TEXT,
+    promos_json TEXT,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
