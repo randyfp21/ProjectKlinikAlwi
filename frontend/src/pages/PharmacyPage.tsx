@@ -298,12 +298,14 @@ export const PharmacyPage: React.FC = () => {
                 <thead className="bg-slate-100 dark:bg-slate-800/80 uppercase text-[10px] text-slate-500 dark:text-slate-400 font-bold">
                   <tr>
                     <th className="p-3.5">Kode & Nama Obat</th>
-                    <th className="p-3.5">Kategori Obat (Relasi Table)</th>
-                    <th className="p-3.5">Kemasan / Unit</th>
+                    <th className="p-3.5">Kategori Obat</th>
+                    <th className="p-3.5">Kemasan</th>
                     <th className="p-3.5">Stok Saat Ini</th>
-                    <th className="p-3.5">Harga HPP / Jual</th>
+                    <th className="p-3.5">Harga HPP / Dasar</th>
+                    <th className="p-3.5">Harga Jual</th>
+                    <th className="p-3.5">Expired Date</th>
                     <th className="p-3.5">Status Stok</th>
-                    <th className="p-3.5 text-right">Aksi Kelola Stok</th>
+                    <th className="p-3.5 text-right">Aksi Kelola</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
@@ -339,8 +341,18 @@ export const PharmacyPage: React.FC = () => {
                         </td>
 
                         <td className="p-3.5">
-                          <div className="font-bold text-emerald-600 dark:text-emerald-400">Rp {med.selling_price.toLocaleString()}</div>
-                          <div className="text-[10px] text-slate-400">HPP: Rp {med.purchase_price.toLocaleString()}</div>
+                          <div className="font-semibold text-slate-600 dark:text-slate-300 text-xs">Rp {med.purchase_price.toLocaleString()}</div>
+                          <div className="text-[10px] text-slate-400">Harga HPP / Modal</div>
+                        </td>
+
+                        <td className="p-3.5">
+                          <div className="font-bold text-emerald-600 dark:text-emerald-400 text-sm">Rp {med.selling_price.toLocaleString()}</div>
+                          <div className="text-[10px] text-emerald-500 font-semibold">Harga Jual Pasien</div>
+                        </td>
+
+                        <td className="p-3.5">
+                          <div className="font-mono font-bold text-xs text-rose-600 dark:text-rose-400">{med.expiry_date || '-'}</div>
+                          <div className="text-[10px] text-slate-400">Batch: {med.batch_number || 'N/A'}</div>
                         </td>
 
                         <td className="p-3.5">
@@ -582,7 +594,7 @@ export const PharmacyPage: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Harga Beli HPP (Rp)</label>
+                  <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Harga HPP / Harga Dasar (Rp)</label>
                   <input
                     type="number"
                     required
@@ -607,7 +619,7 @@ export const PharmacyPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Tanggal Kadaluarsa (Expiry Date)</label>
+                <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Tanggal Kadaluarsa (Expired Date)</label>
                 <input
                   type="date"
                   required
@@ -672,7 +684,7 @@ export const PharmacyPage: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Harga Beli HPP (Rp)</label>
+                  <label className="text-slate-700 dark:text-slate-300 block mb-1 font-semibold">Harga HPP / Harga Dasar (Rp)</label>
                   <input
                     type="number"
                     required
@@ -798,16 +810,16 @@ export const PharmacyPage: React.FC = () => {
                 <span className="font-bold text-emerald-600">Rp {selectedMedDetail.selling_price.toLocaleString()}</span>
               </div>
               <div className="flex justify-between py-1 border-b">
-                <span className="text-slate-500">Harga Beli HPP:</span>
-                <span className="font-bold">Rp {selectedMedDetail.purchase_price.toLocaleString()}</span>
+                <span className="text-slate-500">Harga HPP / Harga Dasar:</span>
+                <span className="font-semibold text-slate-700 dark:text-slate-300">Rp {selectedMedDetail.purchase_price.toLocaleString()}</span>
               </div>
               <div className="flex justify-between py-1 border-b">
                 <span className="text-slate-500">Produsen:</span>
                 <span className="font-semibold">{selectedMedDetail.manufacturer || 'Generik'}</span>
               </div>
               <div className="flex justify-between py-1">
-                <span className="text-slate-500">Expiry Date:</span>
-                <span className="font-mono font-bold">{selectedMedDetail.expiry_date}</span>
+                <span className="text-slate-500">Expired Date:</span>
+                <span className="font-mono font-bold text-rose-600 dark:text-rose-400">{selectedMedDetail.expiry_date}</span>
               </div>
             </div>
 
