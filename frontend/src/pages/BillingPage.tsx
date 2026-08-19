@@ -63,14 +63,12 @@ export const BillingPage: React.FC = () => {
       {/* Header Bar & Quick Metrics */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl bg-gradient-to-br from-slate-900 via-sky-950 to-slate-900 text-white shadow-xl">
         <div className="flex items-start gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-sky-500 to-teal-400 p-0.5 shadow-lg shadow-sky-500/30 shrink-0 hidden sm:block">
-            <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center overflow-hidden">
-              {clinicLogoIcon && (clinicLogoIcon.startsWith('/') || clinicLogoIcon.startsWith('http') || clinicLogoIcon.startsWith('data:')) ? (
-                <img src={clinicLogoIcon} alt="Logo" className="w-full h-full object-cover rounded-[14px]" />
-              ) : (
-                <Hospital className="w-7 h-7 text-sky-400" />
-              )}
-            </div>
+          <div className="w-12 h-12 flex items-center justify-center shrink-0 overflow-hidden hidden sm:flex">
+            {clinicLogoIcon && (clinicLogoIcon.startsWith('/') || clinicLogoIcon.startsWith('http') || clinicLogoIcon.startsWith('data:')) ? (
+              <img src={clinicLogoIcon} alt="Logo" className="w-full h-full object-contain max-w-full max-h-full" />
+            ) : (
+              <Hospital className="w-8 h-8 text-sky-400" />
+            )}
           </div>
 
           <div className="space-y-1">
@@ -394,14 +392,12 @@ export const BillingPage: React.FC = () => {
             {/* Official Clinic Letterhead / Kop Surat Resmi Receipt Header */}
             <div className="border-b-2 border-slate-900 dark:border-slate-100 pb-4 text-center space-y-1">
               <div className="flex items-center justify-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-teal-400 p-0.5 shadow-md shrink-0">
-                  <div className="w-full h-full bg-white dark:bg-slate-950 rounded-[10px] flex items-center justify-center overflow-hidden">
-                    {clinicLogoIcon && (clinicLogoIcon.startsWith('/') || clinicLogoIcon.startsWith('http') || clinicLogoIcon.startsWith('data:')) ? (
-                      <img src={clinicLogoIcon} alt="Logo" className="w-full h-full object-cover rounded-[10px]" />
-                    ) : (
-                      <Hospital className="w-5 h-5 text-sky-500" />
-                    )}
-                  </div>
+                <div className="w-10 h-10 flex items-center justify-center shrink-0 overflow-hidden">
+                  {clinicLogoIcon && (clinicLogoIcon.startsWith('/') || clinicLogoIcon.startsWith('http') || clinicLogoIcon.startsWith('data:')) ? (
+                    <img src={clinicLogoIcon} alt="Logo" className="w-full h-full object-contain max-w-full max-h-full" />
+                  ) : (
+                    <Hospital className="w-6 h-6 text-sky-500" />
+                  )}
                 </div>
                 <h1 className="text-xl font-black tracking-tight text-slate-900 dark:text-slate-100 uppercase">{clinicName}</h1>
               </div>
