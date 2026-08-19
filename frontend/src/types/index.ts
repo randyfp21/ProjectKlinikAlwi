@@ -127,6 +127,7 @@ export interface InvoiceItem {
   quantity: number;
   unit_price: number;
   subtotal: number;
+  expiry_date?: string;
 }
 
 export interface Invoice {

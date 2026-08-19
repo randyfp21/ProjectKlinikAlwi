@@ -29,8 +29,8 @@ const INITIAL_INVOICES: Invoice[] = [
     items: [
       { id: 1, invoice_id: 1, item_type: 'Doctor Fee', item_name: 'Consultation - dr. Alwi Shahab, Sp.PD', quantity: 1, unit_price: 150000, subtotal: 150000 },
       { id: 2, invoice_id: 1, item_type: 'Procedure', item_name: 'Physical Exam & Vital Signs (TTV)', quantity: 1, unit_price: 50000, subtotal: 50000 },
-      { id: 3, invoice_id: 1, item_type: 'Medicine', item_name: 'Amlodipine 10mg (10 tabs)', quantity: 10, unit_price: 4500, subtotal: 45000 },
-      { id: 4, invoice_id: 1, item_type: 'Medicine', item_name: 'Paracetamol 500mg (10 tabs)', quantity: 10, unit_price: 1200, subtotal: 12000 },
+      { id: 3, invoice_id: 1, item_type: 'Medicine', item_name: 'Amlodipine 10mg (10 tabs)', quantity: 10, unit_price: 4500, subtotal: 45000, expiry_date: '2027-10-15' },
+      { id: 4, invoice_id: 1, item_type: 'Medicine', item_name: 'Paracetamol 500mg (10 tabs)', quantity: 10, unit_price: 1200, subtotal: 12000, expiry_date: '2028-04-20' },
     ],
   },
   {
@@ -52,7 +52,7 @@ const INITIAL_INVOICES: Invoice[] = [
     items: [
       { id: 10, invoice_id: 2, item_type: 'Doctor Fee', item_name: 'Consultation - dr. Sarah Lestari, Sp.A', quantity: 1, unit_price: 150000, subtotal: 150000 },
       { id: 11, invoice_id: 2, item_type: 'Procedure', item_name: 'Nebulizer Therapy Session', quantity: 1, unit_price: 50000, subtotal: 50000 },
-      { id: 12, invoice_id: 2, item_type: 'Medicine', item_name: 'Amoxicillin 500mg (15 caps)', quantity: 15, unit_price: 3500, subtotal: 52500 },
+      { id: 12, invoice_id: 2, item_type: 'Medicine', item_name: 'Amoxicillin 500mg (15 caps)', quantity: 15, unit_price: 3500, subtotal: 52500, expiry_date: '2026-11-30' },
     ],
   },
 ];

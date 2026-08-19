@@ -126,11 +126,12 @@ export const BillingPage: React.FC = () => {
                     {/* Itemized breakdown table for patient */}
                     <div className="overflow-x-auto">
                       <table className="w-full text-left text-xs text-slate-600 dark:text-slate-300">
-                        <thead className="bg-slate-200/60 dark:bg-slate-900/60 uppercase text-[10px] text-slate-500 dark:text-slate-400 font-semibold">
+                        <thead className="bg-slate-200/60 dark:bg-slate-900/60 uppercase text-[10px] text-slate-500 dark:text-slate-400 font-bold tracking-wider">
                           <tr>
                             <th className="p-2.5">Kategori</th>
                             <th className="p-2.5">Rincian Item</th>
                             <th className="p-2.5">Qty</th>
+                            <th className="p-2.5">Expired Date</th>
                             <th className="p-2.5 text-right">Subtotal</th>
                           </tr>
                         </thead>
@@ -140,6 +141,15 @@ export const BillingPage: React.FC = () => {
                               <td className="p-2.5 font-bold text-slate-500 dark:text-slate-400 text-[10px] uppercase">{item.item_type}</td>
                               <td className="p-2.5 font-semibold text-slate-900 dark:text-slate-100">{item.item_name}</td>
                               <td className="p-2.5 font-bold">{item.quantity}</td>
+                              <td className="p-2.5">
+                                {item.item_type === 'Medicine' ? (
+                                  <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 border border-amber-500/20 font-mono text-[10px] font-bold">
+                                    {item.expiry_date || '2027-12-31'}
+                                  </span>
+                                ) : (
+                                  <span className="text-slate-400 font-mono text-[10px]">-</span>
+                                )}
+                              </td>
                               <td className="p-2.5 text-right font-bold text-sky-500">Rp {item.subtotal.toLocaleString()}</td>
                             </tr>
                           ))}
@@ -353,12 +363,13 @@ export const BillingPage: React.FC = () => {
             {/* Itemized Table */}
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs text-slate-600 dark:text-slate-300">
-                <thead className="bg-slate-100 dark:bg-slate-800/80 uppercase text-[10px] text-slate-500 dark:text-slate-400 font-semibold">
+                <thead className="bg-slate-100 dark:bg-slate-800/80 uppercase text-[10px] text-slate-500 dark:text-slate-400 font-bold tracking-wider">
                   <tr>
-                    <th className="p-3">Type</th>
-                    <th className="p-3">Item Description</th>
+                    <th className="p-3">Kategori</th>
+                    <th className="p-3">Rincian Item / Obat</th>
                     <th className="p-3">Qty</th>
-                    <th className="p-3">Unit Price</th>
+                    <th className="p-3">Harga Jual</th>
+                    <th className="p-3">Expired Date</th>
                     <th className="p-3 text-right">Subtotal</th>
                   </tr>
                 </thead>
@@ -372,7 +383,18 @@ export const BillingPage: React.FC = () => {
                       </td>
                       <td className="p-3 font-semibold text-slate-900 dark:text-slate-100">{item.item_name}</td>
                       <td className="p-3 font-bold">{item.quantity}</td>
-                      <td className="p-3">Rp {item.unit_price.toLocaleString()}</td>
+                      <td className="p-3 font-semibold text-slate-800 dark:text-slate-200">
+                        Rp {item.unit_price.toLocaleString()}
+                      </td>
+                      <td className="p-3">
+                        {item.item_type === 'Medicine' ? (
+                          <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 border border-amber-500/20 font-mono text-[10px] font-bold">
+                            {item.expiry_date || '2027-12-31'}
+                          </span>
+                        ) : (
+                          <span className="text-slate-400 font-mono text-[10px]">-</span>
+                        )}
+                      </td>
                       <td className="p-3 text-right font-bold text-sky-500">Rp {item.subtotal.toLocaleString()}</td>
                     </tr>
                   ))}

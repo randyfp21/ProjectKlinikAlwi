@@ -209,6 +209,7 @@ export const ConsultationPage: React.FC = () => {
           quantity: rx.quantity,
           unit_price: rx.unit_price,
           subtotal: rx.subtotal,
+          expiry_date: rx.expiry_date || '2027-12-31',
         })),
       ],
     });
