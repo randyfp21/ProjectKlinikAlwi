@@ -14,6 +14,42 @@ export const CMSManagementPage: React.FC = () => {
   useEffect(() => {
     cms.fetchCMSFromDB();
   }, []);
+
+  useEffect(() => {
+    setBrandingForm({
+      clinicName: cms.clinicName,
+      clinicTagline: cms.clinicTagline,
+      contactPhone: cms.contactPhone,
+      contactEmail: cms.contactEmail,
+      contactInstagram: cms.contactInstagram,
+      clinicAddress: cms.clinicAddress,
+    });
+    setHeroForm({
+      heroTitle: cms.heroTitle,
+      heroSubtitle: cms.heroSubtitle,
+      heroBadge: cms.heroBadge,
+      galleryHeaderTitle: cms.galleryHeaderTitle,
+      galleryHeaderSubtitle: cms.galleryHeaderSubtitle,
+      doctorsHeaderTitle: cms.doctorsHeaderTitle,
+      doctorsHeaderSubtitle: cms.doctorsHeaderSubtitle,
+      promosHeaderTitle: cms.promosHeaderTitle,
+    });
+  }, [
+    cms.clinicName,
+    cms.clinicTagline,
+    cms.contactPhone,
+    cms.contactEmail,
+    cms.contactInstagram,
+    cms.clinicAddress,
+    cms.heroTitle,
+    cms.heroSubtitle,
+    cms.heroBadge,
+    cms.galleryHeaderTitle,
+    cms.galleryHeaderSubtitle,
+    cms.doctorsHeaderTitle,
+    cms.doctorsHeaderSubtitle,
+    cms.promosHeaderTitle,
+  ]);
   const [toastMessage, setToastMessage] = useState('');
   const [uploading, setUploading] = useState(false);
 
