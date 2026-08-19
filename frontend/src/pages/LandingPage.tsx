@@ -510,8 +510,18 @@ export const LandingPage: React.FC = () => {
                 </a>
               </div>
             )}
-            <div className="flex items-center gap-2 pt-1">
-              <MapPin className="w-4 h-4 text-amber-500 shrink-0" /> <span>{clinicAddress}</span>
+            <div className="flex items-start gap-2 pt-1">
+              <MapPin className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(clinicAddress)}`}
+                target="_blank"
+                rel="noreferrer"
+                className="hover:underline hover:text-sky-600 dark:hover:text-sky-400 font-bold transition flex items-center gap-1 group/maps"
+                title="Buka Lokasi di Google Maps"
+              >
+                <span>{clinicAddress}</span>
+                <span className="text-[10px] text-amber-500 font-normal group-hover/maps:translate-x-0.5 transition-transform">(Buka Maps ↗)</span>
+              </a>
             </div>
           </div>
 
