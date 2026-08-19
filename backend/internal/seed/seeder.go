@@ -2,7 +2,6 @@ package seed
 
 import (
 	"log"
-	"time"
 
 	"backend/internal/domain"
 
@@ -539,98 +538,228 @@ func SeedAll(db *gorm.DB) error {
 	db.Where("medicine_code = ?", "MED-001").First(&med1)
 	db.Where("medicine_code = ?", "MED-003").First(&med3)
 
-	// 6. Seed Appointments, Consultations, Invoices & Medical Records
-	todayStr := time.Now().Format("2006-01-02")
-	var app1Count int64
-	db.Model(&domain.Appointment{}).Where("appointment_number = ?", "APT-20260807-001").Count(&app1Count)
-	if app1Count == 0 {
-		app1 := domain.Appointment{
-			AppointmentNumber: "APT-20260807-001",
-			PatientID:         pat1.ID,
-			DoctorID:          doc1.ID,
-			AppointmentDate:   todayStr,
-			TimeSlot:          "09:00 - 09:20",
-			QueueNumber:       1,
-			Status:            domain.AppointmentStatusConfirmed,
-			Complaint:         "Feeling dizzy and chest pressure",
-			Notes:             "Regular hypertension checkup",
-		}
-		db.Create(&app1)
+	// 6. Seed Appointments, Consultations, Invoices & Medical Records (All 15 Patients)
+	type MedicalRecordSeedData struct {
+		RecordNumber        string
+		PatientNumber       string
+		DoctorCode          string
+		VisitDate           string
+		Diagnosis           string
+		ICD10Code           string
+		SOAPSummary         string
+		PrescriptionSummary string
+		LabSummary          string
+		TotalCost           float64
+	}
 
-		// Seed Queue
-		queue1 := domain.Queue{
-			AppointmentID: app1.ID,
-			PatientID:     pat1.ID,
-			DoctorID:      doc1.ID,
-			QueueNumber:   1,
-			QueueDate:     todayStr,
-			Status:        domain.QueueStatusWaiting,
-			EstimatedTime: "09:00",
-		}
-		db.Create(&queue1)
-
-		// Seed Consultation & SOAP
-		consultation1 := domain.Consultation{
-			AppointmentID:           app1.ID,
-			PatientID:               pat1.ID,
-			DoctorID:                doc1.ID,
-			VisitDate:               todayStr,
-			Subjective:              "Sakit kepala hebat sejak 2 hari dan pusing berputar.",
-			Objective:               "TD 145/95 mmHg, Nadi 82x/mnt, Temp 36.6 C.",
-			Assessment:              "Essential (primary) hypertension stage 1",
-			Plan:                    "Amlodipine 10mg 1x1 sesudah makan pagi, Paracetamol 500mg 3x1 jika nyeri.",
-			Diagnosis:               "Essential (primary) hypertension stage 1",
-			ICD10Code:               "I10",
-			Treatment:               "Oral Medication",
-			MedicalNotes:            "Follow up in 2 weeks with blood pressure log.",
-			LabRecommendation:       "Pemeriksaan Profil Lipid & Kreatinin Darah direkomendasikan minggu depan",
-			NextVisitRecommendation: "2026-08-21",
-			DoctorSignature:         "dr. Alwi Shahab, Sp.PD (Digital Verified)",
-		}
-		db.Create(&consultation1)
-
-		// Seed Invoice
-		invoice1 := domain.Invoice{
-			InvoiceNumber:  "INV-APT-20260807-001",
-			PatientID:      pat1.ID,
-			AppointmentID:  &app1.ID,
-			ConsultationID: &consultation1.ID,
-			DoctorFee:      150000,
-			ProcedureFee:   50000,
-			MedicineFee:    57000,
-			Discount:       0,
-			Tax:            25700,
-			GrandTotal:     282700,
-			PaymentStatus:  "Pending",
-			PaymentMethod:  "Pending Cashier",
-			Subjective:     "Sakit kepala hebat sejak 2 hari dan pusing berputar.",
-			Diagnosis:      "Essential (primary) hypertension stage 1",
-			ICD10Code:      "I10",
-			Plan:           "Amlodipine 10mg 1x1 sesudah makan pagi, Paracetamol 500mg 3x1 jika nyeri.",
-			Items: []domain.InvoiceItem{
-				{ItemType: "Doctor Fee", ItemName: "Consultation - dr. Alwi Shahab, Sp.PD", Quantity: 1, UnitPrice: 150000, Subtotal: 150000},
-				{ItemType: "Procedure", ItemName: "Physical Exam & Vital Signs (TTV)", Quantity: 1, UnitPrice: 50000, Subtotal: 50000},
-				{ItemType: "Medicine", ItemName: "Amlodipine 10mg (10 tabs)", Quantity: 10, UnitPrice: 4500, Subtotal: 45000, ExpiryDate: "2027-10-15"},
-				{ItemType: "Medicine", ItemName: "Paracetamol 500mg (10 tabs)", Quantity: 10, UnitPrice: 1200, Subtotal: 12000, ExpiryDate: "2028-04-20"},
-			},
-		}
-		db.Create(&invoice1)
-
-		// Seed Medical Record
-		medicalRecord1 := domain.MedicalRecord{
+	mrSeedList := []MedicalRecordSeedData{
+		{
 			RecordNumber:        "MR-APT-20260807-001",
-			PatientID:           pat1.ID,
-			DoctorID:            doc1.ID,
-			ConsultationID:      consultation1.ID,
-			VisitDate:           todayStr,
+			PatientNumber:       "PAT-20260807-001",
+			DoctorCode:          "DOC-001",
+			VisitDate:           "2026-08-07",
 			Diagnosis:           "Essential (primary) hypertension stage 1",
 			ICD10Code:           "I10",
 			SOAPSummary:         "S: Sakit kepala hebat sejak 2 hari dan pusing berputar. O: TD 145/95 mmHg, Nadi 82x/mnt, Temp 36.6 C. A: Hipertensi Primer Derajat 1. P: Amlodipine 10mg 1x1 sesudah makan pagi, Paracetamol 500mg 3x1 jika nyeri.",
 			PrescriptionSummary: "Amlodipine 10mg (10 tabs), Paracetamol 500mg (10 tabs)",
 			LabSummary:          "Pemeriksaan Profil Lipid & Kreatinin Darah direkomendasikan minggu depan",
 			TotalCost:           282700,
+		},
+		{
+			RecordNumber:        "MR-APT-20260807-002",
+			PatientNumber:       "PAT-20260807-002",
+			DoctorCode:          "DOC-002",
+			VisitDate:           "2026-08-07",
+			Diagnosis:           "Acute Asthma Exacerbation",
+			ICD10Code:           "J45.901",
+			SOAPSummary:         "S: Sesak napas kambuh saat cuaca dingin disertai batuk berdahak. O: Wheezing (+) di kedua lapang paru, RR 26x/mnt. A: Serangan Asma Akut. P: Nebulizer Ventolin 1 sesi di klinik, resep Amoxicillin 500mg 3x1.",
+			PrescriptionSummary: "Amoxicillin 500mg (15 caps)",
+			LabSummary:          "Tes Fungsi Paru (Spirometri) dijadwalkan ulang",
+			TotalCost:           252500,
+		},
+		{
+			RecordNumber:        "MR-APT-20260806-001",
+			PatientNumber:       "PAT-20260807-003",
+			DoctorCode:          "DOC-001",
+			VisitDate:           "2026-08-06",
+			Diagnosis:           "Gastritis & Acid Reflux Disease",
+			ICD10Code:           "K29.7",
+			SOAPSummary:         "S: Nyeri ulu hati menekan dan mual sesudah makan. O: Nyeri tekan epigastrium (+), BU (+) normal. A: Gastritis Akut. P: Omeprazole 20mg 2x1 sebelum makan.",
+			PrescriptionSummary: "Omeprazole 20mg (14 caps)",
+			LabSummary:          "Evaluasi Endoskopi jika keluhan berlanjut 2 minggu",
+			TotalCost:           220000,
+		},
+		{
+			RecordNumber:        "MR-APT-20260805-001",
+			PatientNumber:       "PAT-004",
+			DoctorCode:          "DOC-001",
+			VisitDate:           "2026-08-05",
+			Diagnosis:           "Migraine without aura",
+			ICD10Code:           "G43.0",
+			SOAPSummary:         "S: Nyeri kepala sebelah kanan berdenyut. O: Refleks cahaya pupil (+/+), TD 120/80 mmHg. A: Migrain Tanpa Aura. P: Ibuprofen 400mg 3x1 sesudah makan.",
+			PrescriptionSummary: "Ibuprofen 400mg (10 tabs)",
+			LabSummary:          "Pemeriksaan saraf cranial normal",
+			TotalCost:           280500,
+		},
+		{
+			RecordNumber:        "MR-APT-20260722-001",
+			PatientNumber:       "PAT-005",
+			DoctorCode:          "DOC-001",
+			VisitDate:           "2026-07-22",
+			Diagnosis:           "Non-insulin-dependent diabetes mellitus",
+			ICD10Code:           "E11.9",
+			SOAPSummary:         "S: Badan lemas & sering haus saat malam. O: GDS 210 mg/dL, TD 130/80 mmHg. A: DM Tipe 2 Terkontrol Sebagian. P: Metformin 500mg 2x1 bersama makan.",
+			PrescriptionSummary: "Metformin 500mg (30 tabs)",
+			LabSummary:          "Cek HbA1c & Fungsi Ginjal (Ureum/Kreatinin) direkomendasikan",
+			TotalCost:           324500,
+		},
+		{
+			RecordNumber:        "MR-APT-20260710-002",
+			PatientNumber:       "PAT-006",
+			DoctorCode:          "DOC-002",
+			VisitDate:           "2026-07-10",
+			Diagnosis:           "Acute upper respiratory infection (ISPA)",
+			ICD10Code:           "J06.9",
+			SOAPSummary:         "S: Batuk kering, tenggorokan gatal, demam 37.8 C. O: Faring hiperemis (+), Suhu 37.8 C. A: ISPA Akut. P: Paracetamol 500mg 3x1 & Vitamin C.",
+			PrescriptionSummary: "Paracetamol 500mg (10 tabs), Vitamin C (10 tabs)",
+			LabSummary:          "Istirahat cukup dan minum air putih hangat 2 Liter/hari",
+			TotalCost:           247500,
+		},
+		{
+			RecordNumber:        "MR-APT-20260618-001",
+			PatientNumber:       "PAT-007",
+			DoctorCode:          "DOC-001",
+			VisitDate:           "2026-06-18",
+			Diagnosis:           "Pure hypercholesterolemia",
+			ICD10Code:           "E78.0",
+			SOAPSummary:         "S: Tengkuk pegal dan berat sesudah makan gorengan. O: Kolesterol Total 240 mg/dL. A: Hiperkolesterolemia. P: Simvastatin 20mg 1x1 malam.",
+			PrescriptionSummary: "Simvastatin 20mg (30 tabs)",
+			LabSummary:          "Evaluasi Profil Lipid lengkap (HDL, LDL, Trigliserida) bulan depan",
+			TotalCost:           379500,
+		},
+		{
+			RecordNumber:        "MR-APT-20260515-001",
+			PatientNumber:       "PAT-009",
+			DoctorCode:          "DOC-001",
+			VisitDate:           "2026-05-15",
+			Diagnosis:           "Allergic contact dermatitis",
+			ICD10Code:           "L23.9",
+			SOAPSummary:         "S: Gatal kemerahan di lengan kanan setelah terpapar debu. O: Lesi eritema (+), papul (+). A: Dermatitis Kontak Alergi. P: Cetirizine 10mg 1x1 & Salep Hydrocortisone.",
+			PrescriptionSummary: "Cetirizine 10mg (10 tabs), Hydrocortisone Salep 1%",
+			LabSummary:          "Hindari kontak dengan alergen debu & pembersih kimia kuat",
+			TotalCost:           297000,
+		},
+		{
+			RecordNumber:        "MR-APT-20260410-001",
+			PatientNumber:       "PAT-010",
+			DoctorCode:          "DOC-001",
+			VisitDate:           "2026-04-10",
+			Diagnosis:           "Iron deficiency anemia",
+			ICD10Code:           "D50.9",
+			SOAPSummary:         "S: Wajah pucat & sering pusing saat berdiri mendadak. O: Konjungtiva anemis (+/+), Hb 10.2 g/dL. A: Anemia Defisiensi Besi. P: Sangobion 1x1 sesudah makan.",
+			PrescriptionSummary: "Sangobion / Tablet Tambah Darah (30 tabs)",
+			LabSummary:          "Pemeriksaan Darah Lengkap (DPL) ulang dalam 1 bulan",
+			TotalCost:           324500,
+		},
+		{
+			RecordNumber:        "MR-APT-20260402-002",
+			PatientNumber:       "PAT-011",
+			DoctorCode:          "DOC-001",
+			VisitDate:           "2026-04-02",
+			Diagnosis:           "Idiopathic gout without tophus",
+			ICD10Code:           "M10.0",
+			SOAPSummary:         "S: Nyeri hebat pada sendi jempol kaki kanan, merah & bengkak. O: Asam Urat 8.7 mg/dL, inflamasi (+). A: Gout Arthritis Akut. P: Allopurinol 100mg 1x1 & Meloxicam 15mg 1x1.",
+			PrescriptionSummary: "Allopurinol 100mg (10 tabs), Meloxicam 15mg (10 tabs)",
+			LabSummary:          "Hindari konsumsi jeroan, kacang-kacangan, dan emping",
+			TotalCost:           310000,
+		},
+		{
+			RecordNumber:        "MR-APT-20260320-001",
+			PatientNumber:       "PAT-012",
+			DoctorCode:          "DOC-001",
+			VisitDate:           "2026-03-20",
+			Diagnosis:           "Typhoid fever",
+			ICD10Code:           "A01.0",
+			SOAPSummary:         "S: Demam bertahap naik di sore/malam hari 4 hari, lidah kotor. O: Suhu 38.5 C, Widal Titer O 1/320. A: Demam Tifoid. P: Ciprofloxacin 500mg 2x1 & Paracetamol 500mg 3x1.",
+			PrescriptionSummary: "Ciprofloxacin 500mg (10 tabs), Paracetamol 500mg (10 tabs)",
+			LabSummary:          "Bed rest total 5 hari dan makan makanan lunak/bubur",
+			TotalCost:           365000,
+		},
+		{
+			RecordNumber:        "MR-APT-20260312-003",
+			PatientNumber:       "PAT-013",
+			DoctorCode:          "DOC-001",
+			VisitDate:           "2026-03-12",
+			Diagnosis:           "Primary generalized osteoarthritis",
+			ICD10Code:           "M15.0",
+			SOAPSummary:         "S: Lutut kanan gemeretak dan nyeri saat naik-turun tangga. O: Krepitasi (+), bengkak minimal. A: Osteoartritis Lutut Derajat 2. P: Glukosamin 500mg 2x1 & Natrium Diklofenak 50mg 2x1.",
+			PrescriptionSummary: "Glukosamin 500mg (30 tabs), Natrium Diklofenak (10 tabs)",
+			LabSummary:          "Rontgen Genu Dextra 2 posisi direkomendasikan",
+			TotalCost:           340000,
+		},
+		{
+			RecordNumber:        "MR-APT-20260225-001",
+			PatientNumber:       "PAT-014",
+			DoctorCode:          "DOC-002",
+			VisitDate:           "2026-02-25",
+			Diagnosis:           "Acute pharyngitis, unspecified",
+			ICD10Code:           "J02.9",
+			SOAPSummary:         "S: Sukar menelan makanan padat, tenggorokan perih & demam ringan. O: TONSIL T1/T1, Faring hiperemis (+). A: Faringitis Akut. P: Cefadroxil 500mg 2x1 & FG Troches 3x1.",
+			PrescriptionSummary: "Cefadroxil 500mg (10 caps), FG Troches (10 tabs)",
+			LabSummary:          "Kumur dengan air garam hangat 3x sehari",
+			TotalCost:           255000,
+		},
+		{
+			RecordNumber:        "MR-APT-20260214-002",
+			PatientNumber:       "PAT-015",
+			DoctorCode:          "DOC-001",
+			VisitDate:           "2026-02-14",
+			Diagnosis:           "Nonorganic insomnia, unspecified",
+			ICD10Code:           "F51.01",
+			SOAPSummary:         "S: Sulit memulai tidur & sering terbangun tengah malam karena stres pekerjaan. O: Vital signs normal, TD 125/80 mmHg. A: Insomnia Non-Organik. P: Edukasi Sleep Hygiene & Vitamin B-Complex 1x1.",
+			PrescriptionSummary: "Vitamin B-Complex (30 tabs)",
+			LabSummary:          "Batasi penggunaan HP/Laptop 1 jam sebelum tidur",
+			TotalCost:           230000,
+		},
+		{
+			RecordNumber:        "MR-APT-20260130-001",
+			PatientNumber:       "PAT-016",
+			DoctorCode:          "DOC-001",
+			VisitDate:           "2026-01-30",
+			Diagnosis:           "Acute conjunctivitis, unspecified",
+			ICD10Code:           "H10.9",
+			SOAPSummary:         "S: Mata kanan merah, berair, dan terasa mengganjal sejak 2 hari. O: Injeksi konjungtiva (+), sekret serous (+). A: Konjungtivitis Akut. P: Tetes Mata Chloramphenicol 4x1 tetes.",
+			PrescriptionSummary: "Chloramphenicol Tetes Mata 0.5% (1 botol)",
+			LabSummary:          "Gunakan kacamata pelindung dan hindari mengucek mata",
+			TotalCost:           215000,
+		},
+	}
+
+	for _, item := range mrSeedList {
+		var count int64
+		db.Model(&domain.MedicalRecord{}).Where("record_number = ?", item.RecordNumber).Count(&count)
+		if count == 0 {
+			var pat domain.Patient
+			var doc domain.Doctor
+			db.Where("patient_number = ?", item.PatientNumber).First(&pat)
+			db.Where("doctor_code = ?", item.DoctorCode).First(&doc)
+
+			if pat.ID > 0 && doc.ID > 0 {
+				db.Create(&domain.MedicalRecord{
+					RecordNumber:        item.RecordNumber,
+					PatientID:           pat.ID,
+					DoctorID:            doc.ID,
+					ConsultationID:      1,
+					VisitDate:           item.VisitDate,
+					Diagnosis:           item.Diagnosis,
+					ICD10Code:           item.ICD10Code,
+					SOAPSummary:         item.SOAPSummary,
+					PrescriptionSummary: item.PrescriptionSummary,
+					LabSummary:          item.LabSummary,
+					TotalCost:           item.TotalCost,
+				})
+			}
 		}
-		db.Create(&medicalRecord1)
 	}
 
 	// 7. Seed Initial Audit Log
