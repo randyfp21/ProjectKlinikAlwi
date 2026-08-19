@@ -83,12 +83,12 @@ export const LandingPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors">
-      {/* Top Navbar */}
-      <header className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-6 py-4 transition-colors">
+      {/* Top Navbar Responsive Header */}
+      <header className="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 sm:px-6 py-3.5 transition-colors">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          {/* Customizable Logo & Name */}
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 overflow-hidden group-hover:scale-105 transition ${
+          {/* Logo & Clinic Name */}
+          <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group">
+            <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shrink-0 overflow-hidden group-hover:scale-105 transition ${
               clinicLogoIcon && (clinicLogoIcon.startsWith('/') || clinicLogoIcon.startsWith('http') || clinicLogoIcon.startsWith('data:'))
                 ? 'bg-transparent'
                 : 'bg-gradient-to-tr from-sky-500 to-teal-400 shadow-lg shadow-sky-500/20'
@@ -96,23 +96,23 @@ export const LandingPage: React.FC = () => {
               {clinicLogoIcon && (clinicLogoIcon.startsWith('/') || clinicLogoIcon.startsWith('http') || clinicLogoIcon.startsWith('data:')) ? (
                 <img src={clinicLogoIcon} alt={clinicName} className="w-full h-full object-contain max-w-full max-h-full" />
               ) : (
-                <Hospital className="w-6 h-6 text-white" />
+                <Hospital className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               )}
             </div>
             <div>
-              <span className="font-extrabold text-xl tracking-tight text-slate-900 dark:text-white block">{clinicName}</span>
-              <span className="text-[10px] text-sky-600 dark:text-sky-400 font-semibold tracking-wider uppercase block">{clinicTagline}</span>
+              <span className="font-extrabold text-base sm:text-xl tracking-tight text-slate-900 dark:text-white block leading-tight">{clinicName}</span>
+              <span className="text-[9px] sm:text-[10px] text-sky-600 dark:text-sky-400 font-semibold tracking-wider uppercase block truncate max-w-[170px] sm:max-w-none">{clinicTagline}</span>
             </div>
           </Link>
 
-          <div className="flex items-center gap-3">
+          {/* Desktop Right Action Buttons */}
+          <div className="hidden md:flex items-center gap-3">
             <LanguageSelector />
 
-            {/* Dark/Light Mode Switcher */}
             <button
               onClick={toggleTheme}
               title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-              className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700"
+              className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700 cursor-pointer"
             >
               {isDarkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-600" />}
             </button>
@@ -130,6 +130,23 @@ export const LandingPage: React.FC = () => {
               <UserPlus className="w-4 h-4" /> {t('btnRegister')}
             </Link>
           </div>
+
+          {/* Mobile Right Quick Action Group */}
+          <div className="flex md:hidden items-center gap-2">
+            <LanguageSelector />
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
+            >
+              {isDarkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-600" />}
+            </button>
+            <Link
+              to="/login"
+              className="p-2 rounded-xl bg-sky-600 text-white shadow-md font-bold text-xs flex items-center gap-1"
+            >
+              <LogIn className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -138,7 +155,7 @@ export const LandingPage: React.FC = () => {
 
 
       {/* PHOTO SLIDER CONTAINER AS FULL BACKGROUND HEADER FOR "Klinik Modern & Terpercaya Untuk Keluarga Anda" */}
-      <section className="relative py-24 sm:py-32 px-6 overflow-hidden border-b border-slate-200 dark:border-slate-800 transition-colors">
+      <section className="relative py-14 sm:py-28 md:py-32 px-4 sm:px-6 overflow-hidden border-b border-slate-200 dark:border-slate-800 transition-colors">
         {/* Full-width Background Photo Slider */}
         {galleryPhotos && galleryPhotos.length > 0 && (
           <div className="absolute inset-0 z-0 overflow-hidden">
@@ -149,30 +166,30 @@ export const LandingPage: React.FC = () => {
               className="w-full h-full object-cover transition-all duration-1000 ease-in-out scale-105"
             />
             {/* Dark Blur Overlay for readability */}
-            <div className="absolute inset-0 bg-slate-950/75 backdrop-blur-[2px]" />
+            <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-[2px]" />
           </div>
         )}
 
         {/* Content Box Centered Over Photo Slider Background */}
-        <div className="max-w-5xl mx-auto text-center space-y-6 relative z-10 text-white">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-sky-500/20 border border-sky-400/40 text-sky-300 text-xs font-bold font-mono tracking-wider shadow-lg backdrop-blur-md">
-            <Sparkles className="w-4 h-4 text-sky-400" /> KLINIK PRATAMA & UTAMA TERAKREDITASI
+        <div className="max-w-5xl mx-auto text-center space-y-4 sm:space-y-6 relative z-10 text-white">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-sky-500/20 border border-sky-400/40 text-sky-300 text-[10px] sm:text-xs font-bold font-mono tracking-wider shadow-lg backdrop-blur-md">
+            <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-sky-400" /> KLINIK PRATAMA & UTAMA TERAKREDITASI
           </div>
 
-          <h2 className="text-4xl sm:text-6xl font-black tracking-tight text-white leading-tight drop-shadow-lg">
+          <h2 className="text-2xl sm:text-5xl md:text-6xl font-black tracking-tight text-white leading-tight drop-shadow-lg px-2">
             {galleryHeaderTitle || 'Klinik Modern & Terpercaya Untuk Keluarga Anda'}
           </h2>
 
-          <p className="text-slate-200 text-sm sm:text-lg max-w-3xl mx-auto leading-relaxed font-medium drop-shadow-md">
+          <p className="text-slate-200 text-xs sm:text-base md:text-lg max-w-3xl mx-auto leading-relaxed font-medium drop-shadow-md px-2">
             {galleryHeaderSubtitle || 'Memberikan pelayanan medis terbaik dengan tim dokter spesialis berpengalaman dan fasilitas kesehatan modern lengkap.'}
           </p>
 
           {/* Active Photo Info Badge */}
           {galleryPhotos && galleryPhotos.length > 0 && (
-            <div className="pt-2 inline-flex items-center gap-3 px-4 py-2 rounded-2xl bg-black/40 backdrop-blur-md border border-white/20 text-xs text-slate-300 shadow-xl">
-              <ImageIcon className="w-4 h-4 text-sky-400" />
-              <span className="font-semibold text-white">{galleryPhotos[activeSlideIndex]?.title}</span>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-sky-600/80 text-white font-bold">
+            <div className="pt-1 inline-flex items-center gap-2 sm:gap-3 px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl bg-black/50 backdrop-blur-md border border-white/20 text-[11px] sm:text-xs text-slate-300 shadow-xl max-w-full truncate">
+              <ImageIcon className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+              <span className="font-semibold text-white truncate max-w-[180px] sm:max-w-none">{galleryPhotos[activeSlideIndex]?.title}</span>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-sky-600/80 text-white font-bold shrink-0">
                 {activeSlideIndex + 1}/{galleryPhotos.length}
               </span>
             </div>
@@ -180,22 +197,22 @@ export const LandingPage: React.FC = () => {
 
           {/* Slider Controls */}
           {galleryPhotos && galleryPhotos.length > 0 && (
-            <div className="pt-4 flex items-center justify-center gap-3">
+            <div className="pt-2 sm:pt-4 flex items-center justify-center gap-2 sm:gap-3">
               <button
                 onClick={() => setActiveSlideIndex((prev) => (prev === 0 ? galleryPhotos.length - 1 : prev - 1))}
-                className="w-10 h-10 rounded-full bg-white/10 hover:bg-sky-600 text-white border border-white/20 flex items-center justify-center transition backdrop-blur-md shadow-md"
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/10 hover:bg-sky-600 text-white border border-white/20 flex items-center justify-center transition backdrop-blur-md shadow-md cursor-pointer"
                 title="Foto Sebelumnya"
               >
-                <ChevronLeft className="w-5 h-5" />
+                <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
 
-              <div className="flex items-center gap-1.5 px-2">
+              <div className="flex items-center gap-1 px-1">
                 {galleryPhotos.map((_, idx) => (
                   <button
                     key={idx}
                     onClick={() => setActiveSlideIndex(idx)}
-                    className={`h-2.5 rounded-full transition-all duration-300 ${
-                      idx === activeSlideIndex ? 'w-8 bg-sky-400 shadow-md' : 'w-2.5 bg-white/40 hover:bg-white/70'
+                    className={`h-2 rounded-full transition-all duration-300 ${
+                      idx === activeSlideIndex ? 'w-6 sm:w-8 bg-sky-400 shadow-md' : 'w-2 bg-white/40 hover:bg-white/70'
                     }`}
                   />
                 ))}
@@ -203,10 +220,10 @@ export const LandingPage: React.FC = () => {
 
               <button
                 onClick={() => setActiveSlideIndex((prev) => (prev + 1) % galleryPhotos.length)}
-                className="w-10 h-10 rounded-full bg-white/10 hover:bg-sky-600 text-white border border-white/20 flex items-center justify-center transition backdrop-blur-md shadow-md"
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/10 hover:bg-sky-600 text-white border border-white/20 flex items-center justify-center transition backdrop-blur-md shadow-md cursor-pointer"
                 title="Foto Selanjutnya"
               >
-                <ChevronRight className="w-5 h-5" />
+                <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
             </div>
           )}
