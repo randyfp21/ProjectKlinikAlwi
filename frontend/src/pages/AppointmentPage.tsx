@@ -322,14 +322,14 @@ export const AppointmentPage: React.FC = () => {
             <table className="w-full text-left text-xs text-slate-600 dark:text-slate-300">
               <thead className="bg-slate-100 dark:bg-slate-800/80 uppercase text-[10px] text-slate-500 dark:text-slate-400 font-semibold">
                 <tr>
-                  <th className="p-3.5">Appt No</th>
-                  <th className="p-3.5">Queue No</th>
-                  <th className="p-3.5">Patient</th>
-                  <th className="p-3.5">Doctor & Room</th>
-                  <th className="p-3.5">Date & Slot</th>
-                  <th className="p-3.5">Chief Complaint</th>
+                  <th className="p-3.5">No. Janji Temu</th>
+                  <th className="p-3.5">No. Antrean</th>
+                  <th className="p-3.5">Nama Pasien</th>
+                  <th className="p-3.5">Dokter & Poli / Ruangan</th>
+                  <th className="p-3.5">Tanggal & Jam Slot</th>
+                  <th className="p-3.5">Keluhan Utama</th>
                   <th className="p-3.5">Status</th>
-                  <th className="p-3.5 text-right">Admin Control</th>
+                  <th className="p-3.5 text-right">Aksi Admin</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
@@ -357,7 +357,7 @@ export const AppointmentPage: React.FC = () => {
                           ? 'bg-rose-500/10 text-rose-600 border-rose-500/20'
                           : 'bg-amber-500/10 text-amber-600 border-amber-500/20'
                       }`}>
-                        {app.status}
+                        {app.status === 'Confirmed' ? 'Dikonfirmasi' : app.status === 'Completed' ? 'Selesai' : app.status === 'Cancelled' ? 'Dibatalkan' : 'Menunggu'}
                       </span>
                     </td>
 
@@ -370,14 +370,14 @@ export const AppointmentPage: React.FC = () => {
                             onChange={(e) => handleUpdateStatus(app.id, e.target.value as any)}
                             className="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-2 py-1 text-[11px] font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-sky-500"
                           >
-                            <option value="Waiting">Waiting</option>
-                            <option value="Confirmed">Confirmed</option>
-                            <option value="Completed">Completed</option>
-                            <option value="Cancelled">Cancelled</option>
+                            <option value="Waiting">Menunggu (Waiting)</option>
+                            <option value="Confirmed">Dikonfirmasi (Confirmed)</option>
+                            <option value="Completed">Selesai (Completed)</option>
+                            <option value="Cancelled">Dibatalkan (Cancelled)</option>
                           </select>
                         </div>
                       ) : (
-                        <span className="text-[10px] text-slate-400 italic">Read-only (Admin only)</span>
+                        <span className="text-[10px] text-slate-400 italic">Hanya Baca (Khusus Admin)</span>
                       )}
                     </td>
                   </tr>
