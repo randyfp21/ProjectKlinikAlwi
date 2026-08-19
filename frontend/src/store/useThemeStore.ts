@@ -7,8 +7,7 @@ interface ThemeState {
 }
 
 export const useThemeStore = create<ThemeState>((set) => {
-  const initialDark = localStorage.getItem('theme') === 'dark' || 
-    (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const initialDark = localStorage.getItem('theme') === 'dark';
 
   if (initialDark) {
     document.documentElement.classList.add('dark');
