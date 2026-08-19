@@ -250,6 +250,17 @@ const DEFAULT_PROMOS: CMSPromo[] = [
     photoUrl: 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=1000&q=80',
     actionUrl: '/login',
   },
+  {
+    id: 4,
+    title: 'Layanan Home Service Dokter & Perawat Ke Rumah',
+    badge: 'KENYAMANAN DARI RUMAH',
+    discountTag: 'BEBAS ONGKIR 10KM',
+    promoCode: 'HOME-SERVICE10',
+    validUntil: 'Berlaku s/d 30 September 2026',
+    description: 'Tim medis profesional lengkap datang ke rumah Anda untuk konsultasi fisik, sampel laboratorium darah, atau pemasangan terapi infus rutin.',
+    photoUrl: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1000&q=80',
+    actionUrl: '/login',
+  },
 ];
 
 export const useCMSStore = create<CMSState>()(
