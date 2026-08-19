@@ -39,11 +39,11 @@ export function App() {
     <BrowserRouter>
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPatientPage />} />
-        <Route path="/public-queue-monitor" element={<PublicQueueMonitorPage />} />
-        <Route path="/promos-articles" element={<PublicPromosArticlesPage />} />
+        <Route path="/" element={<div className="animate-page-transition"><LandingPage /></div>} />
+        <Route path="/login" element={<div className="animate-page-transition"><LoginPage /></div>} />
+        <Route path="/register" element={<div className="animate-page-transition"><RegisterPatientPage /></div>} />
+        <Route path="/public-queue-monitor" element={<div className="animate-page-transition"><PublicQueueMonitorPage /></div>} />
+        <Route path="/promos-articles" element={<div className="animate-page-transition"><PublicPromosArticlesPage /></div>} />
 
         {/* Protected Dashboard Routes */}
         <Route
