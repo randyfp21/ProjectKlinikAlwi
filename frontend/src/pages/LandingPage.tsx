@@ -356,9 +356,6 @@ export const LandingPage: React.FC = () => {
                     <span className="px-2.5 py-0.5 rounded bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 text-[10px] font-bold font-mono">
                       SPECIALIST DOCTOR
                     </span>
-                    <span className="px-2.5 py-0.5 rounded bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20 text-[10px] font-extrabold">
-                      Fee: Rp {doc.consultationFee.toLocaleString()}
-                    </span>
                   </div>
 
                   <div>
