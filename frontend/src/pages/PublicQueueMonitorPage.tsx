@@ -370,7 +370,7 @@ export const PublicQueueMonitorPage: React.FC = () => {
       }`}>
         <div className="flex items-center gap-2 font-bold text-sky-600 dark:text-sky-400">
           <HeartPulse className="w-4 h-4 text-rose-500 animate-pulse" />
-          <span>Klinik Utama Alwi • Layar Monitor Antrean Ruang Tunggu Pasien</span>
+          <span>{name} • Layar Monitor Antrean Ruang Tunggu Pasien</span>
         </div>
         <div className="font-mono text-slate-400 flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" /> Real-time Sync Active • PostgreSQL 5432
