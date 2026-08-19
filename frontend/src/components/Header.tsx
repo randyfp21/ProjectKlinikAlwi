@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Menu, Bell, Search, ShieldCheck, Sun, Moon, ChevronDown, Settings, Globe, LogOut, BarChart3, ShieldAlert, Database, Monitor } from 'lucide-react';
+import { Menu, Bell, Search, ShieldCheck, Sun, Moon, ChevronDown, Settings, Globe, LogOut, BarChart3, ShieldAlert, Database, Monitor, Gift } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
 import { useLanguageStore } from '../store/useLanguageStore';
@@ -112,6 +112,13 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSidebar }) => {
                   <div className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                     SISTEM & MANAGEMENT
                   </div>
+                  <Link
+                    to="/dashboard/promos-articles"
+                    onClick={() => setIsProfileOpen(false)}
+                    className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-sky-50 dark:hover:bg-slate-800/80 hover:text-sky-600 dark:hover:text-sky-400 transition"
+                  >
+                    <Gift className="w-4 h-4 text-amber-500" /> Artikel & Promo Kesehatan
+                  </Link>
                   <Link
                     to="/dashboard/cms"
                     onClick={() => setIsProfileOpen(false)}
