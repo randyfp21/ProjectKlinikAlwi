@@ -281,14 +281,28 @@ export const LandingPage: React.FC = () => {
           ))}
         </div>
 
-        {/* VIEW ALL PROMOS & ARTICLES BUTTON */}
-        <div className="text-center pt-4">
+        {/* VIEW ALL PROMOS & ARTICLES BUTTON WITH MODERN GLOW EFFECT */}
+        <div className="text-center pt-8 flex flex-col items-center justify-center">
           <Link
             to="/promos-articles"
-            className="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-950 font-black text-xs shadow-xl shadow-amber-500/20 transition cursor-pointer uppercase tracking-wider"
+            className="group relative inline-flex items-center justify-center gap-3 px-8 sm:px-10 py-4 sm:py-4.5 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-400 hover:to-orange-500 text-slate-950 font-black text-xs sm:text-sm tracking-wider uppercase shadow-2xl shadow-amber-500/30 hover:shadow-amber-500/50 transition-all duration-300 transform hover:-translate-y-1 active:scale-95 cursor-pointer overflow-hidden border border-amber-300/40"
           >
-            Lihat Lebih Banyak Promo & Artikel ({promos?.length || 0}) <ArrowRight className="w-4 h-4" />
+            {/* Ambient Shine Effect */}
+            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
+            
+            <Sparkles className="w-5 h-5 text-slate-950 animate-bounce" />
+            <span className="relative z-10">Lihat Seluruh Artikel & Promo Kesehatan</span>
+
+            <span className="relative z-10 px-2.5 py-0.5 rounded-full bg-slate-950/20 text-slate-950 font-mono text-xs font-black border border-slate-950/20">
+              {promos?.length || 0} Promo
+            </span>
+
+            <ArrowRight className="w-4 h-4 text-slate-950 group-hover:translate-x-1.5 transition-transform duration-300" />
           </Link>
+          
+          <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2.5 font-medium flex items-center gap-1">
+            ✨ Dapatkan potongan diskon hingga 35% & informasi medis terpercaya dari dokter spesialis
+          </p>
         </div>
       </section>
 
