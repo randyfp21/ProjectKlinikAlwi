@@ -232,7 +232,60 @@ func (s *Service) UpdateDoctorSchedule(schedules []domain.DoctorSchedule) error 
 
 // Patient Management
 func (s *Service) ListPatients(search string) ([]domain.Patient, error) {
-	return s.repo.GetAllPatients(search)
+	patients, err := s.repo.GetAllPatients(search)
+	if err != nil {
+		return nil, err
+	}
+
+	// Auto-heal / Generate User accounts for patients that don't have a linked user_id yet
+	for i := range patients {
+		p := &patients[i]
+		if p.UserID == nil || *p.UserID == 0 {
+			username := ""
+			if p.Email != "" && strings.Contains(p.Email, "@") {
+				username = strings.Split(p.Email, "@")[0]
+			} else if p.Phone != "" {
+				username = fmt.Sprintf("pat_%s", regexp.MustCompile(`[^0-9]`).ReplaceAllString(p.Phone, ""))
+			} else {
+				username = fmt.Sprintf("pat_%d", p.ID)
+			}
+
+			// Clean username
+			username = strings.ToLower(strings.ReplaceAll(username, " ", ""))
+			if username == "" {
+				username = fmt.Sprintf("pat_%d", p.ID)
+			}
+
+			email := p.Email
+			if email == "" {
+				email = fmt.Sprintf("%s@pasien.klinikalwi.id", username)
+			}
+
+			// Check if User already exists with this username
+			var existingUser domain.User
+			if userErr := s.repo.DB.Where("username = ?", username).First(&existingUser).Error; userErr == nil {
+				p.UserID = &existingUser.ID
+				s.repo.UpdatePatient(p)
+			} else {
+				hashedPwd, _ := bcrypt.GenerateFromPassword([]byte("password123"), bcrypt.DefaultCost)
+				newUser := domain.User{
+					Username: username,
+					Email:    email,
+					Password: string(hashedPwd),
+					FullName: p.FullName,
+					Role:     domain.RolePatient,
+					Phone:    p.Phone,
+					IsActive: true,
+				}
+				if createErr := s.repo.CreateUser(&newUser); createErr == nil {
+					p.UserID = &newUser.ID
+					s.repo.UpdatePatient(p)
+				}
+			}
+		}
+	}
+
+	return patients, nil
 }
 
 func (s *Service) GetPatient(id uint) (*domain.Patient, error) {

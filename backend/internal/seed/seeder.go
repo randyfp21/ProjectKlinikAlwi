@@ -2,6 +2,7 @@ package seed
 
 import (
 	"log"
+	"strings"
 
 	"backend/internal/domain"
 
@@ -425,6 +426,37 @@ func SeedAll(db *gorm.DB) error {
 		var count int64
 		db.Model(&domain.Patient{}).Where("patient_number = ?", p.PatientNumber).Count(&count)
 		if count == 0 {
+			// Auto-generate User Account for Patient if not attached
+			if p.UserID == nil || *p.UserID == 0 {
+				username := strings.ToLower(strings.ReplaceAll(p.FullName, " ", ""))
+				if username == "" {
+					username = strings.ToLower(p.PatientNumber)
+				}
+				email := p.Email
+				if email == "" {
+					email = username + "@klinikalwi.id"
+				}
+
+				// Check if username already exists
+				var existingUser domain.User
+				if err := db.Where("username = ?", username).First(&existingUser).Error; err == nil {
+					p.UserID = &existingUser.ID
+				} else {
+					hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("password123"), bcrypt.DefaultCost)
+					newUser := domain.User{
+						Username: username,
+						Email:    email,
+						Password: string(hashedPassword),
+						FullName: p.FullName,
+						Role:     domain.RolePatient,
+						Phone:    p.Phone,
+						IsActive: true,
+					}
+					if err := db.Create(&newUser).Error; err == nil {
+						p.UserID = &newUser.ID
+					}
+				}
+			}
 			db.Create(&p)
 		}
 	}
