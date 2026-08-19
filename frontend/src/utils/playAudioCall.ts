@@ -36,15 +36,48 @@ export const playQueueChimeAndVoice = (queueNumber: number | string, patientName
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel(); // Stop any pending speech
 
-      const text = `Nomor antrean, Kosong Kosong ${queueNumber}, atas nama, ${patientName}, silakan menuju, ${roomName}`;
+      const text = `Nomor antrean, kosong kosong ${queueNumber}, atas nama, ${patientName}, silakan menuju, ${roomName}`;
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'id-ID';
-      utterance.rate = 0.9; // Slightly slower for clear hospital announcement
+      utterance.rate = 0.85; // Natural hospital pacing for Indonesian accent
       utterance.pitch = 1.0;
       utterance.volume = 1.0;
 
+      // Filter and explicitly select native Indonesian (id-ID / Indonesia) voice model
+      const voices = window.speechSynthesis.getVoices();
+      const idVoice = voices.find(
+        (v) =>
+          v.lang === 'id-ID' ||
+          v.lang === 'id_ID' ||
+          v.lang.startsWith('id') ||
+          v.name.toLowerCase().includes('indonesia') ||
+          v.name.toLowerCase().includes('indonesian') ||
+          v.name.toLowerCase().includes('gadis') ||
+          v.name.toLowerCase().includes('damayanti')
+      );
+
+      if (idVoice) {
+        utterance.voice = idVoice;
+      }
+
       // Slight delay so voice plays right after the ding-dong chime
       setTimeout(() => {
+        // Double check voices list if loaded asynchronously in Chrome/Safari
+        const updatedVoices = window.speechSynthesis.getVoices();
+        const activeIdVoice = updatedVoices.find(
+          (v) =>
+            v.lang === 'id-ID' ||
+            v.lang === 'id_ID' ||
+            v.lang.startsWith('id') ||
+            v.name.toLowerCase().includes('indonesia') ||
+            v.name.toLowerCase().includes('indonesian') ||
+            v.name.toLowerCase().includes('gadis') ||
+            v.name.toLowerCase().includes('damayanti')
+        );
+        if (activeIdVoice) {
+          utterance.voice = activeIdVoice;
+        }
+
         window.speechSynthesis.speak(utterance);
       }, 700);
     }
