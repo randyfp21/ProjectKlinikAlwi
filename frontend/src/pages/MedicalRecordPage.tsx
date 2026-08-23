@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { History, Search, ShieldCheck, FileText, Lock, UserCheck, Eye, X, Award, CalendarCheck, User, Stethoscope, Filter, Calendar, SlidersHorizontal, RefreshCw, Activity, HeartPulse, Pill, ArrowUpDown, ArrowUp, ArrowDown, Sparkles, Building2, MapPin, Phone, Mail, Paperclip, FileImage, Download, ExternalLink } from 'lucide-react';
+import { History, Search, ShieldCheck, FileText, Lock, UserCheck, Eye, X, Award, CalendarCheck, User, Stethoscope, Filter, Calendar, SlidersHorizontal, RefreshCw, Activity, HeartPulse, Pill, ArrowUpDown, ArrowUp, ArrowDown, Sparkles, Building2, MapPin, Phone, Mail, Paperclip, FileImage, Download, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
 import { MedicalRecord } from '../types';
 import { useAuthStore } from '../store/useAuthStore';
 import { useLanguageStore } from '../store/useLanguageStore';
@@ -27,6 +27,14 @@ export const MedicalRecordPage: React.FC = () => {
   type SortField = 'record_number' | 'visit_date' | 'patient_name' | 'doctor_name' | 'diagnosis';
   const [sortField, setSortField] = useState<SortField>('visit_date');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+
+  // Pagination State (Max 8 records per page)
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, selectedDoctorFilter, selectedDiagnosisFilter, dateFilterMode, startDate, endDate, sortField, sortOrder]);
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -446,6 +454,11 @@ export const MedicalRecordPage: React.FC = () => {
       return 0;
     });
 
+  const totalPages = Math.ceil(filteredRecords.length / itemsPerPage) || 1;
+  const validCurrentPage = Math.min(currentPage, totalPages);
+  const startIndex = (validCurrentPage - 1) * itemsPerPage;
+  const paginatedRecords = filteredRecords.slice(startIndex, startIndex + itemsPerPage);
+
   const resetAllFilters = () => {
     setSearch('');
     setSelectedDoctorFilter('All');
@@ -729,7 +742,7 @@ export const MedicalRecordPage: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
-              {filteredRecords.map((mr) => (
+              {paginatedRecords.map((mr) => (
                 <tr key={mr.id} className="hover:bg-sky-500/10 cursor-pointer transition" onClick={() => setSelectedRecord(mr)}>
                   <td className="py-4 px-4">
                     <span className="px-2.5 py-1 rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400 font-mono font-extrabold text-xs border border-sky-500/20">
@@ -794,6 +807,49 @@ export const MedicalRecordPage: React.FC = () => {
             </tbody>
           </table>
         </div>
+
+        {/* PAGINATION CONTROLS (MAX 8 DATA PER PAGE) */}
+        {filteredRecords.length > 0 && (
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 rounded-b-2xl text-xs font-semibold text-slate-600 dark:text-slate-400">
+            <div>
+              Menampilkan <span className="font-extrabold text-slate-900 dark:text-slate-100">{filteredRecords.length === 0 ? 0 : startIndex + 1}</span> - <span className="font-extrabold text-slate-900 dark:text-slate-100">{Math.min(startIndex + itemsPerPage, filteredRecords.length)}</span> dari <span className="font-extrabold text-sky-600 dark:text-sky-400">{filteredRecords.length}</span> Total Rekam Medis (Maks. 8 / Halaman)
+            </div>
+
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={validCurrentPage === 1}
+                className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition flex items-center gap-1 cursor-pointer"
+              >
+                <ChevronLeft className="w-4 h-4" /> Sebelumnya
+              </button>
+
+              <div className="flex items-center gap-1 px-1">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`w-8 h-8 rounded-xl font-extrabold text-xs transition cursor-pointer ${
+                      validCurrentPage === page
+                        ? 'bg-sky-600 text-white shadow-md shadow-sky-600/30'
+                        : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                disabled={validCurrentPage === totalPages}
+                className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition flex items-center gap-1 cursor-pointer"
+              >
+                Selanjutnya <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* DETAIL MEDICAL RECORD MODAL (PORTALED TO BODY) */}
