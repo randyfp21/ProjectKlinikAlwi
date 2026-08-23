@@ -40,8 +40,7 @@ func InitDatabase(cfg *config.Config) (*gorm.DB, error) {
 	// Auto Migrate Schema
 	err = Migrate(db)
 	if err != nil {
-		log.Printf("[Database Migration Error] %v", err)
-		return nil, err
+		log.Printf("[Database Migration Notice] %v (proceeding with existing DDL schema)", err)
 	}
 
 	return db, nil
