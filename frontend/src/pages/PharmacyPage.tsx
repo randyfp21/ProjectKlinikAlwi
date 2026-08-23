@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Pill, Search, Plus, AlertTriangle, CheckCircle2, History, Package, Edit3, Trash2, Eye, SlidersHorizontal, Tag, FolderPlus, Layers, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import { useMedicineStore } from '../store/useMedicineStore';
 import { useAuthStore } from '../store/useAuthStore';
@@ -642,9 +643,9 @@ export const PharmacyPage: React.FC = () => {
       )}
 
       {/* MODAL 1: ADD NEW MEDICINE (WITH CATEGORY SELECTOR) */}
-      {showAddMedModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 glass-modal font-sans">
-          <form onSubmit={handleAddMedicineSubmit} className="bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-6 border shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+      {showAddMedModal && createPortal(
+        <div className="glass-modal font-sans">
+          <form onSubmit={handleAddMedicineSubmit} className="bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-6 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
             <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2 border-b pb-3">
               <Plus className="w-5 h-5 text-sky-500" /> Tambah Obat Baru Ke Inventaris Apotek
             </h2>
@@ -787,13 +788,14 @@ export const PharmacyPage: React.FC = () => {
               </button>
             </div>
           </form>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* MODAL 2: EDIT & ADJUST STOK OBAT */}
-      {adjustingStockMed && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 glass-modal font-sans">
-          <form onSubmit={handleAdjustStockSubmit} className="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 border shadow-2xl space-y-4">
+      {adjustingStockMed && createPortal(
+        <div className="glass-modal font-sans">
+          <form onSubmit={handleAdjustStockSubmit} className="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
             <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2 border-b pb-3">
               <Package className="w-5 h-5 text-teal-500" /> Edit & Restok Obat: {adjustingStockMed.name}
             </h2>
@@ -866,13 +868,14 @@ export const PharmacyPage: React.FC = () => {
               </button>
             </div>
           </form>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* MODAL 3: ADD CATEGORY */}
-      {showAddCatModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 glass-modal font-sans">
-          <form onSubmit={handleAddCategorySubmit} className="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 border shadow-2xl space-y-4">
+      {showAddCatModal && createPortal(
+        <div className="glass-modal font-sans">
+          <form onSubmit={handleAddCategorySubmit} className="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
             <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2 border-b pb-3">
               <FolderPlus className="w-5 h-5 text-teal-500" /> Tambah Master Kategori Obat Baru
             </h2>
@@ -918,13 +921,14 @@ export const PharmacyPage: React.FC = () => {
               </button>
             </div>
           </form>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* MODAL 4: DETAIL OBAT */}
-      {selectedMedDetail && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 glass-modal font-sans">
-          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 border shadow-2xl space-y-4">
+      {selectedMedDetail && createPortal(
+        <div className="glass-modal font-sans">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
             <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2 border-b pb-3">
               <Eye className="w-5 h-5 text-sky-500" /> Detail Obat: {selectedMedDetail.name}
             </h2>
@@ -973,7 +977,8 @@ export const PharmacyPage: React.FC = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
