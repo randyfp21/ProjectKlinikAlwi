@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { History, Search, ShieldCheck, FileText, Lock, UserCheck, Eye, X, Award, CalendarCheck, User, Stethoscope, Filter, Calendar, SlidersHorizontal, RefreshCw, Activity, HeartPulse, Pill, ArrowUpDown, ArrowUp, ArrowDown, Sparkles, Building2, MapPin, Phone, Mail, Paperclip, FileImage, Download, ExternalLink } from 'lucide-react';
 import { MedicalRecord } from '../types';
 import { useAuthStore } from '../store/useAuthStore';
@@ -795,9 +796,9 @@ export const MedicalRecordPage: React.FC = () => {
         </div>
       </div>
 
-      {/* DETAIL MEDICAL RECORD MODAL */}
-      {selectedRecord && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 glass-modal bg-slate-900/60 backdrop-blur-xs">
+      {/* DETAIL MEDICAL RECORD MODAL (PORTALED TO BODY) */}
+      {selectedRecord && createPortal(
+        <div className="glass-modal font-sans">
           <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-3xl w-full p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-5 relative max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setSelectedRecord(null)}
@@ -959,7 +960,8 @@ export const MedicalRecordPage: React.FC = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { ReceiptText, Search, CheckCircle2, Eye, Printer, X, User, Lock, ShieldAlert, MapPin, Phone, Mail, Sparkles, Building2, Hospital, ArrowUpDown, ArrowUp, ArrowDown, Stethoscope, Activity, Pill, Calendar, Filter, RefreshCw } from 'lucide-react';
 import { useInvoiceStore } from '../store/useInvoiceStore';
 import { useAuthStore } from '../store/useAuthStore';
@@ -396,9 +397,9 @@ export const PaymentHistoryPage: React.FC = () => {
         )}
       </div>
 
-      {/* Transaction Receipt & Audit Detail Modal */}
-      {selectedInvoice && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 glass-modal bg-slate-900/60 backdrop-blur-xs">
+      {/* Transaction Receipt & Audit Detail Modal (PORTALED TO BODY) */}
+      {selectedInvoice && createPortal(
+        <div className="glass-modal font-sans">
           <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-3xl w-full p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-5 relative max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setSelectedInvoice(null)}
@@ -565,7 +566,8 @@ export const PaymentHistoryPage: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
