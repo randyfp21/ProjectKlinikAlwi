@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { CalendarCheck, Plus, Clock, CheckCircle2, AlertCircle, Lock, Edit3, ShieldAlert, Calendar, User, Stethoscope, FileText, CheckCircle, Filter, CalendarDays } from 'lucide-react';
 import { Appointment, Doctor } from '../types';
 import { useAuthStore } from '../store/useAuthStore';
@@ -463,8 +464,8 @@ export const AppointmentPage: React.FC = () => {
         )}
       </div>
 
-      {/* BEST PRACTICE ONLINE APPOINTMENT BOOKING MODAL */}
-      {isBookModalOpen && (
+      {/* BEST PRACTICE ONLINE APPOINTMENT BOOKING MODAL (PORTALED TO BODY FOR 100% FULLSCREEN BACKDROP) */}
+      {isBookModalOpen && createPortal(
         <div className="glass-modal font-sans">
           <form onSubmit={handleConfirmBookingSubmit} className="bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-6 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
             <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
@@ -589,7 +590,8 @@ export const AppointmentPage: React.FC = () => {
               </button>
             </div>
           </form>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
