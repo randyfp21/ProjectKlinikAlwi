@@ -465,8 +465,8 @@ export const AppointmentPage: React.FC = () => {
 
       {/* BEST PRACTICE ONLINE APPOINTMENT BOOKING MODAL */}
       {isBookModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 glass-modal font-sans">
-          <form onSubmit={handleConfirmBookingSubmit} className="bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-6 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-4">
+        <div className="glass-modal font-sans">
+          <form onSubmit={handleConfirmBookingSubmit} className="bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-6 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
             <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
               <CalendarCheck className="w-5 h-5 text-sky-500" /> Form Booking Janji Temu Online
             </h2>

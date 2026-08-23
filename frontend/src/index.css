@@ -57,12 +57,36 @@ body {
 }
 
 .glass-modal {
-  background: rgba(15, 23, 42, 0.5);
-  backdrop-filter: blur(8px);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  overflow-y: auto;
+  background-color: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .dark .glass-modal {
-  background: rgba(3, 7, 18, 0.75);
+  background-color: rgba(3, 7, 18, 0.82);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Modal Content Inner Box Bounds & Centering Normalization */
+.glass-modal > div,
+.glass-modal > form,
+.modal-box-center {
+  max-height: 90vh;
+  overflow-y: auto;
+  margin: auto;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
 }
 
 /* Form Inputs Dark/Light Normalization */
