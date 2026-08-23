@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { ListOrdered, Volume2, CheckCircle2, UserCheck, ArrowRight, Clock, Lock, RefreshCw, Calendar, Sparkles, AlertCircle, Stethoscope, User, Play, ChevronRight, ShieldCheck, X } from 'lucide-react';
 import { Queue } from '../types';
 import { useAuthStore } from '../store/useAuthStore';
@@ -564,9 +565,9 @@ export const QueuePage: React.FC = () => {
       </div>
 
       {/* CALL QUEUE CONFIRMATION MODAL */}
-      {callConfirmQueue && (
+      {callConfirmQueue && createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
-          <div className="glass-card max-w-md w-full p-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl space-y-5 animate-scaleUp">
+          <div className="glass-card max-w-md w-full p-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl space-y-5 animate-scaleUp max-h-[90vh] overflow-y-auto">
             <div className="flex items-center gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
               <div className="p-3 rounded-2xl bg-sky-500/10 text-sky-500 border border-sky-500/20">
                 <Volume2 className="w-6 h-6 animate-pulse" />
@@ -609,13 +610,14 @@ export const QueuePage: React.FC = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* COMPLETE QUEUE CONFIRMATION MODAL */}
-      {completeConfirmQueue && (
+      {completeConfirmQueue && createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
-          <div className="glass-card max-w-md w-full p-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl space-y-5 animate-scaleUp">
+          <div className="glass-card max-w-md w-full p-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl space-y-5 animate-scaleUp max-h-[90vh] overflow-y-auto">
             <div className="flex items-center gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
               <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
                 <CheckCircle2 className="w-6 h-6" />
@@ -655,7 +657,8 @@ export const QueuePage: React.FC = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
