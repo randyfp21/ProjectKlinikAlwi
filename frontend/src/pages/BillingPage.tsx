@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { CreditCard, CheckCircle2, Printer, QrCode, FileText, Receipt, User, Lock, Wallet, ArrowLeft, Building2, DollarSign, Eye, X, History, CalendarX, MapPin, Phone, Mail, Clock, Sparkles, ChevronRight, ShieldCheck, Hospital, Stethoscope, Activity, Search, Copy, Check } from 'lucide-react';
 import { useInvoiceStore } from '../store/useInvoiceStore';
 import { useAuthStore } from '../store/useAuthStore';
@@ -458,10 +459,10 @@ export const BillingPage: React.FC = () => {
       ) : null}
 
       {/* =========================================================================
-          DETAILED INVOICE PAYMENT POPUP / BREAKDOWN MODAL FOR BOTH ROLES
+          DETAILED INVOICE PAYMENT POPUP / BREAKDOWN MODAL FOR BOTH ROLES (PORTALED TO BODY)
          ========================================================================= */}
-      {selectedInvoice && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 glass-modal bg-slate-900/60 backdrop-blur-xs">
+      {selectedInvoice && createPortal(
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs glass-modal font-sans">
           <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-3xl w-full p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-5 relative max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setSelectedInvoice(null)}
@@ -709,7 +710,8 @@ export const BillingPage: React.FC = () => {
               )}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
