@@ -25,6 +25,7 @@ import { PublicPromosArticlesPage } from './pages/PublicPromosArticlesPage';
 import { PromosArticlesPage } from './pages/PromosArticlesPage';
 import { PaymentMethodCMSPage } from './pages/PaymentMethodCMSPage';
 import { useAuthStore } from './store/useAuthStore';
+import { useCMSStore } from './store/useCMSStore';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuthStore();
@@ -35,6 +36,18 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 }
 
 export function App() {
+  const { clinicName, clinicTagline, fetchCMSFromDB } = useCMSStore();
+
+  React.useEffect(() => {
+    fetchCMSFromDB();
+  }, [fetchCMSFromDB]);
+
+  React.useEffect(() => {
+    if (clinicName) {
+      document.title = clinicTagline ? `${clinicName} - ${clinicTagline}` : clinicName;
+    }
+  }, [clinicName, clinicTagline]);
+
   return (
     <BrowserRouter>
       <Routes>
